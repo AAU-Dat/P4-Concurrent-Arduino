@@ -6,9 +6,15 @@ setup                   : setup '{' setupdeclaration '}';
 setupdeclaration        : declaration';' setupdeclaration
                         | functioncall';' setupdeclaration
                         | EPSILON;
-statements              : statement';' statements
+statements              : expressionstatement ';' statements
+                        | returnstatement ';' statements
+                        | ifstatement ';' statements
+                        | forloop ';' statements
+                        | whileloop ';' statements
+                        | switchstatement ';' statements
                         | EPSILON;
-statement               : expression;
+expressionstatement     : expression;
+returnstatement         : 'return' '(' expression ')';
 ifstatement             : 'if' '(' logicalexpression ')' '{' statements '}' else;
 else                    : 'else' '(' logicalexpression ')' '{' statements '}';
 forloop                 : 'for' '(' variabledeclaration 'in' IDENTIFIER ')' '{' statements '}';
