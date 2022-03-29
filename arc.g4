@@ -1,44 +1,47 @@
 grammar arc;
 
 // Parser grammar
-start                   : setup;
-setup                   : setup '{' setupdeclaration '}';
-setupdeclaration        : declaration';' setupdeclaration
-                        | functioncall';' setupdeclaration
+start                   : setup declarations;
+declarations            : declaration declarations;
+setup                   : setup '{' setupDeclaration '}';
+setupDeclaration        : declaration';' setupDeclaration
+                        | functionCall';' setupDeclaration
                         | EPSILON;
-statements              : expressionstatement ';' statements
-                        | returnstatement ';' statements
-                        | ifstatement ';' statements
-                        | forloop ';' statements
-                        | whileloop ';' statements
-                        | switchstatement ';' statements
+statements              : expressionStatement ';' statements
+                        | returnStatement ';' statements
+                        | ifStatement ';' statements
+                        | forLoop ';' statements
+                        | whileLoop ';' statements
+                        | switchStatement ';' statements
                         | EPSILON;
-expressionstatement     : expression;
-returnstatement         : 'return' '(' expression ')';
-ifstatement             : 'if' '(' logicalexpression ')' '{' statements '}' else;
-else                    : 'else' '(' logicalexpression ')' '{' statements '}';
-forloop                 : 'for' '(' variabledeclaration 'in' IDENTIFIER ')' '{' statements '}';
-whileloop               : 'while' '(' logicalexpression ')' '{' statements '}';
-switchstatement         : 'when' '(' IDENTIFIER ')' '{' switchcase '+' else '}';
-switchcase              : expression '=>' '{' statements '}';
-expressionlist          : expression '(' ',' expression ')'*;
-expression              : arithmeticexpression
-                        | relationexpression
-                        | logicalexpression;
-arithmeticexpression    : atomarithmeticexpression( '*' | '/' ) arithmeticexpression
-                        | atomarithmeticexpression( '+' | '-' ) arithmeticexpression;
-atomarithmeticexpression: NUMBER
-                        | '(' arithmeticexpression ')'
+assignmentStatement     : IDENTIFIER '=' expression;
+expressionStatement     : expression;
+returnStatement         : 'return' '(' expression ')';
+ifStatement             : 'if' '(' logicalExpression ')' '{' statements '}' else;
+else                    : 'else' '(' logicalExpression ')' '{' statements '}';
+forLoop                 : 'for' '(' parameterDeclaration 'in' IDENTIFIER ')' '{' statements '}';
+whileLoop               : 'while' '(' logicalExpression ')' '{' statements '}';
+switchStatement         : 'when' '(' IDENTIFIER ')' '{' switchCase '+' else '}';
+switchCase              : expression '=>' '{' statements '}';
+expressionList          : expression '(' ',' expression ')'*;
+expression              : arithmeticExpression
+                        | relationExpression
+                        | logicalExpression;
+arithmeticExpression    : atomArithmeticExpression( '*' | '/' ) arithmeticExpression
+                        | atomArithmeticExpression( '+' | '-' ) arithmeticExpression;
+atomArithmeticExpression: NUMBER
+                        | '(' arithmeticExpression ')'
                         | IDENTIFIER;
-relationexpression      : arithmeticexpression ( '<' | '>' | '==' ) arithmeticexpression;
-logicalexpression       : relationexpression ( 'or' | 'and' ) relationexpression;
-declaration             : functiondeclaration
-                        | variabledeclaration;
-functiondeclaration     : typeof IDENTIFIER '(' variabledeclarationlist ')' '{' statements '}';
-typeof                  : TYPE '(' TYPEOPERATOR ')'*
-variabledeclarationlist : variabledeclaration '(' ',' variabledeclaration')'*;
-variabledeclaration     : typeof IDENTIFIER '=' expression;
-functioncall            : IDENTIFIER '(' expressionlist ')';
+relationExpression      : arithmeticExpression ( '<' | '>' | '==' ) arithmeticExpression;
+logicalExpression       : relationExpression ( 'or' | 'and' ) relationExpression;
+declaration             : functionDeclaration
+                        | variableDeclaration;
+variableDeclaration     : typeOf IDENTIFIER '=' expression ';'
+functionDeclaration     : typeOf IDENTIFIER '(' parameterDeclarationlist ')' '{' statements '}';
+typeOf                  : TYPE '(' TYPEOPERATOR ')'*
+parameterDeclarationlist: parameterDeclaration ( ',' parameterDeclaration)*;
+parameterDeclaration    : typeOf IDENTIFIER '=' expression;
+functionCall            : IDENTIFIER '(' expressionList ')';
 
 
 
