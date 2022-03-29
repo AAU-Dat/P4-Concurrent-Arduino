@@ -1,20 +1,24 @@
 grammar arc;
 
+// We have to fix ; under statement in case of single statement
+
 // Parser grammar
 start                   : setup declarations;
 declarations            : declaration declarations;
-setup                   : setup '{' setupDeclaration '}';
+setup                   : setup '{' setupDeclaration '}'
+                        | /*EPSILON*/;
 setupDeclaration        : declaration';' setupDeclaration
                         | functionCall';' setupDeclaration
-                        | EPSILON;
+                        | /*EPSILON*/;
 statements              : expressionStatement ';' statements
                         | returnStatement ';' statements
                         | ifStatement ';' statements
                         | forLoop ';' statements
                         | whileLoop ';' statements
                         | switchStatement ';' statements
-                        | EPSILON;
-assignmentStatement     : IDENTIFIER '=' expression;
+                        | variableDeclaration statements
+                        | /*EPSILON*/;
+assignmentStatement     : typeOf IDENTIFIER '=' expression;
 expressionStatement     : expression;
 returnStatement         : 'return' '(' expression ')';
 ifStatement             : 'if' '(' logicalExpression ')' '{' statements '}' else;
@@ -32,13 +36,14 @@ arithmeticExpression    : atomArithmeticExpression( '*' | '/' ) arithmeticExpres
 atomArithmeticExpression: NUMBER
                         | '(' arithmeticExpression ')'
                         | IDENTIFIER;
-relationExpression      : arithmeticExpression ( '<' | '>' | '==' ) arithmeticExpression;
-logicalExpression       : relationExpression ( 'or' | 'and' ) relationExpression;
+logicalExpression       : relationExpression
+                        | relationExpression ( 'or' | 'and' ) relationExpression;
+relationExpression      : arithmeticExpression RELATIONOPERATORS arithmeticExpression;
 declaration             : functionDeclaration
                         | variableDeclaration;
-variableDeclaration     : typeOf IDENTIFIER '=' expression ';'
+variableDeclaration     : typeOf IDENTIFIER '=' expression ';';
 functionDeclaration     : typeOf IDENTIFIER '(' parameterDeclarationlist ')' '{' statements '}';
-typeOf                  : TYPE '(' TYPEOPERATOR ')'*
+typeOf                  : TYPE ( TYPEOPERATOR )*;
 parameterDeclarationlist: parameterDeclaration ( ',' parameterDeclaration)*;
 parameterDeclaration    : typeOf IDENTIFIER '=' expression;
 functionCall            : IDENTIFIER '(' expressionList ')';
@@ -49,30 +54,29 @@ functionCall            : IDENTIFIER '(' expressionList ')';
 
 // Lexical grammar
 WS                      : [ \t\n\r]+ -> skip; // Ingore WS, taps, newline and return
-EPSILON                 : '';
-NUMBER                  : '-'? (DIGIT)+('.'DIGIT+)?;
-DIGIT                   : [0-9]*;
+NUMBER                  : '-'? DIGIT+ ('.'DIGIT+)?;
+DIGIT                   : [0-9];
 ALPHA                   : [a-z] | [A-Z] | '_';
-IDENTIFIER              : ALPHA(DIGIT | ALPHA)*;
 TYPEOPERATOR            : (' [] ');
-TYPE                    : num
-                        | text
-                        | bool;
+TYPE                    : 'num'
+                        | 'text'
+                        | 'bool';
+IDENTIFIER              : ALPHA(DIGIT | ALPHA)*;
 COMMENTS                : '//' .*? '\n' -> skip;
 LINECOMMENTS            : '/*' .*? '*/' -> skip;
-KEYWORDS                : return
-                        | while
-                        | it
-                        | for
-                        | in
-                        | when
-                        | void
-                        | arduino
-                        | setup
-                        | true
-                        | false
-                        | else
-                        | define;
+KEYWORDS                : 'return'
+                        | 'while'
+                        | 'it'
+                        | 'for'
+                        | 'in'
+                        | 'when'
+                        | 'void'
+                        | 'arduino'
+                        | 'setup'
+                        | 'true'
+                        | 'false'
+                        | 'else'
+                        | 'define';
 OPERATORS               : '+'
                         | '-'
                         | '*'
