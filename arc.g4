@@ -18,6 +18,7 @@ statements              : expressionStatement ';' statements
                         | switchStatement ';' statements
                         | variableDeclaration statements
                         | /*EPSILON*/;
+
 assignmentStatement     : typeOf IDENTIFIER '=' expression;
 expressionStatement     : expression;
 returnStatement         : 'return' '(' expression ')';
@@ -31,13 +32,19 @@ expressionList          : expression '(' ',' expression ')'*;
 expression              : arithmeticExpression
                         | relationExpression
                         | logicalExpression;
+                        // ConditionalExpression
 arithmeticExpression    : atomArithmeticExpression( '*' | '/' ) arithmeticExpression
-                        | atomArithmeticExpression( '+' | '-' ) arithmeticExpression;
+                        | atomArithmeticExpression( '+' | '-' ) arithmeticExpression
+                        | atomArithmeticExpression
+                        ;
 atomArithmeticExpression: NUMBER
                         | '(' arithmeticExpression ')'
-                        | IDENTIFIER;
+                        | IDENTIFIER
+                        | functionCall
+                        ;
 logicalExpression       : relationExpression
-                        | relationExpression ( 'or' | 'and' ) relationExpression;
+                        | logicalExpression LOGICALOPERATION logicalExpression
+                        | BOOL;
 relationExpression      : arithmeticExpression RELATIONOPERATORS arithmeticExpression;
 declaration             : functionDeclaration
                         | variableDeclaration;
@@ -57,11 +64,11 @@ WS                      : [ \t\n\r]+ -> skip; // Ingore WS, taps, newline and re
 NUMBER                  : '-'? DIGIT+ ('.'DIGIT+)?;
 DIGIT                   : [0-9];
 ALPHA                   : [a-z] | [A-Z] | '_';
+BOOL                    : 'true' | 'false';
 TYPEOPERATOR            : (' [] ');
 TYPE                    : 'num'
                         | 'text'
                         | 'bool';
-IDENTIFIER              : ALPHA(DIGIT | ALPHA)*;
 COMMENTS                : '//' .*? '\n' -> skip;
 LINECOMMENTS            : '/*' .*? '*/' -> skip;
 KEYWORDS                : 'return'
@@ -73,21 +80,22 @@ KEYWORDS                : 'return'
                         | 'void'
                         | 'arduino'
                         | 'setup'
-                        | 'true'
-                        | 'false'
+                        // | 'true'
+                        // | 'false'
                         | 'else'
                         | 'define';
 OPERATORS               : '+'
                         | '-'
                         | '*'
                         | '/';
-LOGICALOPERATION        : 'and'
-                        | 'or'
-                        | 'not'
-                        | 'xor';
 RELATIONOPERATORS       : '<'
                         | '>'
                         | '=='
                         | '!='
                         | '<='
                         | '>=';
+LOGICALOPERATION        : 'and'
+                        | 'or'
+                        | 'not'
+                        | 'xor';
+IDENTIFIER              : ALPHA(DIGIT | ALPHA)*;
