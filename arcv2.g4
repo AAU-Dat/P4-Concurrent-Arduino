@@ -41,8 +41,8 @@ expression              : (NUMBER | IDENTIFIER | BOOL)
                         | (functionCall | IDENTIFIER '[' NUMBER ']')
                         | '(' expression ')'
                         | 'not' expression
-                        | expression ('*' | '/') expression
-                        | expression ('+' | '-') expression
+                        | expression (MULTI | DIVI) expression
+                        | expression (PLUS | MINUS) expression
                         | expression RELATIONEQOPERATORS expression
                         | expression RELATIONOPERATORS expression
                         | expression 'and' expression
@@ -53,13 +53,11 @@ functionCall            : IDENTIFIER '(' expression (',' expression)* ')';
 declaration             : functionDeclaration
                         | variableDeclaration;
 
-functionDeclaration     : typeOf IDENTIFIER '(' parameterDeclarationlist? ')' '{' statements '}';
+functionDeclaration     : typeOf IDENTIFIER '(' (parameterDeclaration ( ',' parameterDeclaration)*)? ')' '{' statements '}';
 
 variableDeclaration     : typeOf IDENTIFIER '=' ('[' (expression (',' expression)*)? ']' | expression) ';';
 
-typeOf                  : TYPE ( TYPEOPERATOR )*; // Create Lexical rule
-
-parameterDeclarationlist: parameterDeclaration ( ',' parameterDeclaration)*; // Move into 56 maybe
+typeOf                  : TYPE_TYPEOPERATOR;
 
 parameterDeclaration    : typeOf IDENTIFIER;
 
@@ -74,29 +72,30 @@ fragment DIGIT          : [0-9];
 
 BOOL                    : 'true' | 'false';
 
-TYPEOPERATOR            : '[' ']';
+TYPE_TYPEOPERATOR       : TYPE ( TYPEOPERATOR)*; // Name should maybe be rewritten
 
-TYPE                    : 'num'   // There should be an char
+fragment TYPEOPERATOR   : '[' ']';
+
+fragment TYPE           : 'num'
                         | 'text'
-                        | 'bool';
+                        | 'bool'
+                        | 'char';
 
 COMMENTS                : '//' .*? '\n' -> skip;
 
 LINECOMMENTS            : '/*' .*? '*/' -> skip;
 
-KEYWORDS                : 'return' // Everything needs to have individuel names
-                        | 'while'
-                        | 'it'
-                        | 'for'
-                        | 'in'
-                        | 'when'
-                        | 'void'
-                        | 'arduino'
-                        | 'setup'
-                        // | 'true'
-                        // | 'false'
-                        | 'else'
-                        | 'define';
+RETURN                  : 'return';
+WHILE                   : 'while';
+IT                      : 'it';
+FOR                     : 'for';
+IN                      : 'in';
+WHEN                    : 'when';
+VOID                    : 'void';
+ARDUINO                 : 'arduino';
+SETUP                   : 'setup';
+ELSE                    : 'else';
+DEFINE                  : 'define';
 
 MULTI                   : '*';
 DIVI                    : '/';
@@ -121,4 +120,4 @@ IDENTIFIER              : ALPHA(DIGIT | ALPHA)*;
 ASSIGNMENT              : '=';
 SEPERATOR               : ',';
 
-fragment ALPHA          : [a-z] | [A-Z] | '_'; // Make ALPHA into a fragment
+fragment ALPHA          : [a-z] | [A-Z] | '_';
