@@ -46,7 +46,6 @@ expressionList          : expression '(' ',' expression ')'*;
 expression              : arithmeticExpression
                         | relationExpression
                         | logicalExpression;
-                        // ConditionalExpression
 
 arithmeticExpression    : atomArithmeticExpression( '*' | '/' ) arithmeticExpression
                         | atomArithmeticExpression( '+' | '-' ) arithmeticExpression
