@@ -23,7 +23,7 @@ statements              : expressionStatement ';' statements
                         | variableDeclaration statements
                         | /*EPSILON*/;
 
-assignmentStatement     : typeOf IDENTIFIER '=' expression;
+assignmentStatement     : IDENTIFIER '=' expression;
 
 expressionStatement     : expression;
 
