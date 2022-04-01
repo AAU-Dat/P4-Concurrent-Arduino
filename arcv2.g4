@@ -3,9 +3,9 @@ grammar arcv2;
 // Parser grammar
 start                   : setup declarations;
 
-declarations            : declaration declarations;
+declarations            : declaration*;
 
-setup                   : setup '{' setupDeclaration '}'
+setup                   : 'setup' '{' setupDeclaration '}'
                         | /*EPSILON*/;
 
 setupDeclaration        : declaration';' setupDeclaration
@@ -16,14 +16,14 @@ statements              : returnStatement statements
                         | ifStatement statements
                         | forLoop statements
                         | whileLoop statements
-                        | switchStatement statements
+                        | whenStatement statements
                         | variableDeclaration statements
                         | assignmentStatement
                         | /*EPSILON*/;
 
 assignmentStatement     : IDENTIFIER ('[' NUMBER ']')? '=' ('[' (expression (',' expression)*)? ']' | expression) ';';
 
-returnStatement         : 'return' expression;
+returnStatement         : 'return' expression ';';
 
 ifStatement             : 'if' '(' expression ')' '{' statements '}' else?;
 
@@ -33,9 +33,9 @@ forLoop                 : 'for' '(' parameterDeclaration 'in' IDENTIFIER ')' '{'
 
 whileLoop               : 'while' '(' expression ')' '{' statements '}';
 
-switchStatement         : 'when' '(' IDENTIFIER ')' '{' switchCase+ else '}';
+whenStatement         : 'when' '(' IDENTIFIER ')' '{' whenCase+ else '}';
 
-switchCase              : expression '=>' '{' statements '}';
+whenCase              : expression '=>' '{' statements '}';
 
 expression              : (NUMBER | IDENTIFIER | BOOL)
                         | (functionCall | IDENTIFIER '[' NUMBER ']')
@@ -53,40 +53,15 @@ functionCall            : IDENTIFIER '(' expression (',' expression)* ')';
 declaration             : functionDeclaration
                         | variableDeclaration;
 
-functionDeclaration     : typeOf IDENTIFIER '(' parameterDeclarationlist ')' '{' statements '}';
+functionDeclaration     : typeOf IDENTIFIER '(' parameterDeclarationlist? ')' '{' statements '}';
 
 variableDeclaration     : typeOf IDENTIFIER '=' ('[' (expression (',' expression)*)? ']' | expression) ';';
 
-typeOf                  : TYPE ( TYPEOPERATOR )*;
+typeOf                  : TYPE ( TYPEOPERATOR )*; // Create Lexical rule
 
-parameterDeclarationlist: parameterDeclaration ( ',' parameterDeclaration)*;
+parameterDeclarationlist: parameterDeclaration ( ',' parameterDeclaration)*; // Move into 56 maybe
 
 parameterDeclaration    : typeOf IDENTIFIER;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -101,7 +76,7 @@ BOOL                    : 'true' | 'false';
 
 TYPEOPERATOR            : '[' ']';
 
-TYPE                    : 'num'
+TYPE                    : 'num'   // There should be an char
                         | 'text'
                         | 'bool';
 
@@ -109,7 +84,7 @@ COMMENTS                : '//' .*? '\n' -> skip;
 
 LINECOMMENTS            : '/*' .*? '*/' -> skip;
 
-KEYWORDS                : 'return'
+KEYWORDS                : 'return' // Everything needs to have individuel names
                         | 'while'
                         | 'it'
                         | 'for'
