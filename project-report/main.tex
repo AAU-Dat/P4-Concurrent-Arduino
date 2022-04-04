@@ -18,6 +18,9 @@
 \input{setup/hyphenations.tex}% 
 \input{setup/macros.tex}% my new macros
 
+\makeglossaries% import glossaries
+\loadglsentries{setup/acronyms.tex}
+
 \begin{document}
 %frontmatter
 \pagestyle{empty} %disable headers and footers
@@ -26,6 +29,7 @@
 \input{sections/colophon.tex}
 \input{sections/titlepages.tex}
 \cleardoublepage
+
 
 \pdfbookmark[0]{Contents}{label:contents}
 \pagestyle{fancy} %enable headers and footers again
@@ -37,12 +41,15 @@
 \input{sections/preface.tex}
 \cleardoublepage
 
+
 %mainmatter
 \pagenumbering{arabic} %use arabic page numbering in the mainmatter
 
 \input{chapters/01 introduction/01 Introduction}
 \input{chapters/02 problem analysis/02 problem analysis}
 \input{chapters/03 language design/03 language design}
+ 
+\printglossaries
 
 \printbibliography[heading=bibintoc]
 \label{bib:mybiblio}
