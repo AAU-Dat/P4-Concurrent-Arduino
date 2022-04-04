@@ -1,0 +1,50 @@
+\chapter{Problem analysis}\label{cha:problemanalysis}
+Input your files here
+
+Arduino har ikke concurrency. Folk er dårlige til at skrive Arduino kode, specielt concurrent-lignende-kode.
+
+\begin{enumerate}
+    \item Arduino
+        \item Arduino bruger hobbyister
+        \item hobbyister problemer med at skrive god kode til Arduino
+    \item concurrency
+        \item concurrency på Arduino architectur single core
+        \item concurrency problemer for hobbyister at skrive det godt på Arduino
+    \item hvordan kan vi løse concurrency og dårlig programmering igennem et programmerings sprog.
+        \item Hvordan får man concurrency? -> OS/scheduling
+            \item hvilke muligheder for scheduling findes på Arduino? Hvilke OS.
+            \item (hvilken os eller library vil vi bruge til concurrency)
+        \item hvad er fordele og ulemper ved de forskellige concurrency mekanisker i forhold til sprog design?
+        \item hvordan måler vi kvaliteten af vores sprog, og hvilke parametre er relevante i vores situation.
+\end{enumerate}
+
+har potentiale:
+\begin{itemize}
+    \item (compiler transpiler)
+    
+    \item vil vi lave et survey/spørgeskema/test? Nok ikke.
+    
+    \item Hvilke værktøjer skal vi bruge?
+    
+    \item komplet concurrency vs subset af concurrency
+    \item generelt begrænsning på hvad sproget skal bruges til.
+    \item Should we use a parser generator, and which ones are available?
+
+\end{itemize}
+
+
+
+\input{chapters/02 problem analysis/what is arduino}
+\input{chapters/02 problem analysis/who uses arduino}
+\input{chapters/02 problem analysis/concurrency}
+\input{chapters/02 problem analysis/What is the problem}
+\input{chapters/02 problem analysis/evaluation criteria}
+\input{chapters/02 problem analysis/how to achieve concurrency in arduino}
+
+%\input{chapters/02 problem analysis/compiler vs transpiler}
+
+%\input{chapters/02 problem analysis/c++}
+%\input{chapters/02 problem analysis/realtime systems}
+
+%%% Ikke nogen inputs efter det her.
+\input{chapters/02 problem analysis/problem statement}

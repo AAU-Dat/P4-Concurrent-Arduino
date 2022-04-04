@@ -1,0 +1,81 @@
+\section{Language evaluation criteria}\label{sec:languageeval}\feedback{This section is more appropriate to the chapter on Language design}
+
+There is no common consensus on objectively evaluating a language. The measurement of compilation speed, execution speed, and file size speak to the efficiency of the \textit{implementation} of the language, not the \textit{design} of the language. Popularity could be measured, but would vary greatly with time, and contain several skews from bias,  as well as popularity not necessarily meaning it is better, which would have to be considered as well.
+
+As such, a set of prioritized language evaluation criteria has been determined based on the criteria presented in \cite{Sebesta2016}. An objective evaluation of the language based on these criteria is not practically possible \cite{Sebesta2016}, however, the criteria may work well when making decisions during language design, implementation, and evaluation. The most relevant concerns in regard to the choice of relevant criteria are presented in this section.
+
+The primary concern is with the users of the programming language; writers of Arduino programs, in this case, the Arduino hobbyist, as described earlier. The programming of an Arduino project may be secondary to hobbyists, who prioritize the hardware aspects of their project.
+
+The secondary concern is the concurrency issue that follows from the primary concern - making an Arduino behave concurrently is not a trivial programming task. There are several variations on the theme of simulating concurrency, but each with different issues, and none solve the issue in a general way \cite{Restucia2022}.
+
+The tertiary and last concern follows from the secondary issue - determining how to use concurrency to solve the problem in an Arduino. Concurrency problems can be subtle and complex, so understanding that you are even dealing with a concurrency issue may not be immediately apparent, and thus a simple solution may be hard to spot.
+
+\subsection{Priority of criteria characteristics}
+\citetitle{Sebesta2016} lists four criteria: readability, writability, reliability, and cost. These criteria are each affected by several characteristics, with varying influence and importance \cite{Sebesta2016}.
+
+\question{Description or subsections?}
+
+\begin{description}
+\item[Readability] 
+\item[Writability] 
+\item[Reliability] 
+\item[Cost] 
+\end{description}
+
+\subsubsection{Readability}
+
+
+\subsubsection{Writability}
+
+
+\subsubsection{Reliability}
+
+
+\subsubsection{Cost}
+
+
+\feedback{Maybe briefly mention the criteria in full. Not detailed or copied, but mentions.}
+
+With these considerations in mind, we have prioritized and selected the characteristics for each criterion as we expect them to matter in this context.
+
+The primary concern deals primarily with a subset of considerations related to the cost criterion. Specifically, the cost associated with learning and understanding the programming language is important. This suggests that general simplicity, in the form of few but expressive language constructs as well as clear, consistent combination and application of the constructs is important.
+
+Expressivity and syntax design are also important characteristics, as seen from the secondary and tertiary concerns. The language should express new constructs that are not available in the Arduino language in a concise manner. An aim of the syntax could be to describe concurrent programs simply.
+
+The number of data types is probably a somewhat important characteristic. As long as the expressivity of the language is not greatly affected, the number of data types is reduced \feedback{What does it mean to reduce data types. Perhaps explain it as generalizing data types with an example.} compared to the Arduino language is likely to have a positive effect on overall simplicity and writability. On the other hand, good support for abstraction, that is, user-defined types, may enable advanced users to have the freedom of many primitive types, without significantly impacting the overall simplicity of the language. \feedback{Abstraction should be explained properly as from the perspective of the type system.}
+
+It is important to consider the language paradigm as well, as this has a large effect on the type checking mechanisms commonly used, not to mention the syntax design. It is a determinant factor in the description of mutability versus immutability, state versus statelessness, aliasing, and pointer management.
+
+By default, Arduino does not use exceptions and exception handling as per the C++ language. The common solution for Arduino code writers is to write code that handles the possible exceptions that may occur without the language construct. For the sake of footprint, this will also be the preferred solution for this project.
+
+
+\begin{table}[htb]
+\centering
+\begin{tabular}{l>
+{\centering}p{2cm}>
+{\centering}p{2cm}>
+{\centering}p{2cm}>
+{\centering\arraybackslash}p{2cm}}
+\toprule
+\textbf{Characteristics}    & 
+\textbf{Very important}     & 
+\textbf{Important}          & 
+\textbf{Somewhat important} &
+\textbf{Not important}      \\ \midrule
+Simplicity              &   & X &   &   \\
+Orthogonality           &   & X &   &   \\
+Data types              &   &   & X &   \\
+Syntax design           &   & X &   &   \\
+Support for abstraction &   &   & X &   \\
+Expressivity            &   & X &   &   \\
+Type checking           &   & X &   &   \\
+Exception handling      &   &   &   & X \\
+Restricted aliasing     & X &   &   &   \\
+\bottomrule
+\end{tabular}
+\caption{Summary of priorities. Characteristics not mentioned are of low or no priority.}
+\label{tab:priorityofcharacteristics}
+\end{table}
+
+
+It is worth noting that the Arduino programming language has already addressed several of the above concerns when compared to C++ for the platform. Examples of this can be seen in the introduction of new constants and a reduction in some language capabilities, such as exceptions and try-catch blocks from C++. The Arduino IDE is another point to consider in favor of cost concerns for the Arduino platform.
