@@ -30,7 +30,7 @@ When using local variables inside a Protothread, the local variables are not pre
 
 Lastly, it is important that the code inside a Protothread needs to be "fast", meaning that the programmer can not use any blocking function such as the delay() function because this would block the other functions to run. \cite{AdamDunkelProtothreads}
 
-In relation to what protothreads are, there has been taken an example of a simple and small program to show what Protothreading can be used to which can be seen at Figure \ref{List: Code exsample of how to implement Protothread} \cite{ArduinoProtothreadsTutorial2019}.
+In relation to what protothreads are, there has been taken an example of a simple and small program to show what Protothreading can be used to which can be seen at Figure \todo{Insert figure reference} \cite{ArduinoProtothreadsTutorial2019}.
 
 \begin{listing}[htb!]
 \centering
@@ -40,12 +40,9 @@ In relation to what protothreads are, there has been taken an example of a simpl
 const int buttonPin = 12;     // the number of the pushbutton pin
 const int ledPin =  8;      // the number of the LED pin
 int buttonState = 0;         // variable for reading the pushbutton status
-
-
 pt ptBlink;
 int blinkThread(struct pt* pt) {
   PT_BEGIN(pt);
-
   for(;;) {
     digitalWrite(ledPin, HIGH);   // turn the LED on (HIGH is the voltage level)
     PT_SLEEP(pt, 500);
@@ -58,12 +55,11 @@ int blinkThread(struct pt* pt) {
 pt ptButton;
 int buttonThread(struct pt* pt) {
   PT_BEGIN(pt);
-
   for(;;) {
     int sensorValue = digitalRead(buttonPin);
     Serial.println(sensorValue);
     PT_SLEEP(pt, 1);
-  PT_YIELD(pt);
+    PT_YIELD(pt);
   }
   PT_END(pt);
 }
@@ -108,30 +104,28 @@ To give a better understanding of how the Eventually C++ library is working, in 
 \begin{listing}
 \begin{minted}{arduino}
 #include <Eventually.h>
-
 #define LIGHT_PIN 8
 #define BUTTON_PIN 12
+
 bool pinState = true;
-
-
 EvtManager mgr;
-bool blinker(){
+bool blinker() {
   mgr.resetContext();
-  mgr.addListener(new EvtTimeListener(1000, true, (EvtAction)blink_pin)); //Event for LED til blink
-  mgr.addListener(new EvtPinListener(BUTTON_PIN, (EvtAction)digital_read)); //Event for button input
+  mgr.addListener(new EvtTimeListener(1000, true, (EvtAction)blink_pin)); 
+  mgr.addListener(new EvtPinListener(BUTTON_PIN, (EvtAction)digital_read));
 }
 
-void blink_pin(){
-  if (pinState == true){
-     digitalWrite(LIGHT_PIN, HIGH);   // turn the LED on (HIGH is the voltage level)
+void blink_pin() {
+  if (pinState == true) {
+     digitalWrite(LIGHT_PIN, HIGH);
   }
-  else{
-    digitalWrite(LIGHT_PIN, LOW);    // turn the LED off by making the voltage LOW
+  else {
+    digitalWrite(LIGHT_PIN, LOW);
   }
   pinState = !pinState;
 }
 
-void digital_read(){
+void digital_read() {
     int sensorVal = digitalRead(BUTTON_PIN);
     Serial.println(sensorVal);
     delay(1);
@@ -141,13 +135,12 @@ void setup() {
   Serial.begin(9600);
   pinMode(LIGHT_PIN, OUTPUT);
   pinMode(BUTTON_PIN, INPUT);
-  
   blinker();
 }
 
 USE_EVENTUALLY_LOOP(mgr)
 \end{minted}
-\caption{A small program on how a Eventually can be implemented}
+\caption{A small program on how Eventually can be implemented}
 \label{List: Eventually example}
 \end{listing}
 
@@ -189,60 +182,35 @@ void TaskAnalogRead( void *pvParameters );
 
 void setup() {
   Serial.begin(9600);
-  
-  while (!Serial) {
-    ;
-  }
-  
-  xTaskCreate(
-    TaskBlink
-    ,  "Blink"   // A name just for humans
-    ,  128  // This stack size can be checked & adjusted by reading the Stack Highwater
-    ,  NULL
-    ,  2  // Priority, with 3 (configMAX_PRIORITIES - 1) being the highest, and 0 being the lowest.
-    ,  NULL );
-
-  xTaskCreate(
-    TaskAnalogRead
-    ,  "AnalogRead"
-    ,  128  // Stack size
-    ,  NULL
-    ,  1  // Priority
-    ,  NULL );
+  while (!Serial) {;}
+  xTaskCreate(TaskBlink, "Blink", 128, NULL, 2, NULL);
+  xTaskCreate(TaskAnalogRead, "AnalogRead", 128, NULL, 1, NULL);
 }
 
-void loop()
-{
-}
+void loop(){}
 
-void TaskBlink(void *pvParameters)  // This is a task.
-{
+void TaskBlink(void *pvParameters){ // This is a task.
   (void) pvParameters;
-
   pinMode(LED_BUILTIN, OUTPUT);
-
-  for (;;) // A Task shall never return or exit.
-  {
-    digitalWrite(LED_BUILTIN, HIGH);   // turn the LED on (HIGH is the voltage level)
-    vTaskDelay( 1000 / portTICK_PERIOD_MS ); // wait for one second
-    digitalWrite(LED_BUILTIN, LOW);    // turn the LED off by making the voltage LOW
-    vTaskDelay( 1000 / portTICK_PERIOD_MS ); // wait for one second
+  for (;;) { // A Task shall never return or exit.
+    digitalWrite(LED_BUILTIN, HIGH);
+    vTaskDelay( 1000 / portTICK_PERIOD_MS );
+    digitalWrite(LED_BUILTIN, LOW);
+    vTaskDelay( 1000 / portTICK_PERIOD_MS );
   }
 }
 
-void TaskAnalogRead(void *pvParameters)  // This is a task.
-{
+void TaskAnalogRead(void *pvParameters){ // This is a task.
   (void) pvParameters;
-  for (;;)
-  {
-    int sensorValue = digitalRead(12); // read the input on analog pin 0:
-    Serial.println(sensorValue); // print out the value you read:
-    vTaskDelay(1);  // one tick delay (15ms) in between reads for stability
+  for (;;) {
+    int sensorValue = digitalRead(12);
+    Serial.println(sensorValue);
+    vTaskDelay(1);
   }
 }
 \end{minted}
 \caption{A small example of a possible implementation of Free RTOS.}
-\label{List: FreeRTOS Example}
+\label{List:freeftosexample}
 \end{listing}
 
 %and Preemptive concurrency forms \cite{UsingFreeRTOSMultitasking}, the preemptive concurrency form is priority-based, like the cooperative concurrency form the preemptive concurrency form has to prioritise the tasks in the program, but a task has to be completed in the time period which the scheduler has given task, it then switches to another task and if the first task was not completed it switches back \cite{Windows}.
