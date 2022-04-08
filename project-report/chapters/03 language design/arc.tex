@@ -1,47 +1,47 @@
 \section{Parser generator v.2 arc}\label{sec:parsergeneratorarc}
-
 Parser grammar
 \begin{align*}
-    start                   & \to \text{setup declarations}                                                                                     \\
-    declarations            & \to \text{declaration declarations}                                                                               \\
-    setup                   & \to \text{setup '\{' setupDeclaration '\{'}                                                                       \\
-                            & \mid \epsilon                                                                                                     \\
-    setupDeclaration        & \to \text{declaration ';' setupDeclaration}                                                                       \\
-                            & \mid \text{functionCall ';' setupDeclaration}                                                                     \\
-                            & \mid \epsilon                                                                                                     \\
-    statements              & \mid \text{returnStatement statements}                                                                            \\
-                            & \mid \text{ifStatement statements}                                                                                \\
-                            & \mid \text{forLoop statements}                                                                                    \\
-                            & \mid \text{whileLoop statements}                                                                                  \\
-                            & \mid \text{whenStatement statements}                                                                              \\
-                            & \mid \text{variableDeclaration statements}                                                                        \\
-                            & \mid \text{assigmentStatement}                                                                                    \\
-                            & \mid \epsilon                                                                                                     \\
-    assignmentStatement     & \to \text{IDENTIFIER ('[' NUMBER ']')? '=' ('[' (expression (',' expression)*)? ']'} \mid  \text{expression) ';'} \\
-    returnStatement         & \to \text{'return' expression}                                                                                    \\
-    ifStatement             & \to \text{'if' '(' logicalExpression ')' '{' statements '}' else}                                                 \\
-    else                    & \to \text{'else' '\{' statements '\}'}                                                                            \\
-    forLoop                 & \to \text{'for' '(' parameterDeclaration 'in' IDENTIFIER ')' '\{' statements '\}'}                                \\
-    whileLoop               & \to \text{'while' '(' expression ')' '\{' statements '\}'}                                                        \\
-    whenStatement           & \to \text{'when' '(' IDENTIFIER ')' '\{' whenCase+ else '\}'}                                                     \\
-    whenCase                & \to \text{expression '=>' '\{' statements '\}'}                                                                   \\
-    expression              & \to \text{(NUMBER} \mid \text{IDENTIFIER} \mid \text{BOOL)}                                                       \\
-                            & \mid \text{(functionCall} \mid \text{IDENTIFIER '[' NUMBER ']')}                                                  \\
-                            & \mid \text{'(' expression ')'}                                                                                    \\
-                            & \mid \text{'not' expression}                                                                                      \\
-                            & \mid \text{expression (MULTI} \mid \text{DIVI) expression}                                                        \\
-                            & \mid \text{expression (PLUS} \mid \text{MINUS) expression}                                                        \\
-                            & \mid \text{expression RELATIONEQOPERATORS expression}                                                             \\
-                            & \mid \text{expression RELATIONOPERATORS expression}                                                               \\
-                            & \mid \text{expression 'and' expression}                                                                           \\
-                            & \mid \text{expression 'or' expression;}                                                                           \\
-    functionCall            & \to \text{IDENTIFIER '(' expression (',' expression)* ')'}                                                        \\
-    declaration             & \to \text{functionDeclaration}                                                                                    \\
-                            & \mid \text{variableDeclaration}                                                                                   \\
-    functionDeclaration     & \to \text{typeOf IDENTIFIER '(' (parameterDeclaration ( ',' parameterDeclaration)*)? ')' '\{' statements '\}'}    \\
-    variableDeclaration     & \to \text{typeOf IDENTIFIER '=' ('[' (expression (',' expression)*)? ']'} \mid \text{expression) ';'}             \\
-    typeOf                  & \to \text{TYPE\_TYPEOPERATOR}                                                                                  
-    parameterDeclaration    & \to \text{typeOf IDENTIFIER}
+    start                   & \to \text{setup tasks declarations} \\
+    declarations            & \to \text{(declaration)* declarations}\\
+                            & \mid \epsilon \\
+    tasks                   & \to \text{(task)* tasks}\\
+    task                    & \to \text{'task' IDENTIFIER '(' parameterlist ')' 'every ' '(' expression ')' '\{' statements '\}'}       \\%We are not sure how to handle "every" and expression should follow 
+                            & \mid \epsilon \\
+    setup                   & \to \text{'setup' '\{' setupDeclaration '\}'}                                       \\
+    setupDeclarations       & \to \text{setupDeclaration (';' setupDeclarations)*)?}                              \\
+    setupDeclaration        & \to \text{declaration} \mid \text{functionCall}                                     \\
+                            & \mid \text{functionCall ';' setupDeclaration}                                       \\
+                            & \mid \epsilon                                                                       \\
+    statements              & \to \text{'return' expression statements}                                           \\
+                            & \mid \text{'if' '(' expression ')' '\{' statements '\}'}                     \\
+                            & \qquad \text{ ('else' '\{'statements'\}')? statements}                                         \\
+                            & \mid \text{'for' '(' parameterDeclaration 'in' IDENTIFIER ')'}                      \\
+                            & \qquad \text{'\{' statements '\}' statements}                                       \\
+                            & \mid \text{'while' '(' expression ')' '\{' statements '\}' statements}              \\
+                            & \mid \text{'when' '(' IDENTIFIER ')' '\{' (expression '=>'}                         \\
+                            & \qquad \text{'\{' statements '\}')+ else '\}' statements}                           \\
+                            & \mid \text{TYPE\_TYPEOPERATOR IDENTIFIER '='}                                       \\                                      
+                            & \qquad \text{('[' (expression (',' expression)*)? ']' expression) ';' statements}   \\
+                            & \mid \text{IDENTIFIER ('[' NUMBER ']')? '='}                                        \\
+                            & \qquad \text{('[' (expression (',' expression)*)? ']'} \mid  \text{expression) ';'} \\
+                            & \mid \epsilon                                                                       \\
+    expression              & \to \text{(NUMBER} \mid \text{IDENTIFIER} \mid \text{BOOL)}                         \\
+                            & \mid \text{(functionCall} \mid \text{IDENTIFIER '[' NUMBER ']')}                    \\
+                            & \mid \text{'(' expression ')'}                                                      \\
+                            & \mid \text{'not' expression}                                                        \\
+                            & \mid \text{expression (MULTI} \mid \text{DIVI) expression}                          \\
+                            & \mid \text{expression (PLUS} \mid \text{MINUS) expression}                          \\
+                            & \mid \text{expression RELATIONEQOPERATORS expression}                               \\
+                            & \mid \text{expression RELATIONOPERATORS expression}                                 \\
+                            & \mid \text{expression 'and' expression}                                             \\
+                            & \mid \text{expression 'or' expression;}                                             \\
+    functionCall            & \to \text{IDENTIFIER ('(' expression (',' expression)* ')')?}                       \\
+    declaration             & \to \text{TYPE\_TYPEOPERATOR IDENTIFIER '(' (parameterDeclaration}                  \\
+                            & \qquad \text{( ',' parameterDeclaration)*)? ')' '\{' statements '\}'}               \\
+                            & \mid \text{TYPE\_TYPEOPERATOR IDENTIFIER '='}                                       \\
+                            & \qquad \text{('[' (expression (',' expression)*)? ']'} \mid \text{expression) ';'}  \\
+                            & \mid \text{'\#' 'pin' IDENTIFIER '('NUMBER, ('OUTPUT' | 'INPUT' )')'}                   \\ %We are not should about pin decl, maybe a custom NUMBER for pin, no float
+    parameterDeclaration    & \to \text{TYPE\_TYPEOPERATOR IDENTIFIER}
 \end{align*}
 
 Lexical grammar
@@ -50,12 +50,14 @@ Lexical grammar
     NUMBER                  & \to \text{'-'? DIGIT+ ('.'DIGIT+)?}                                                   \\
     fragment DIGIT          & \to \text{[0-9]}                                                                      \\
     BOOL                    & \to \text{'true'} \mid \text{'false'}                                                 \\
-    TYPE_TYPEOPERATOR       & \to \text{TYPE ( TYPEOPERATOR)*}                                                      \\
+    TYPE\_TYPEOPERATOR       & \to \text{TYPE ( TYPEOPERATOR)*}                                                     \\
     fragment TYPEOPERATOR   & \to \text{'[' ']'}                                                                    \\
     fragment TYPE           & \to \text{'num'}                                                                      \\
                             & \mid \text{'text'}                                                                    \\
                             & \mid \text{'bool'}                                                                    \\
                             & \mid \text{'char'}                                                                    \\
+                            & \mid \text{'time'}                                                                    \\
+                            & \mid \text{'pin'}                                                                    \\
     COMMENTS                & \to \text{'//' .*? '} \backslash \text{n' -> skip}                                    \\
     LINECOMMENTS            & \to \text{'/*' .*? '*/' -> skip}                                                      \\
     RETURN                  & \to \text{'return'}                                                                   \\
@@ -69,6 +71,8 @@ Lexical grammar
     SETUP                   & \to \text{'setup'}                                                                    \\
     ELSE                    & \to \text{'else'}                                                                     \\
     DEFINE                  & \to \text{'define'}                                                                   \\
+    EVERY                   & \to \text{'every'}                                                                   \\
+    TASK                    & \to \text{'task'}                                                                   \\
     MULTI                   & \to \text{'*'}                                                                        \\
     DIVI                    & \to \text{'/'}                                                                        \\
     PLUS                    & \to \text{'+'}                                                                        \\

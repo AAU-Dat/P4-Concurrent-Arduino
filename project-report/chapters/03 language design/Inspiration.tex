@@ -6,8 +6,20 @@ When designing a programming language it is a good idea to look at other program
 \subsection{Types}
 %indsæt den del af grammeren der er af types her
 The types in the language are num, text and bool. A value of the type num is a correct input as long it is a real number. Bool is like the bool in other languages, as it can only be true or false. The type text is an array of characters made by using quotation marks (\") from the start to end of the input. An num array can be made by using squire brackets (\[\]) in front of the type num, how ever an num array can only accept real numbers.
-
+ 
 \subsection{Control Structures}
-There are ... types of control structures if-,else-,when-statement, while- and for loop. 
+As mentioned, there has been taken inspiration from languages such as C, C\#, Python, JavaScript and others. Since many languages use common control structures in a similar way, we have decided to do the same.
 
-A while loop is made by an expression, which evaluates to true or false, as long as the expression is true the while loop executes the statements within the scope, made by curly brackets (\{\}).
+%If statements
+The conditional structure 'if' statement, has the terminal if, with a non-terminal expression, in parentheses, followed by non-terminal statements contained in brackets.After the if statement, there is the option to use an else statement, which follows the same structure, but without the expression.
+
+The non-terminal expression, can become many different variants, and how these expressions are evaluated, will be handled in type checking. If the value is true, the conditional structure will execute the statements contained in the brackets, if not, and an else condition is made after the brackets, a jump will occur to the else condition.
+The non-terminal statements in the brackets of the if and else conditional structures can, as an expression, become many different variants. The statements, are where function calls and additional control structures are made.
+Followed by additional statements, so that more statements can be made.
+This structure is the simmilar to languages that have been used as inpiration, languages such as C, JavaScript and others, create the conditional structure in the same way.
+
+%For loop
+The iteration structire 'for' loop, has the terminal for, with a non-terminal paramaterDeclaration, a terminal 'in' and a non-terminal IDENTIFIER, if paratheses. After this, there are non-terminal statements in brackets, followed by additional statements.
+The paramaterDeclaration is for declaring a variable, that has to match the type of the IDENTIFIER, that is to be iterated through.
+
+The iteration structure has especially taken inspiration from how Pythons for loop works. 
