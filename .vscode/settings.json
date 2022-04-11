@@ -29,5 +29,6 @@
         "**/*.glo": true,
         "**/*.gls": true,
         "**/*.tdo": true,
-    }
+    },
+    "editor.wordWrap": "on"
 }
