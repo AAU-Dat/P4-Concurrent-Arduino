@@ -1,41 +1,32 @@
 grammar arcv2;
 
 // Parser grammar
-start                   : setup declarations;
+start                   : /*setup*/ tasks declarations;
 
-declarations            : declaration*;
-
-setup                   : 'setup' '{' setupDeclaration '}'
+declarations            : TYPE_TYPEOPERATOR IDENTIFIER '(' (parameterDeclaration ( ',' parameterDeclaration)*)? ')' '{' statements '}' declarations
+                        | variableDeclaration declarations
+                        | '#' 'pin' IDENTIFIER '('PINDIGIT',' ('INPUT' | 'OUTPUT')')' declarations
                         | /*EPSILON*/;
 
-setupDeclaration        : declaration';' setupDeclaration
-                        | functionCall';' setupDeclaration
-                        | /*EPSILON*/;
+tasks                   : task*;  //task chould be written as a declaration
 
-statements              : returnStatement statements
-                        | ifStatement statements
-                        | forLoop statements
-                        | whileLoop statements
-                        | whenStatement statements
+task                    : 'task' ('(' (parameterDeclaration ( ',' parameterDeclaration)*)? ')')? (('every' INT) | ('when' '(' expression ')')) '{' statements '}';
+
+//setup                   : 'setup' '{' setupDeclaration '}'
+//                        | /*EPSILON*/;
+//
+//setupDeclaration        : declaration';' setupDeclaration
+//                        | functionCall';' setupDeclaration
+//                        | /*EPSILON*/;
+
+statements              : 'return' expression ';' statements
+                        | 'if' '(' expression ')' '{' statements '}' ('else' '{' statements '}')? statements
+                        | 'for' '(' parameterDeclaration 'in' IDENTIFIER ')' '{' statements '}' statements
+                        | 'while' '(' expression ')' '{' statements '}' statements
+                        | 'when' '(' IDENTIFIER ')' '{' (expression '=>' '{' statements '}')+ 'else' '{' statements '}' '}' statements
                         | variableDeclaration statements
-                        | assignmentStatement
+                        | IDENTIFIER ('[' NUMBER ']')? '=' ('[' (expression (',' expression)*)? ']' | expression) ';'
                         | /*EPSILON*/;
-
-assignmentStatement     : IDENTIFIER ('[' NUMBER ']')? '=' ('[' (expression (',' expression)*)? ']' | expression) ';';
-
-returnStatement         : 'return' expression ';';
-
-ifStatement             : 'if' '(' expression ')' '{' statements '}' else?;
-
-else                    : 'else' '{' statements '}';
-
-forLoop                 : 'for' '(' parameterDeclaration 'in' IDENTIFIER ')' '{' statements '}';
-
-whileLoop               : 'while' '(' expression ')' '{' statements '}';
-
-whenStatement         : 'when' '(' IDENTIFIER ')' '{' whenCase+ else '}';
-
-whenCase              : expression '=>' '{' statements '}';
 
 expression              : (NUMBER | IDENTIFIER | BOOL)
                         | (functionCall | IDENTIFIER '[' NUMBER ']')
@@ -50,16 +41,9 @@ expression              : (NUMBER | IDENTIFIER | BOOL)
 
 functionCall            : IDENTIFIER '(' expression (',' expression)* ')';
 
-declaration             : functionDeclaration
-                        | variableDeclaration;
+variableDeclaration     : TYPE_TYPEOPERATOR IDENTIFIER '=' ('[' (expression (',' expression)*)? ']' | expression) ';';
 
-functionDeclaration     : typeOf IDENTIFIER '(' (parameterDeclaration ( ',' parameterDeclaration)*)? ')' '{' statements '}';
-
-variableDeclaration     : typeOf IDENTIFIER '=' ('[' (expression (',' expression)*)? ']' | expression) ';';
-
-typeOf                  : TYPE_TYPEOPERATOR;
-
-parameterDeclaration    : typeOf IDENTIFIER;
+parameterDeclaration    : TYPE_TYPEOPERATOR IDENTIFIER;
 
 
 
@@ -68,23 +52,34 @@ WS                      : [ \t\n\r]+ -> skip;
 
 NUMBER                  : '-'? DIGIT+ ('.'DIGIT+)?;
 
+PINDIGIT                : DIGIT
+                        | '1' [0-3]
+                        | 'A'[0-5];
+
+INT                     : DIGIT;
+
 fragment DIGIT          : [0-9];
 
 BOOL                    : 'true' | 'false';
 
-TYPE_TYPEOPERATOR       : TYPE ( TYPEOPERATOR)*; // Name should maybe be rewritten
+TYPE_TYPEOPERATOR       : PREFIXOPERATOR? TYPE ( TYPEOPERATOR)*;
 
-fragment TYPEOPERATOR   : '[' ']';
+fragment TYPEOPERATOR   : '[]';
+
+fragment PREFIXOPERATOR : 'mut ';
 
 fragment TYPE           : 'num'
                         | 'text'
                         | 'bool'
-                        | 'char';
+                        | 'char'
+                        | 'time'
+                        | 'pin';
 
 COMMENTS                : '//' .*? '\n' -> skip;
 
 LINECOMMENTS            : '/*' .*? '*/' -> skip;
 
+//keywords
 RETURN                  : 'return';
 WHILE                   : 'while';
 IT                      : 'it';
@@ -96,6 +91,47 @@ ARDUINO                 : 'arduino';
 SETUP                   : 'setup';
 ELSE                    : 'else';
 DEFINE                  : 'define';
+EVERY                   : 'every';
+TASK                    : 'task';
+INPUT                   : 'INPUT';
+OUTPUT                  : 'OUTPUT';
+SLEEP                   : 'sleep'; //delay, await
+YIELD                   : 'yield';
+
+//from here
+//Digital I/O
+
+DIGITALREAD             : 'DigitalRead';
+DIGITALWRITE            : 'DigitalWrite';
+PINMODE                 : 'pinmode';
+
+//Analog I/O
+
+ANALOGREAD              : 'analogRead';
+ANALOGWRITE             : 'analogWrite';
+
+//Time
+
+DELAY                   : 'delay';
+
+//Interruption
+
+//interrupts()        - nice to have; but is it relevant?
+//noInterrupts()    - nice to have; but is it relevant?
+//skal testes i protothreads
+//Communication
+
+//Serial
+PRINTLN                 : 'println';
+
+//Variables
+//Arduino data types and constants.
+
+//Constants
+
+INPUT_PULLUP            : 'INPUT_PULLUP';
+LED_BUILTIN             : 'LED_BUILTIN';
+
 
 MULTI                   : '*';
 DIVI                    : '/';
