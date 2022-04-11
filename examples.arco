@@ -93,3 +93,114 @@ for num i in Array {
         return count;
     }
 }
+
+
+
+
+#pin blePeripheral(2, INPUT);                     // BLE Peripheral Device (the board you're programming)
+#pin blePeripheral(2, OUTPUT);
+
+#pin ledPin (8 , OUTPUT);
+#pin buttonPin (12, INPUT);
+mut num buttonState = 0;
+
+task () every 1000 {
+    digitalWrite(ledPin, HIGH);
+    sleeps(500);
+    digitalWrite(ledPin, LOW);
+    sleeps(500);
+}
+task (num buttonState) when (buttonPin) {
+    buttonState = 1;
+    println(buttonState);
+    sleeps(1);
+}
+
+// Constant and variables declaration:
+// Face orientation and shake functions:
+num lastOrientation = -1 - 2;              // previous orientation (for comparison)
+num previousMillis = 0;
+
+num interval = 2000;          // time to wait in up position before the face activation
+num SHAKEpreviousMillis = 0;  // last time update
+num SHAKEinterval = 2000;     // time to wait during shaking for face deactivation
+bool keep = false;                   // this is used to count only one time the face orientation change
+int lastFUNCTION = -1;                  // this is used to know what is the previous rientation
+
+// Faces initilization: at the beginning every face is false
+bool face0 = false;
+bool face1 = false;
+bool face2 = false;
+bool face3 = false;
+bool face4 = false;
+bool face5 = false;
+
+// LIGHTS face
+mut int LEDlights =  11;   // pin 11: yellow led
+
+// TEMPERATURE face
+mut int pinTemp = 0;      // pin A0: temperature sensor
+mut int LEDhot =  12;      // pin 12: red led
+mut int LEDcold =  13;     // pin 13: blue led
+  // temperature value memorization
+int B=3975;                  // B value of the thermistor
+// resistance value memorization
+float tooHot = 260;         // temperature at which the air conditioner is activated [SET]
+float tooCold = 230;        // temperature at which the heater is activated [SET]
+
+// TIMER face
+int BUZZER = 3;              // pin 3: buzzer
+bool KEEPtime = false;    // this is used to count only one time the face orientation change (not restart while counting)
+int TIMERmillis = 0;         // the following are for the countdown determination
+int prevSHOWsecond = 0;
+int CountdownInMillis = 0;
+int SHOWmillis = 0;          // millis value calculation result
+int SHOWminute = 0;          // minutes value to show in the monitor for the countdown
+int SHOWseconds = 0;         // seconds value to show in the monitor for the countdown
+mut int SETminute =  2;    // set 2 minute timer [SET]
+mut int SETsecond =  30;   // set 30 seconds timer [SET]
+
+// SOUND face
+mut int soundLED = 9 ;     // pin 9: green led
+mut int soundSENSOR = 1;  // pin A0: sound sensor
+int brightness = 0;          // green led brightness initialization
+
+// TV face
+mut byte ROWS = 4;         // four rows keypad
+mut byte COLS = 3;
+
+num[] keys = ["1","2","3"];
+
+char keypad = Keypad( makeKeymap(keys), rowPins, colPins, ROWS, COLS );  // keypad initialization
+
+
+
+// OFF face
+mut int LEDOFF =  2;      // pin A2: red led
+
+
+int setupp() {
+
+  pinMode(LEDlights, OUTPUTa); // every led is set as an output
+  pinMode(LEDhot, OUTPUaT);
+  pinMode(LEDcold, OUTPUaT);
+  pinMode(soundLED,OUTPUaT);
+  pinMode(LEDOFF, OUTPUaT);
+
+  Serialbegin(9600); // initialize Serial communication
+
+  CountdownInMillis = (SETminute*60 + SETsecond)*1000; // this calculates the corrispondent value in millis from the minutes and seconds setting
+  lcdbegin(16, 2);     // LCD initialization
+  lcdsetRGB(0, 0, 0);  // LCD RGB is OFF at the beginning
+
+  // initialize device
+  CurieIMUbegin();
+
+  // Set the accelerometer range to 2G
+  CurieIMUsetAccelerometerRange(2);
+
+  // Enable Shock Detection
+  CurieIMUsetDetectionThreshold(CURIE_IMU_SHOCK, 7000);  // 70g = 7000 mg  (this value set the intensity of the shock)
+  CurieIMUsetDetectionDuration(CURIE_IMU_SHOCK, 2000);   // 2000ms (this value set the duration of the shock)
+  CurieIMUinterrupts(CURIE_IMU_SHOCK);
+}
