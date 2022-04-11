@@ -1,7 +1,7 @@
 grammar arcv2;
 
 // Parser grammar
-start                   : /*setup*/ declarations;
+start                   : declarations;
 
 declarations            : (TYPE_TYPEOPERATOR IDENTIFIER '=' ('[' (expression (',' expression)*)? ']' | expression) ';') declarations    #variable_declaration
                         | TYPE_TYPEOPERATOR IDENTIFIER '(' (TYPE_TYPEOPERATOR IDENTIFIER ( ',' TYPE_TYPEOPERATOR IDENTIFIER)*)? ')' '{' statements '}' declarations #function_declaration
@@ -9,26 +9,18 @@ declarations            : (TYPE_TYPEOPERATOR IDENTIFIER '=' ('[' (expression (',
                         | 'task' ('(' (TYPE_TYPEOPERATOR IDENTIFIER ( ',' TYPE_TYPEOPERATOR IDENTIFIER)*)? ')')? (('every' NUMBER) | ('when' '(' expression ')')) '{' statements '}' declarations #task_declarations
                         | /*EPSILON*/ #empty_declaration;
 
-
-//setup                   : 'setup' '{' setupDeclaration '}'
-//                        | /*EPSILON*/;
-//
-//setupDeclaration        : declaration';' setupDeclaration
-//                        | functionCall';' setupDeclaration
-//                        | /*EPSILON*/;
-
 statements              : 'return' expression ';' statements #return_statement
                         | 'if' '(' expression ')' '{' statements '}' ('else' '{' statements '}')? statements #if_else_statement
                         | 'for' '(' TYPE_TYPEOPERATOR IDENTIFIER 'in' IDENTIFIER ')' '{' statements '}' statements      #forloop_statement
                         | 'while' '(' expression ')' '{' statements '}' statements #whileloop_statement
-                        //| 'when' '(' IDENTIFIER ')' '{' (expression '=>' '{' statements '}')+ 'else' '{' statements '}' '}' statements
                         | (TYPE_TYPEOPERATOR IDENTIFIER '=' ('[' (expression (',' expression)*)? ']' | expression) ';') statements #variable_declaration_statement
                         | IDENTIFIER ('[' NUMBER ']')? '=' ('[' (expression (',' expression)*)? ']' | expression) ';'statements #assignment_statement
                         | (IDENTIFIER | ARDUINOFUNCTIONS)'(' (expression (',' expression)*)? ')' ';' statements #function_call_statement
                         | /*EPSILON*/ #empty_statement;
 
 expression              : (NUMBER | IDENTIFIER | BOOL | CHAR) #terminal_expression
-                        | ((IDENTIFIER | ARDUINOFUNCTIONS)'(' (expression (',' expression)*)? ')' | IDENTIFIER '[' NUMBER ']' | ARDUINOFUNCTIONS '(' expression ')') #function_or_array_access_expression //this is a sheit name
+                        | (IDENTIFIER | ARDUINOFUNCTIONS)'(' (expression (',' expression)*)? ')' #function_access_expression
+                        | IDENTIFIER '[' NUMBER ']' | ARDUINOFUNCTIONS '(' expression ')' #array_access_expression
                         | '(' expression ')' #parentheses_expression
                         | 'not' expression  #unary_negation_expression
                         | expression (MULTI | DIVI) expression #multiplication_divide_expression
@@ -46,18 +38,13 @@ NUMBER                  : '-'? DIGIT+ ('.'DIGIT+)?;
 
 PINDIGIT                : 'A'[0-5];
 
-
-
-
-
 INT                     : DIGIT;
 
 fragment DIGIT          : [0-9];
 
 BOOL                    : 'true' | 'false';
 
-CHAR                    :  '"' . '"'; //Is there any limits for chars
-
+CHAR                    :  '"' . '"'; //Is this ascii or unicode?
 
 TYPE_TYPEOPERATOR       : PREFIXOPERATOR? TYPE ( TYPEOPERATOR)*;
 
@@ -66,7 +53,6 @@ fragment TYPEOPERATOR   : '[]';
 fragment PREFIXOPERATOR : 'mut ';
 
 fragment TYPE           : 'num'
-                        | 'text'
                         | 'bool'
                         | 'char'
                         | 'time'
@@ -95,7 +81,7 @@ TASK                    : 'task';
 PINMODE                 : 'pinmode';
 INPUT                   : 'INPUT';
 OUTPUT                  : 'OUTPUT';
-YIELD                   : 'yield'; //cannot remember what this is used for
+YIELD                   : 'yield';
 
 //from here
 //Digital I/O
@@ -109,23 +95,6 @@ fragment SLEEP          : 'sleep'; //delay, await
 
 fragment ANALOGREAD     : 'analogRead';
 fragment ANALOGWRITE    : 'analogWrite';
-
-//Time
-
-//DELAY                   : 'delay';
-
-//Interruption
-
-//interrupts()        - nice to have; but is it relevant?
-//noInterrupts()    - nice to have; but is it relevant?
-//skal testes i protothreads
-//Communication
-
-//Serial
-//PRINTLN                 : 'println'; can you print in the language
-
-//Variables
-//Arduino data types and constants.
 
 //Constants
 
