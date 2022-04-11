@@ -1,25 +1,44 @@
 \section{Inspiration to our language}
-When designing a programming language it is a good idea to look at other programming languages for inspiration. We started by discussing the languages that we all have worked with in former semesters, which is C, JavaScript and C\#. It was also important to check C++ as it was the language, our language should compile to. The discussion in the group was which things the programming languages did well, and what our programming language should include. When discussing these languages there became a common understanding, the programming languages discussed were not intuitive enough for a hobbyist and therefore we needed more research on how other languages did this. Researching then began on looking on more modern and intuitive languages so our programming language would be easier to learn and write in. The languages Dart, Kotlin, Rust, Python and Zyg were all looked at to find the inspiration for our language. One thing we all looked after in the languages was if it had a readable syntax, it did not have to be for whole language, it was only specific ways of writing syntax. Therefore you will see inspiration from many programming languages, when describing ours.  
+When designing a programming language it is a good idea to look at other programming languages for inspiration. We started out, by discussing the languages that we all had worked with in previouse semesters, which were C, JavaScript and C\#. It was also important to check C++, as it was the language, our language was going to compile to.
+During the group discussion, we all tried to find things that other programming languages did well, what we each liked in a language and why we liked it. This was done to get an idea for what our programming language should include.
+When discussing the syntax of the languages we looked at, we agreed that many of these languages might not be very intuitive for a hobbyist. We therefore needed to do more research on how other languages did this. 
+We started looking at more modern languages, to gather ideas from them, and see what we could do to make our language simpler for hobbyists, to learn and write. The languages Dart, Kotlin, Rust, Python and Zyg were all looked at, for inspiration. One thing we all looked for in the languages, was if they had a readable syntax and what made it readable.
+
+By doing this, many ideas were taken from many different programming languages, some where modified to fit our needs or wants better, others were taken straight from one language and put into ours. Therefore you will see inspiration from many programming languages, when describing ours.  
 
 
 
 \subsection{Types}
 %indsæt den del af grammeren der er af types her
-The types in the language are num, text and bool. A value of the type num is a correct input as long it is a real number. Bool is like the bool in other languages, as it can only be true or false. The type text is an array of characters made by using quotation marks (\") from the start to end of the input. An num array can be made by using squire brackets (\[\]) in front of the type num, how ever an num array can only accept real numbers.
+The language is held simple, and therefore does not contain many different types, the main types in the language are num, text and bool. Num is for all numbers in the language, and using a name that is just short for number should make it recognizable for most people. The value of a type num, is a correct input as long it is a real number. This can be both integers and floats, it was decided to combine the two, to try and simplify the language for beginners and hobbyists.
+Bool is like the bool in other languages, as it can only be true or false. We saw no reason to change this, and therefore decided to keep it as many other languages.
+The type text is an array of characters made by using quotation marks, from the start to the end of the input. This is simillar to languages such as Python, C\#, JavaScript and so on. The main difference is that we have decided to call our strings, text. This is much like with num, where we have made it more recognizable for beginners and hobbyists, who might not know what a string is, but should know what text is.
  
 \subsection{Control Structures}
-As mentioned, there has been taken inspiration from languages such as C, C\#, Python, JavaScript and others. Since many languages use common control structures in a similar way, we have decided to do the same.
+As mentioned, there has been taken inspiration from languages such as C, C\#, Python, JavaScript and others. There are three main types of control structure, sequence, conditional and iteration. These are structures like if statements, for loop, while loops and so on. Since many languages use these common control structures in a similar way, we have decided to do the same. These will be described in the following sections:
 
 %If statements
-The conditional structure 'if' statement, has the terminal if, with a non-terminal expression, in parentheses, followed by non-terminal statements contained in brackets.After the if statement, there is the option to use an else statement, which follows the same structure, but without the expression.
+\paragraph*{If statement}
+The conditional structure 'if' statement, has the terminal if, with a non-terminal expression, in parentheses, followed by non-terminal statements contained in brackets.After the if statement, there is the option to use an else statement, which follows the same structure, but without the expression. After this more statements can be made.
 
 The non-terminal expression, can become many different variants, and how these expressions are evaluated, will be handled in type checking. If the value is true, the conditional structure will execute the statements contained in the brackets, if not, and an else condition is made after the brackets, a jump will occur to the else condition.
 The non-terminal statements in the brackets of the if and else conditional structures can, as an expression, become many different variants. The statements, are where function calls and additional control structures are made.
 Followed by additional statements, so that more statements can be made.
 This structure is the simmilar to languages that have been used as inpiration, languages such as C, JavaScript and others, create the conditional structure in the same way.
 
+
 %For loop
-The iteration structire 'for' loop, has the terminal for, with a non-terminal paramaterDeclaration, a terminal 'in' and a non-terminal IDENTIFIER, if paratheses. After this, there are non-terminal statements in brackets, followed by additional statements.
+\subsubsection{For loop}
+The iteration structire 'for' loop, has the terminal for, with a non-terminal paramaterDeclaration, a terminal 'in' and a non-terminal IDENTIFIER, in paratheses. After this, there are non-terminal statements in brackets, followed by additional statements.
 The paramaterDeclaration is for declaring a variable, that has to match the type of the IDENTIFIER, that is to be iterated through.
 
-The iteration structure has especially taken inspiration from how Pythons for loop works. 
+The iteration structure has especially taken inspiration from how Pythons for loop works. Where in Python the IDENTIFIER could be an array, and the paramaterDeclaration is something that is declared, and made a placeholder for the current object in the array. In Python the paramaterDeclaration does not have a given type, however in our language the type will be declared and must match with the type of the IDENTIFIER. The reason for using a Python-like syntax, is because it is simple and rather intuitive, compared to something such as C, where an iterator is declared and used to go through an array. In our case, aswell as in Python, the work is being done in the background, so the user does not have to warry about it.
+
+
+%While loop
+\subsubsection{While loop}
+The control structure, \todo{What do we call a while loop? Iteration structure?} 'while' loop, has the terminal while, with an expression in paratheses, followed by statements in bracket and additional statements after.
+The while loop is used to continually execute a block of code, until some condition is met. In this case, the condition is the expression, and as long as the expression evaluates to true, the block of code will be executed.
+
+Inspiration for the syntax of the while loop, has been taken from many different languages, since many of the languages the group has used, use a simmilar syntax. Inspiration from languages such as JavaScript, C and C\# can be seen, as the syntax matches, with a keyword 'while' with a condition in paratheses, followed by a block of code in brackets. Python is also very simmilar, the main difference is that python does not use paratheses or brackets, instead it uses colons and indents to seperate code.
+
