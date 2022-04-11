@@ -1,21 +1,23 @@
 \chapter{Introduction}\label{cha:introduction}
-This report details the design, definition and implementation of a programming language, as per AAU's fourth semester module description  \cite{AAU_Modules_P4}.
+This report details the design, definition, and implementation of a programming language, as per \gls{aau}'s fourth-semester module description \cite{AAU_Modules_P4}.\question{Do we need the part after the comma?}
 
-\section{Initial problem}
-The problem analysis begins from the project proposal: "A Concurrent Programming Language for Arduino" \cite{Project_Proposals_2022}.\supervisor{What is the best way to cite powerpoint slides from Moodle?}
+\section{Initial problem}\label{sec:initialproblem}
+The problem analysis begins from the project proposal: "A Concurrent Programming Language for Arduino" \cite{Project_Proposals_2022}.\supervisor{What is the best way to cite PowerPoint slides from Moodle?} The proposal outlines how microcontrollers, like the Arduino, are used in \gls{cps} to monitor and control the surroundings. However, although sensor input is sent asynchronously with regards to the \gls{cpu} the Arduino has no direct support for concurrency.
 
-The proposal outlines how microcontrollers like the Arduino, is used in \gls{cps}
+\subsection{Project outline}
+The project proposal presents the following tasks and challenges:
 
-Based on the project proposal, a set of issues have been extracted.
+\paragraph{Tasks}
+\begin{itemize}
+    \item Develop a language that integrates Concurrent tasks in Arduino
+    \item Give natural support to the \gls{cps} feedback loop
+    \item It should have an intuitive domain specific syntax
+\end{itemize}
 
+\paragraph{Challenges}
+\begin{itemize}
+    \item Handle context switch taking \textbf{real-time constraints} in mind
+    \item Provide constructs to handle \textbf{race conditions} (atomic sessions, semaphores, asynchronous queues, etc.)
+    \item Comply with memory requirements
+\end{itemize}
 
-
-
-\begin{description}
-    \item [Arduino] What it is, who uses it, and the challenges of the standard Arduino programming  model in regards to concurrency/RTS.
-    \item [Approaches] Operating systems, scheduling, and differences between the options.
-    \item [Scanner/Parser] Generation of code. Or should this be after design? Otherwise, discussion of strengths and weaknesses.
-    \item [Compilation] Transpilation and compilation.
-\end{description}
-
-\paragraph{HOWEVER,} the content should be considered from the perspective of a programming language, rather than the perspective of computation.
