@@ -1,6 +1,7 @@
 grammar arcv2;
 
 // Parser grammar
+
 start                   : /*setup*/ declarations;
 
 declarations            : TYPE_TYPEOPERATOR IDENTIFIER '(' (TYPE_TYPEOPERATOR IDENTIFIER ( ',' TYPE_TYPEOPERATOR IDENTIFIER)*)? ')' '{' statements '}' declarations #function_declaration
@@ -8,6 +9,7 @@ declarations            : TYPE_TYPEOPERATOR IDENTIFIER '(' (TYPE_TYPEOPERATOR ID
                         | '#' 'pin' IDENTIFIER '('PINDIGIT',' ('INPUT' | 'OUTPUT')')' declarations #pin_declaration
                         | ('task' ('(' (TYPE_TYPEOPERATOR IDENTIFIER ( ',' TYPE_TYPEOPERATOR IDENTIFIER)*)? ')')? (('every' INT) | ('when' '(' expression ')')) '{' statements '}')* #task_declarations
                         | /*EPSILON*/ #empty_declaration;
+
 
 
 //setup                   : 'setup' '{' setupDeclaration '}'
@@ -38,6 +40,7 @@ expression              : (NUMBER | IDENTIFIER | BOOL) #terminal_expression
                         | expression 'or' expression #or_expression;
 
 
+
 // Lexical grammar
 WS                      : [ \t\n\r]+ -> skip;
 
@@ -55,9 +58,11 @@ BOOL                    : 'true' | 'false';
 
 TYPE_TYPEOPERATOR       : PREFIXOPERATOR? TYPE ( TYPEOPERATOR)*;
 
+
 PARAMETER_DECLARATION   : TYPE_TYPEOPERATOR IDENTIFIER;
 
 fragment TYPEOPERATOR   : '[]';
+
 
 fragment PREFIXOPERATOR : 'mut ';
 
@@ -87,6 +92,7 @@ DEFINE                  : 'define';
 EVERY                   : 'every';
 TASK                    : 'task';
 
+
 //ARDUINO                 : 'arduino';
 PINMODE                 : 'pinmode';
 INPUT                   : 'INPUT';
@@ -94,8 +100,10 @@ OUTPUT                  : 'OUTPUT';
 SLEEP                   : 'sleep'; //delay, await
 YIELD                   : 'yield'; //cannot remember what this is used for
 
+
 //from here
 //Digital I/O
+
 
 ARDUINOFUNCTIONS        : DIGITALWRITE | DIGITALREAD | ANALOGREAD | ANALOGWRITE;
 fragment DIGITALREAD             : 'DigitalRead';
@@ -110,6 +118,7 @@ fragment ANALOGWRITE             : 'analogWrite';
 
 //DELAY                   : 'delay';
 
+
 //Interruption
 
 //interrupts()        - nice to have; but is it relevant?
@@ -119,6 +128,7 @@ fragment ANALOGWRITE             : 'analogWrite';
 
 //Serial
 //PRINTLN                 : 'println'; can you print in the language
+
 
 //Variables
 //Arduino data types and constants.

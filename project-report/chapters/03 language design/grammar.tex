@@ -1,0 +1,95 @@
+\section{Language grammar}
+Which arithmetic and other operations should be available in the language?
+
+\section{Minted ANTLR test}
+
+\begin{minted}{antlr}
+grammar Expr;		
+prog:	(expr NEWLINE)* ;
+expr:	expr ('*'|'/') expr
+    |	expr ('+'|'-') expr
+    |	INT
+    |	'(' expr ')'
+    ;
+NEWLINE : [\r\n]+ ;
+INT     : [0-9]+ ;
+\end{minted}
+
+% Fredag d.25/03/2022
+\begin{align*}
+    Start   & \rightarrow \text{Setup Pipeline}                     \\
+    PLS     & \rightarrow \text{PL PLS | $\epsilon$}                \\
+    PL      & \rightarrow Def                                       \\
+    stmts   & \rightarrow \text{stmt ;(newline) stmts | $\epsilon$} \\
+    stmt    & \rightarrow \text{expr | ass | dcl}                   \\
+    dcl     & \rightarrow \text{type funcID (Params)\{stmts\}}      \\
+    ass     & \rightarrow \text{type varID = expr}                  \\
+    params  & \rightarrow \text{param, params | param}              \\
+    param   & \rightarrow \text{type varID}                         \\
+    expr    & \rightarrow \text{for params in varID}
+\end{align*}
+
+\feedback{Everything breaks when I add this in math mode below. So I am going to use comments.}
+
+\begin{align*}
+    Start                       & \to \text{Setup}                                                                              \\
+    Setup                       & \to \text{Setup \{ SetupDeclaration \}}                                                       \\
+    SetupDeclaration            & \to \text{Declaration; SetupDeclaration}                                                      \\
+                                & \mid \text{FunctionCall; SetupDeclaration}                                                    \\ 
+                                & \mid \epsilon                                                                                 \\
+    Statements                  & \to \text{ExpressionStatement; Statements}                                                    \\
+                                & \mid \text{ReturnStatement; Statements}                                                       \\
+                                & \mid \text{IfStatement; Statements}                                                           \\
+                                & \mid \text{ForLoop; Statements}                                                               \\
+                                & \mid \text{WhileLoop; Statements}                                                             \\
+                                & \mid \text{SwitchStatements; Statements}                                                      \\
+                                & \mid \epsilon                                                                                 \\
+    ExpressionStatement         & \to \text{Expression}                                                                         \\
+    ReturnStatement             & \to \text{'return' '('Expression')'}                                                          \\
+    IfStatement                 & \to \text{'if''(' LogicalExpression ')' '\{' Statements '\}' ElseStatement}                   \\
+    ElseStatement               & \to \text{'else''(' LogicalExpression ')' '\{' Statements '\}'}                               \\
+    ForLoop                     & \to \text{'for' '(' VariableDeclaration 'in' Identifier ')' '\{' Statements '\}'}             \\ 
+    WhileLoop                   & \to \text{'while' '(' LogicalExpression ')' '\{' Statements '\}'}                             \\
+    SwitchStatements            & \to \text{'when' '(' Identifier ')' '\{' SwitchCase+ ElseStatement'\}'}                       \\
+    SwitchCase                  & \to \text{Expression '=>'  '\{' Statements '\}'}                                              \\
+    ExpressionList              & \to \text{Expression (,Expression)*}                                                          \\
+    Expression                  & \to \text{ArithmeticExpression}                                                               \\
+                                & \mid \text{RelationalExpresssion}                                                             \\
+                                & \mid \text{LogicalExpression}                                                                 \\
+                                & \mid \text{ConditionalExpression}                                                             \\
+    ArithmeticExpression        & \to \text{AtomArithmeticExpression} (* \mid /) \text{ArithmeticExpression}                    \\
+                                & \mid \text{AtomArithmeticExpression} (+ \mid -) \text{ArithmeticExpression}                   \\
+    AtomArithmeticExpression    & \to \text{NUMBER}                                                                             \\
+                                & \mid \text{'(' ArithmeticExpression ')'}                                                      \\
+                                & \mid \text{IDENTIFIER}                                                                        \\
+    RelationExpression          & \to \text{AritmeticExpression} (< \mid > \mid ==) \text{ArithmeticExpression}                 \\
+    LogicalExpression           & \to \text{RelationalExpression} (or \mid and) \text{RelationalExpression}                     \\
+                                & \mid not \text{ RelationalExpression}                                                         \\
+    Declaration                 & \to \text{FunctionDeclaration}                                                                \\
+                                & \mid \text{VariableDeclaration}                                                               \\
+    FunctionDeclaration         & \to \text{TypeOf IDENTIFIER '(' VariableDelcarationList ')' '\{' Statements '\}'}               \\
+    TypeOf                      & \to \text{TYPE (TYPEOPERATOR)*}                                                               \\
+    VariableDeclarationList     & \to \text{VariableDeclaration (,VariableDeclaration)*}                                        \\
+    VariableDeclaration         & \to \text{TypeOf IDENTIFIER '=' Expression}                                                   \\
+    FunctionCall                & \to \text{IDENTIFIER '(' ExpressionList ')'}                                                    \\
+\end{align*}
+
+\cleardoublepage
+
+\begin{align*}
+    NUMBER                      & \to \text{('-')?('0'..'9')+('.('0'..'9')+)?;}                                                 \\
+    DIGIT                       & \to \text{[0...9]*}                                                                           \\
+    ALPHA                       & \to \text{'a'...'z'} \mid \text{'A'...'Z'} \mid \text{'\_'}                                   \\
+    IDENTIFIER                  & \to \text{ALPHA(DIGIT} \mid \text{ALPHA)*}                                                    \\
+    TYPEOPERATOR                & \to \text{(' [ ] ');}                                                                         \\
+    TYPE                        & \to \text{(num} \mid \text{text} \mid \text{bool);}                                           \\ 
+    WS                          & \to \text{[\quad \textbackslash t \textbackslash n \textbackslash r]+ -> skip;}               \\
+    COMMENTS                    & \to \text{'//' .*?} '\backslash n' \text{-> skip;}                                            \\
+    LINECOMMENT                 & \to \text{'/*' .*? '*/' -> skip;}                                                             \\
+    KEYWORDS                    & \to \text{return, while, it, for, in, when,}                                                  \\
+                                & \text{void?, Arduino\{\}, setup, true, false, else, define}                                   \\
+    OPERATORS                   & \to \text{'+'} \mid \text{'-'} \mid \text{'*'} \mid \text{'/'}                                \\
+    LOGICALOPERATION            & \to \text{'and'} \mid \text{'or'} \mid \text{'not'} \mid \text{(xor)}                         \\
+    RELATIONOPERATORS           & \to \text{'>'} \mid \text{'<'} \mid \text{'=='} \mid \text{'!='} \mid \text{'<='} \mid \text{'>='} \\
+    BOOL                        & \to \text{'true' | 'false'}                                                                   \\ 
+\end{align*}

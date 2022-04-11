@@ -1,0 +1,238 @@
+\section{Concurrency on an Arduino}\label{sec:concurrencyinarduino}
+
+In this section, some of the more relevant ways of achieving concurrency on an Arduino will be explored. Emphasis will be put on the immediate advantages and disadvantages related to each of the different ways of concurrency, and how well they might fit as a solution to the problem. The first discussion will be about the prospect of using programming libraries to achieve concurrency on an Arduino. The second discussion is going to be about an alternative solution, namely implementing an operating system (OS) to handle the concurrency.
+
+%1. https://all3dp.com/2/best-arduino-operating-system/
+%   The arduino uno has the ATmega328 microcontroller as its brain which limits the possible solutions as they would need to fit that particular architecture.
+
+\subsection{Achieving Concurrency with Programming Libraries}
+\todo{Introduce the different programming languages}
+Protothreads, Eventually, ARTe (and maybe TaskManagerIO)
+
+% Hvilke ting skal vi kigge på 
+%\begin{itemize}
+%    \item God dokumentation
+%    \item support vores platform (uno)
+%    \item hvilke type multitaskning den bruger
+%    \item Overhead, hvor meget de fylder og hvor meget det kræver af computerkraft (både OS og libraries og extentions)
+%\end{itemize}
+
+\subsubsection{Protothreads}
+Protothreads is a library for the C language, which has been packaged to a library for Arduino. The point of this library is to give programmers a simpler way to write programs for an event-driven system in memory-constrained environments such as an Arduino UNO.
+
+\blockcquote{Artin2020}{Protothreads provides a blocking context on top of an event-driven system, without the overhead of per-thread stacks. The purpose of protothreads is to implement sequential flow of control without complex state machines or full multi-threading.}
+
+Protothreads are lightweight, stackless threads that provide a mechanism for concurrent programming, which is designed for memory-constrained systems, such as a smaller embedded system or wireless sensor nodes. Protothreads can be used with or without any underlying operating system to provide blocking for event handlers'
+\cite{AdamDunkelProtothreads}. It uses a cooperative concurrency form, which means it is up to the user to synchronize the program to run concurrently. This means that the program is event-driven and before the program can continue to another task, it needs to "complete" the current task before moving on to the next one.
+When working with Protothreading, it is nice to know what the overhead is on two bytes. This means that there is no hidden memory cost during the execution of the program. 
+
+When using local variables inside a Protothread, the local variables are not preserved and therefore can not be allocated onto the memory, therefore the programmer would have to use global variables instead, if they want to store something inside a variable.
+
+Lastly, it is important that the code inside a Protothread needs to be "fast", meaning that the programmer can not use any blocking function such as the delay() function because this would block the other functions to run. \cite{AdamDunkelProtothreads}
+
+In relation to what protothreads are, there has been taken an example of a simple and small program to show what Protothreading can be used to which can be seen at Figure \todo{Insert figure reference} \cite{ArduinoProtothreadsTutorial2019}.
+
+\begin{listing}[htb!]
+\centering
+\begin{minted}{c}
+#include "protothreads.h"
+
+const int buttonPin = 12;     // the number of the pushbutton pin
+const int ledPin =  8;      // the number of the LED pin
+int buttonState = 0;         // variable for reading the pushbutton status
+pt ptBlink;
+int blinkThread(struct pt* pt) {
+  PT_BEGIN(pt);
+  for(;;) {
+    digitalWrite(ledPin, HIGH);   // turn the LED on (HIGH is the voltage level)
+    PT_SLEEP(pt, 500);
+    digitalWrite(ledPin, LOW);    // turn the LED off by making the voltage LOW
+    PT_SLEEP(pt, 500);
+  }
+  PT_END(pt);
+}
+
+pt ptButton;
+int buttonThread(struct pt* pt) {
+  PT_BEGIN(pt);
+  for(;;) {
+    int sensorValue = digitalRead(buttonPin);
+    Serial.println(sensorValue);
+    PT_SLEEP(pt, 1);
+    PT_YIELD(pt);
+  }
+  PT_END(pt);
+}
+
+void setup() {
+  PT_INIT(&ptBlink);
+  PT_INIT(&ptButton);
+  Serial.begin(9600);
+  pinMode(ledPin, OUTPUT);
+  pinMode(buttonPin, INPUT);
+}
+
+void loop() {
+  PT_SCHEDULE(blinkThread(&ptBlink));
+  PT_SCHEDULE(buttonThread(&ptButton));
+}
+\end{minted}
+\caption{A small program on how a Protothreads can be implemented}
+\label{List: Protothreads example}
+\end{listing}
+
+\cleardoublepage
+
+\todo{Explain what the advantages and disadvantages of protothreads is relative to the our problem}
+
+% I know that the code exsample only use one protothreads, but the point was to show how to use protothread even though it only were one thread.
+
+%---Links to Eventually c++ Libary---
+%1. https://github.com/johnnyb/Eventually
+%2. https://www.arduino.cc/reference/en/libraries/eventually/
+% What is Eventually C++ Library?
+% What kind of multi-threading does it use?
+% Advantages and disadvantages of Eventually Library (C++ issues)
+
+\subsubsection{Eventually C++ Library}
+% From what I have found there is basic two valid sources which shortly explain what the Eventually C++ Library is and then there is some smaller code examples that show how to use it. So i don't know how relevant it is to have in the report since is just an other way of making event-bases programming like protothreads?
+Eventually is an Arduino Event-based Programming Library. Where the goal is to make a more event-oriented environment for the Arduino programming language.
+
+To give a better understanding of how the Eventually C++ library is working, in this section there has been taken an example from a GitHub page \cite{bartlettEventually2022Bartlett} where there can be seen, a code example on how to use the Eventually library. Since it is a C++ library it would work on any Arduino board, which includes the one the group has acquired.
+
+
+\begin{listing}
+\begin{minted}{arduino}
+#include <Eventually.h>
+#define LIGHT_PIN 8
+#define BUTTON_PIN 12
+
+bool pinState = true;
+EvtManager mgr;
+bool blinker() {
+  mgr.resetContext();
+  mgr.addListener(new EvtTimeListener(1000, true, (EvtAction)blink_pin)); 
+  mgr.addListener(new EvtPinListener(BUTTON_PIN, (EvtAction)digital_read));
+}
+
+void blink_pin() {
+  if (pinState == true) {
+     digitalWrite(LIGHT_PIN, HIGH);
+  }
+  else {
+    digitalWrite(LIGHT_PIN, LOW);
+  }
+  pinState = !pinState;
+}
+
+void digital_read() {
+    int sensorVal = digitalRead(BUTTON_PIN);
+    Serial.println(sensorVal);
+    delay(1);
+}
+
+void setup() {
+  Serial.begin(9600);
+  pinMode(LIGHT_PIN, OUTPUT);
+  pinMode(BUTTON_PIN, INPUT);
+  blinker();
+}
+
+USE_EVENTUALLY_LOOP(mgr)
+\end{minted}
+\caption{A small program on how Eventually can be implemented}
+\label{List: Eventually example}
+\end{listing}
+
+
+
+\subsubsection{ARTe}
+
+Arduino Real-Time extension (ARTe) is being developed by Real-Time System Laboratory. We tried to create an example similar to the former examples, however, it was simply not possible. While the scope of this project only focuses on the most popular Arduino UNO, and they still remain to support other devices than the Arduino DUO boards, no more time will be allocated to this option. However, once they release official support for the Arduino UNO, it is a viable option to look into. As for now, it is simply not ready for us to work with.
+
+
+
+\subsection{Achieving Concurrency with an Operating System}
+\todo{Introduce the different operative systems}
+(Erika OS), FreeRTOS, Simba OS, TaskManagerIO
+
+
+
+\todo{Is writing about the OS Erika relevant?} % move beneath ARTe
+%\subsubsection{Erika}
+
+
+
+%---Links to Free rtos---
+%1. https://github.com/feilipu/Arduino_FreeRTOS_Library
+%   Forklar hvad link går ud på
+\subsubsection{FreeRTOS}
+
+Free Real-Time Operating System (abbreviated to FreeRTOS) is an operating system specifically designed for microcontrollers and microcomputers, such as the Arduino. It has been developed in partnership with the leading chip companies in the world, over more than 18 years, and with a special emphasis on reliability, accessibility and ease of use \cite{AboutRTOS}. This leads itself well to our project, while we are targeting hobbyists. FreeRTOS utilises preemptive scheduling \cite{SchedulingRTOS}, which means that it implements a scheduler to be responsible for deciding which tasks to do in which order.
+
+
+
+\begin{listing}[htb!]
+\centering
+\begin{minted}{c}
+#include <Arduino_FreeRTOS.h>
+
+void TaskBlink( void *pvParameters );
+void TaskAnalogRead( void *pvParameters );
+
+void setup() {
+  Serial.begin(9600);
+  while (!Serial) {;}
+  xTaskCreate(TaskBlink, "Blink", 128, NULL, 2, NULL);
+  xTaskCreate(TaskAnalogRead, "AnalogRead", 128, NULL, 1, NULL);
+}
+
+void loop(){}
+
+void TaskBlink(void *pvParameters){ // This is a task.
+  (void) pvParameters;
+  pinMode(LED_BUILTIN, OUTPUT);
+  for (;;) { // A Task shall never return or exit.
+    digitalWrite(LED_BUILTIN, HIGH);
+    vTaskDelay( 1000 / portTICK_PERIOD_MS );
+    digitalWrite(LED_BUILTIN, LOW);
+    vTaskDelay( 1000 / portTICK_PERIOD_MS );
+  }
+}
+
+void TaskAnalogRead(void *pvParameters){ // This is a task.
+  (void) pvParameters;
+  for (;;) {
+    int sensorValue = digitalRead(12);
+    Serial.println(sensorValue);
+    vTaskDelay(1);
+  }
+}
+\end{minted}
+\caption{A small example of a possible implementation of Free RTOS.}
+\label{List:freeftosexample}
+\end{listing}
+
+%and Preemptive concurrency forms \cite{UsingFreeRTOSMultitasking}, the preemptive concurrency form is priority-based, like the cooperative concurrency form the preemptive concurrency form has to prioritise the tasks in the program, but a task has to be completed in the time period which the scheduler has given task, it then switches to another task and if the first task was not completed it switches back \cite{Windows}.
+%the library has a scheduler to set up when the tasks have to be executed, the programmer can also set up when the Arduino has to do a specific task, if no specific timed workflow, the scheduler assigns the priority of the tasks \cite{UsingFreeRTOSMultitasking}. 
+
+%---Links to Simba library---
+% 1. https://simba-os.readthedocs.io/en/latest/
+%   Forklar hvad link går ud på
+% 2. https://all3dp.com/2/best-arduino-operating-system/
+%   Forklar hvad link går ud på
+%\subsubsection{Simba}
+
+
+
+%---Links to TaskManagerIO library---
+% 1. https://github.com/davetcc/TaskManagerIO
+%   Forklar hvad link går ud på
+% 2. https://all3dp.com/2/best-arduino-operating-system/
+%   Forklar hvad link går ud på
+%\subsubsection{TaskManagerIO }
+
+
+
+\subsection{Summary}
+
