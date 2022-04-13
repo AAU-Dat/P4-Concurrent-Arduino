@@ -10,8 +10,8 @@ declaration            : (TYPE_TYPEOPERATOR IDENTIFIER '=' ('[' (expression (','
 
 block                   : '{' statement* '}';
 
-statement               : 'return' expression ';' #return_statement
-                        | block #block_statement
+statement               : block #block_statement
+                        | 'return' expression ';' #return_statement
                         | 'if' '(' expression ')' statement ('else' statement )? #if_else_statement
                         | 'for' '(' TYPE_TYPEOPERATOR IDENTIFIER 'in' IDENTIFIER ')'  statement   #forloop_statement
                         | 'while' '(' expression ')' statement #whileloop_statement
@@ -53,9 +53,7 @@ fragment PREFIXOPERATOR : 'mut ';
 
 fragment TYPE           : 'num'
                         | 'bool'
-                        | 'char'
-                        | 'time'
-                        | 'pin';
+                        | 'char';
 
 COMMENTS                : '//' .*? '\n' -> skip;
 
@@ -76,7 +74,7 @@ DEFINE                  : 'define';
 EVERY                   : 'every';
 TASK                    : 'task';
 
-//ARDUINO                 : 'arduino';
+//ARDUINO               : 'arduino';
 PINMODE                 : 'pinmode';
 INPUT                   : 'INPUT';
 OUTPUT                  : 'OUTPUT';
@@ -92,8 +90,8 @@ fragment DIGITALWRITE   : 'DigitalWrite';
 fragment SLEEP          : 'sleep'; //delay, await
 //Analog I/O
 
-fragment ANALOGREAD     : 'analogRead';
-fragment ANALOGWRITE    : 'analogWrite';
+fragment ANALOGREAD     : 'AnalogRead';
+fragment ANALOGWRITE    : 'AnalogWrite';
 
 //Constants
 
