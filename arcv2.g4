@@ -23,7 +23,7 @@ expression              : (NUMBER | IDENTIFIER | BOOL | CHAR) #terminal_expressi
                         | IDENTIFIER '[' NUMBER ']' | ARDUINOFUNCTIONS '(' expression ')' #array_access_expression
                         | '(' expression ')' #parentheses_expression
                         | 'not' expression  #unary_negation_expression
-                        | expression (MULTI | DIVI) expression #multiplication_divide_expression
+                        | expression (MULTI | DIVI) expression #multiplication_divide_expsression
                         | expression (PLUS | MINUS) expression #plus_minus_expression
                         | expression RELATIONEQOPERATORS expression #relational_equality_expression
                         | expression RELATIONOPERATORS expression #relational_operator_expression
