@@ -10,12 +10,12 @@ By doing this, many ideas were taken from many different programming languages, 
 
 \subsection{Types}
 %indsæt den del af grammeren der er af types her
-The language is held simple, and therefore does not contain many different types, the main types in the language are num, text and bool. Num is for all numbers in the language, and using a name that is just short for number should make it recognizable for most people. The value of a type num, is a correct input as long it is a real number. This can be both integers and floats, it was decided to combine the two, to try and simplify the language for beginners and hobbyists.
+The language is held simple, and therefore does not contain many different types, the main types in the language are num, text and bool. Num is for all numbers in the language\todo{Behandles som floats, ikke en kombination}, and using a name that is just short for number should make it recognizable for most people. The value of a type num, is a correct input as long it is a real number. This can be both integers and floats, it was decided to combine the two, to try and simplify the language for beginners and hobbyists.
 Bool is like the bool in other languages, as it can only be true or false. We saw no reason to change this, and therefore decided to keep it as many other languages.
 The type text is an array of characters made by using quotation marks, from the start to the end of the input. This is simillar to languages such as Python, C\#, JavaScript and so on. The main difference is that we have decided to call our strings, text. This is much like with num, where we have made it more recognizable for beginners and hobbyists, who might not know what a string is, but should know what text is.
  
 \subsection{Control Structures}
-As mentioned, there has been taken inspiration from languages such as C, C\#, Python, JavaScript and others. There are three main types of control structure, sequence, conditional and iteration. These are structures like if statements, for loop, while loops and so on. Since many languages use these common control structures in a similar way, we have decided to do the same. These will be described in the following sections:
+As mentioned, there has been taken inspiration from languages such as C, C\#, Python, JavaScript and others. There are three main types of control structure, sequence, conditional and iteration.\todo{Måske en kilde?} These are structures like if statements, for loop, while loops and so on. Since many languages use these common control structures in a similar way, we have decided to do the same. These will be described in the following sections:
 
 %If statements
 \paragraph*{If statement}
@@ -27,12 +27,11 @@ Followed by additional statements, so that more statements can be made.
 This structure is the simmilar to languages that have been used as inpiration, languages such as C, JavaScript and others, create the conditional structure in the same way.
 
 
-%For loop
+%For loop 'for' '(' TYPE_TYPEOPERATOR IDENTIFIER 'in' IDENTIFIER ')' '{' statements '}' statements 
 \subsubsection{For loop}
-The iteration structire 'for' loop, has the terminal for, with a non-terminal paramaterDeclaration, a terminal 'in' and a non-terminal IDENTIFIER, in paratheses. After this, there are non-terminal statements in brackets, followed by additional statements.
+The iteration structire 'for' loop, has the terminal for, with a non-terminal TYPE\_TYPEOPERATOR for the typing, and IDENTIFIER for the name of a variable, a terminal 'in' and a non-terminal IDENTIFIER, in paratheses. After this, there are non-terminal statements in brackets, followed by additional statements.
 The paramaterDeclaration is for declaring a variable, that has to match the type of the IDENTIFIER, that is to be iterated through.
-
-The iteration structure has especially taken inspiration from how Pythons for loop works. Where in Python the IDENTIFIER could be an array, and the paramaterDeclaration is something that is declared, and made a placeholder for the current object in the array. In Python the paramaterDeclaration does not have a given type, however in our language the type will be declared and must match with the type of the IDENTIFIER. The reason for using a Python-like syntax, is because it is simple and rather intuitive, compared to something such as C, where an iterator is declared and used to go through an array. In our case, aswell as in Python, the work is being done in the background, so the user does not have to warry about it.
+The iteration structure has especially taken inspiration from how Pythons for loop works. Where in Python, the IDENTIFIER could be an array, and the paramaterDeclaration is something that is declared, and made a placeholder for the current object in the array. In Python the paramaterDeclaration does not have a given type, however in our language the type will be declared and must match with the type of the IDENTIFIER. The reason for using a Python-like syntax, is because it is simple and rather intuitive, compared to something such as C, where an iterator is declared and used to go through an array. In our case, aswell as in Python, the work is being done in the background, so the user does not have to warry about it.
 
 
 %While loop
