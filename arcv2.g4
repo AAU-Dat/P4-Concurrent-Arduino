@@ -1,133 +1,137 @@
 grammar arcv2;
 
 // Parser grammar
-start                   : declaration*;
 
-declaration            : (TYPE_TYPEOPERATOR IDENTIFIER '=' ('[' (expression (',' expression)*)? ']' | expression) ';')     #variable_declaration
-                        | TYPE_TYPEOPERATOR IDENTIFIER '(' (TYPE_TYPEOPERATOR IDENTIFIER ( ',' TYPE_TYPEOPERATOR IDENTIFIER)*)? ')'  statement*  #function_declaration
-                        | '#' 'pin' IDENTIFIER '('(PINDIGIT |NUMBER)',' ('INPUT' | 'OUTPUT')')' ';' #pin_declaration
-                        | 'task' ('(' (TYPE_TYPEOPERATOR IDENTIFIER ( ',' TYPE_TYPEOPERATOR IDENTIFIER)*)? ')')? (('every' NUMBER) | ('when' '(' expression ')')) statement*  #task_declaration;
+start                                         : declaration*;
 
-block                   : '{' statement* '}';
+declaration                               : (TYPE_TYPEOPERATOR IDENTIFIER '=' ('[' (expression (',' expression)*)? ']' | expression) ';')                                                                                                                #variable_declaration
+                                                 | TYPE_TYPEOPERATOR IDENTIFIER '(' (TYPE_TYPEOPERATOR IDENTIFIER ( ',' TYPE_TYPEOPERATOR IDENTIFIER)*)? ')'  statement*                            #function_declaration
+                                                 | '#' 'pin' IDENTIFIER '('(PINDIGIT |NUMBER)',' ('INPUT' | 'OUTPUT')')' ';'                                                                                                                                                 #pin_declaration
+                                                 | 'task' ('(' (TYPE_TYPEOPERATOR IDENTIFIER ( ',' TYPE_TYPEOPERATOR IDENTIFIER)*)? ')')? (('every' NUMBER) | ('when' '(' expression ')')) statement*       #task_declaration;
 
-statement               : block #block_statement
-                        | 'return' expression ';' #return_statement
-                        | 'if' '(' expression ')' statement ('else' statement )? #if_else_statement
-                        | 'for' '(' TYPE_TYPEOPERATOR IDENTIFIER 'in' IDENTIFIER ')'  statement   #forloop_statement
-                        | 'while' '(' expression ')' statement #whileloop_statement
-                        | (TYPE_TYPEOPERATOR IDENTIFIER '=' ('[' (expression (',' expression)*)? ']' | expression) ';') #variable_declaration_statement
-                        | IDENTIFIER ('[' NUMBER ']')? '=' ('[' (expression (',' expression)*)? ']' | expression) ';' #assignment_statement
-                        | (IDENTIFIER | ARDUINOFUNCTIONS)'(' (expression (',' expression)*)? ')' ';' #function_call_statement;
+block                                         : '{' statement* '}';
 
-expression              : (NUMBER | IDENTIFIER | BOOL | CHAR) #terminal_expression
-                        | (IDENTIFIER | ARDUINOFUNCTIONS)'(' (expression (',' expression)*)? ')' #function_access_expression
-                        | IDENTIFIER '[' NUMBER ']' #array_access_expression
-                        | '(' expression ')' #parentheses_expression
-                        | 'not' expression  #unary_negation_expression
-                        | expression (MULTI | DIVI) expression #multiplication_divide_expression
-                        | expression (PLUS | MINUS) expression #plus_minus_expression
-                        | expression RELATIONEQOPERATORS expression #relational_equality_expression
-                        | expression RELATIONOPERATORS expression #relational_operator_expression
-                        | expression 'and' expression #and_expression
-                        | expression 'or' expression #or_expression;
+statement                                   : block                                                                                                                                                                                                                                                                 #block_statement
+                                                  | 'return' expression ';'                                                                                                                                                                                                                                          #return_statement
+                                                  | 'if' '(' expression ')' statement ('else' statement )?                                                                                                                                                                                              #if_else_statement
+                                                  | 'for' '(' TYPE_TYPEOPERATOR IDENTIFIER 'in' IDENTIFIER ')'  statement                                                                                                                                            #forloop_statement
+                                                  | 'while' '(' expression ')' statement                                                                                                                                                                                                                      #whileloop_statement
+                                                  | (TYPE_TYPEOPERATOR IDENTIFIER '=' ('[' (expression (',' expression)*)? ']' | expression) ';')                                                                                                               #variable_declaration_statement
+                                                  | IDENTIFIER ('[' NUMBER ']')? '=' ('[' (expression (',' expression)*)? ']' | expression) ';'                                                                                                                               #assignment_statement
+                                                  | (IDENTIFIER | ARDUINOFUNCTIONS)'(' (expression (',' expression)*)? ')' ';'                                                                                                                                           #function_call_statement;
+
+expression                                 : (NUMBER | IDENTIFIER | BOOL | CHAR)                                                                                                                                                                                                  #terminal_expression
+                                                  | (IDENTIFIER | ARDUINOFUNCTIONS)'(' (expression (',' expression)*)? ')'                                                                                                                                               #function_access_expression
+                                                  | IDENTIFIER '[' NUMBER ']'                                                                                                                                                                                                                           #array_access_expression
+                                                  | '(' expression ')'                                                                                                                                                                                                                                                  #parentheses_expression
+                                                  | 'not' expression                                                                                                                                                                                                                                                  #unary_negation_expression
+                                                  | expression (MULTI | DIVI) expression                                                                                                                                                                                                            #multiplication_divide_expression
+                                                  | expression (PLUS | MINUS) expression                                                                                                                                                                                                          #plus_minus_expression
+                                                  | expression RELATIONEQOPERATORS expression                                                                                                                                                                                       #relational_equality_expression
+                                                  | expression RELATIONOPERATORS expression                                                                                                                                                                                            #relational_operator_expression
+                                                  | expression 'and' expression                                                                                                                                                                                                                               #and_expression
+                                                  | expression 'or' expression                                                                                                                                                                                                                                  #or_expression;
 
 
 // Lexical grammar
-NUMBER                  : '-'? DIGIT+ ('.'DIGIT+)?;
 
-PINDIGIT                : 'A'[0-5];
+NUMBER                                 : '-'? DIGIT+ ('.'DIGIT+)?;
 
-INT                     : DIGIT;
+PINDIGIT                                 : 'A'[0-5];
 
-fragment DIGIT          : [0-9];
+INT                                            : DIGIT;
 
-BOOL                    : 'true' | 'false';
+fragment DIGIT                        : [0-9];
 
-CHAR                    :  '"' . '"'; //Is this ascii or unicode?
+BOOL                                        : 'true' | 'false';
 
-TYPE_TYPEOPERATOR       : PREFIXOPERATOR? TYPE ( TYPEOPERATOR)*;
+CHAR                                        :  '"' . '"'; //Is this ascii or unicode?
 
-fragment TYPEOPERATOR   : '[]';
+TYPE_TYPEOPERATOR         : PREFIXOPERATOR? TYPE ( TYPEOPERATOR)*;
 
-fragment PREFIXOPERATOR : 'mut ';
+fragment TYPEOPERATOR      : '[]';
 
-fragment TYPE           : 'num'
-                        | 'bool'
-                        | 'char';
+fragment PREFIXOPERATOR  : 'mut ';
 
-COMMENTS                : '//' .*? '\n' -> skip;
+fragment TYPE                           : 'num'
+                                                    | 'bool'
+                                                    | 'char';
 
-LINECOMMENTS            : '/*' .*? '*/' -> skip;
+COMMENTS                             : '//' .*? '\n' -> skip;
 
-//keywords
-RETURN                  : 'return';
-WHILE                   : 'while';
-IT                      : 'it';
-FOR                     : 'for';
-IN                      : 'in';
-WHEN                    : 'when';
-VOID                    : 'void';
+LINECOMMENTS                    : '/*' .*? '*/' -> skip;
 
-SETUP                   : 'setup';
-ELSE                    : 'else';
-DEFINE                  : 'define';
-EVERY                   : 'every';
-TASK                    : 'task';
+// Keywords
 
-//ARDUINO               : 'arduino';
-PINMODE                 : 'pinmode';
-INPUT                   : 'INPUT';
-OUTPUT                  : 'OUTPUT';
-YIELD                   : 'yield';
+RETURN                                    : 'return';
+WHILE                                       : 'while';
+IT                                                : 'it';
+FOR                                            : 'for';
+IN                                                : 'in';
+WHEN                                        : 'when';
+VOID                                          : 'void';
 
-//from here
-//Digital I/O
+SETUP                                        : 'setup';
+ELSE                                           : 'else';
+DEFINE                                      : 'define';
+EVERY                                       : 'every';
+TASK                                          : 'task';
 
-ARDUINOFUNCTIONS        : DIGITALWRITE | DIGITALREAD | ANALOGREAD | ANALOGWRITE;
-fragment DIGITALREAD    : 'DigitalRead';
-fragment DIGITALWRITE   : 'DigitalWrite';
+// Arduino
 
-fragment SLEEP          : 'sleep'; //delay, await
-//Analog I/O
+PINMODE                                   : 'pinmode';
+INPUT                                         : 'INPUT';
+OUTPUT                                     : 'OUTPUT';
+YIELD                                         : 'yield';
 
-fragment ANALOGREAD     : 'AnalogRead';
-fragment ANALOGWRITE    : 'AnalogWrite';
+// Digital I/O
 
-//Constants
+ARDUINOFUNCTIONS            : DIGITALWRITE | DIGITALREAD | ANALOGREAD | ANALOGWRITE;
+fragment DIGITALREAD           : 'DigitalRead';
+fragment DIGITALWRITE          : 'DigitalWrite';
 
-INPUT_PULLUP            : 'INPUT_PULLUP';
-LED_BUILTIN             : 'LED_BUILTIN';
+fragment SLEEP                           : 'sleep';
+
+// Analog I/O
+
+fragment ANALOGREAD            : 'AnalogRead';
+fragment ANALOGWRITE          : 'AnalogWrite';
+
+// Constants
+
+INPUT_PULLUP                         : 'INPUT_PULLUP';
+LED_BUILTIN                             : 'LED_BUILTIN';
 
 
-MULTI                   : '*';
-DIVI                    : '/';
-PLUS                    : '+';
-MINUS                   : '-';
+MULTI                                           : '*';
+DIVI                                               : '/';
+PLUS                                              : '+';
+MINUS                                           : '-';
 
-RELATIONEQOPERATORS     : '=='
-                        | '!=';
+RELATIONEQOPERATORS        : '=='
+                                                        | '!=';
 
-RELATIONOPERATORS       : '<'
-                        | '>'
-                        | '<='
-                        | '>=';
+RELATIONOPERATORS              : '<'
+                                                        | '>'
+                                                        | '<='
+                                                        | '>=';
 
-AND                     : 'and';
-OR                      : 'or';
-NOT                     : 'not';
-XOR                     : 'xor';
+AND                                                : 'and';
+OR                                                   : 'or';
+NOT                                                : 'not';
+XOR                                                : 'xor';
 
-IDENTIFIER              : ALPHA(DIGIT | ALPHA)*; //has to intersected with words in arduino and c++ that cannot be used
+IDENTIFIER                                   : ALPHA(DIGIT | ALPHA)*;
 
-ASSIGNMENT              : '=';
-SEPERATOR               : ',';
-STARTPARANTHESES        : '(';
-ENDPARANTHESES          : ')';
-STARTSQUAREBRACKET      : '[';
-ENDSQUAREBRACKET        : ']';
-STARTCURLYBRACKET       : '{';
-ENDCURLYBRACKET         : '}';
+ASSIGNMENT                               : '=';
+SEPERATOR                                   : ',';
+STARTPARANTHESES                 : '(';
+ENDPARANTHESES                     : ')';
+STARTSQUAREBRACKET          : '[';
+ENDSQUAREBRACKET              : ']';
+STARTCURLYBRACKET             : '{';
+ENDCURLYBRACKET                 : '}';
 
-fragment ALPHA          : [a-z] | [A-Z] | '_';
+fragment ALPHA                            : [a-z] | [A-Z] | '_';
 
-WS                      : [ \t\n\r]+ -> skip;
+WS                                                   : [ \t\n\r]+ -> skip;
