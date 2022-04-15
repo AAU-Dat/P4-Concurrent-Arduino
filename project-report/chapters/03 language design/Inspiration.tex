@@ -10,35 +10,47 @@ By doing this, many ideas were taken from many different programming languages, 
 
 \subsection{Types}
 %indsæt den del af grammeren der er af types her
-The language is held simple, and therefore does not contain many different types, the main types in the language are num, text and bool. Num is for all numbers in the language, and using a name that is just short for number should make it recognizable for most people. The value of a type num, is a correct input as long it is a real number. This can be both integers and floats, it was decided to combine the two, to try and simplify the language for beginners and hobbyists.
+The language is held simple, and therefore does not contain many different types, the main types in the language are num, text and bool. Num is for all numbers in the language\todo{Behandles som floats, ikke en kombination}, and using a name that is just short for number should make it recognizable for most people. The value of a type num, is a correct input as long it is a real number. This can be both integers and floats, it was decided to combine the two, to try and simplify the language for beginners and hobbyists.
 Bool is like the bool in other languages, as it can only be true or false. We saw no reason to change this, and therefore decided to keep it as many other languages.
-The type text is an array of characters made by using quotation marks, from the start to the end of the input. This is simillar to languages such as Python, C\#, JavaScript and so on. The main difference is that we have decided to call our strings, text. This is much like with num, where we have made it more recognizable for beginners and hobbyists, who might not know what a string is, but should know what text is.
+The type text is an array of characters made by using quotation marks, from the start to the end of the input. \todo{I don't understand what Giovannis comments about this sentence means} This is simillar to languages such as Python, C\#, JavaScript and so on. The main difference is that we have decided to call our strings, text. This is much like with num, where we have made it more recognizable for beginners and hobbyists, who might not know what a string is, but should know what text is.
  
 \subsection{Control Structures}
-As mentioned, there has been taken inspiration from languages such as C, C\#, Python, JavaScript and others. There are three main types of control structure, sequence, conditional and iteration. These are structures like if statements, for loop, while loops and so on. Since many languages use these common control structures in a similar way, we have decided to do the same. These will be described in the following sections:
+As mentioned, there has been taken inspiration from languages such as C, C\#, Python, JavaScript and others. There are three main types of control structure, sequence, conditional and iteration.\todo{Måske en kilde?} These are structures like if statements, for loop, while loops and so on. Since many languages use these common control structures in a similar way, we have decided to do the same. These will be described in the following sections:
+
+\paragraph*{If statements}
+The if statement is a very common conditional structure. The syntax for it, is simmilar to how many other languages structure it, with a keyword 'if', some statements and the option to add an 'else'. The reason we have not changed the structure of it, is because our language is aimed at hobbyists who might me new to coding. Therefore we have chosen a simmilar syntax to many other languages, such as C, C\# or JavaScript, so that in the future they have an easier time learning new languages.
+
 
 %If statements
-\paragraph*{If statement}
-The conditional structure 'if' statement, has the terminal if, with a non-terminal expression, in parentheses, followed by non-terminal statements contained in brackets.After the if statement, there is the option to use an else statement, which follows the same structure, but without the expression. After this more statements can be made.
+%\paragraph*{If statement}
+%The conditional structure 'if' statement, has the terminal if, with a non-terminal expression, in parentheses, followed by non-terminal statements contained in brackets.After the if statement, there is the option to use an else statement, which follows the same structure, but without the expression. After this more statements can be made.
 
-The non-terminal expression, can become many different variants, and how these expressions are evaluated, will be handled in type checking. If the value is true, the conditional structure will execute the statements contained in the brackets, if not, and an else condition is made after the brackets, a jump will occur to the else condition.
-The non-terminal statements in the brackets of the if and else conditional structures can, as an expression, become many different variants. The statements, are where function calls and additional control structures are made.
-Followed by additional statements, so that more statements can be made.
-This structure is the simmilar to languages that have been used as inpiration, languages such as C, JavaScript and others, create the conditional structure in the same way.
+% The non-terminal expression, can become many different variants, and how these expressions are evaluated, will be handled in type checking. If the value is true, the conditional structure will execute the statements contained in the brackets, if not, and an else condition is made after the brackets, a jump will occur to the else condition.
+% The non-terminal statements in the brackets of the if and else conditional structures can, as an expression, become many different variants. The statements, are where function calls and additional control structures are made.
+% Followed by additional statements, so that more statements can be made.
+% This structure is the simmilar to languages that have been used as inpiration, languages such as C, JavaScript and others, create the conditional structure in the same way.
 
 
-%For loop
-\subsubsection{For loop}
-The iteration structire 'for' loop, has the terminal for, with a non-terminal paramaterDeclaration, a terminal 'in' and a non-terminal IDENTIFIER, in paratheses. After this, there are non-terminal statements in brackets, followed by additional statements.
-The paramaterDeclaration is for declaring a variable, that has to match the type of the IDENTIFIER, that is to be iterated through.
+\paragraph*{For loop}
+In the same way that we have not changed much about the structure of the if statement, much has not been changed about the iteration structure, 'for' loop either. It is written with a keyword\todo{Do we call it keyword, or terminal?} 'for', then declaring a variable, another keyword 'in', with another variable which could be an array. This is the followed by some statements.
+This structure is made to resemble that of Python, where a lot of the work of iterating through something is done behind the scene.
 
-The iteration structure has especially taken inspiration from how Pythons for loop works. Where in Python the IDENTIFIER could be an array, and the paramaterDeclaration is something that is declared, and made a placeholder for the current object in the array. In Python the paramaterDeclaration does not have a given type, however in our language the type will be declared and must match with the type of the IDENTIFIER. The reason for using a Python-like syntax, is because it is simple and rather intuitive, compared to something such as C, where an iterator is declared and used to go through an array. In our case, aswell as in Python, the work is being done in the background, so the user does not have to warry about it.
+%For loop 'for' '(' TYPE_TYPEOPERATOR IDENTIFIER 'in' IDENTIFIER ')' '{' statements '}' statements 
+% \subsubsection{For loop}
+% The iteration structire 'for' loop, has the terminal for, with a non-terminal TYPE\_TYPEOPERATOR for the typing, and IDENTIFIER for the name of a variable, a terminal 'in' and a non-terminal IDENTIFIER, in paratheses. After this, there are non-terminal statements in brackets, followed by additional statements.
+% The paramaterDeclaration is for declaring a variable, that has to match the type of the IDENTIFIER, that is to be iterated through.
+% The iteration structure has especially taken inspiration from how Pythons for loop works. Where in Python, the IDENTIFIER could be an array, and the paramaterDeclaration is something that is declared, and made a placeholder for the current object in the array. In Python the paramaterDeclaration does not have a given type, however in our language the type will be declared and must match with the type of the IDENTIFIER. The reason for using a Python-like syntax, is because it is simple and rather intuitive, compared to something such as C, where an iterator is declared and used to go through an array. In our case, aswell as in Python, the work is being done in the background, so the user does not have to warry about it.
 
+
+\paragraph*{While loop}
+The iterative structure, 'while' loop is, as the if statement and for loop, simmilar to how other widely used programming languages use it. With a keyword 'while', with an expression in paratheses, that when evaluated to true will execute the body. The body is the set of statements in brackets. 
 
 %While loop
-\subsubsection{While loop}
-The control structure, \todo{What do we call a while loop? Iteration structure?} 'while' loop, has the terminal while, with an expression in paratheses, followed by statements in bracket and additional statements after.
-The while loop is used to continually execute a block of code, until some condition is met. In this case, the condition is the expression, and as long as the expression evaluates to true, the block of code will be executed.
+% \subsubsection{While loop}
+% The control structure, \todo{What do we call a while loop? Iteration structure?} 'while' loop, has the terminal while, with an expression in paratheses, followed by statements in bracket and additional statements after.
+% The while loop is used to continually execute a block of code, until some condition is met. In this case, the condition is the expression, and as long as the expression evaluates to true, the block of code will be executed.
 
-Inspiration for the syntax of the while loop, has been taken from many different languages, since many of the languages the group has used, use a simmilar syntax. Inspiration from languages such as JavaScript, C and C\# can be seen, as the syntax matches, with a keyword 'while' with a condition in paratheses, followed by a block of code in brackets. Python is also very simmilar, the main difference is that python does not use paratheses or brackets, instead it uses colons and indents to seperate code.
+% Inspiration for the syntax of the while loop, has been taken from many different languages, since many of the languages the group has used, use a simmilar syntax. Inspiration from languages such as JavaScript, C and C\# can be seen, as the syntax matches, with a keyword 'while' with a condition in paratheses, followed by a block of code in brackets. Python is also very simmilar, the main difference is that python does not use paratheses or brackets, instead it uses colons and indents to seperate code.
 
+\paragraph*{Switch case}
+The switch case structure has been omitted from this language, the reasioning for this is simply that we saw the structure as something that can easlisy be done with if statements, and also that the structure would not be widely used by users of a hobbyists skill level. Not that it was planned to be cut from the beginning of designing the language, it stated off as being called 'when' and to be used as many other languages structure the swith case. But by discussing the design of the language, the when structure became less favored, and we therefore decided to simple ommit it from the language to also simplify the creation of the language itself. \todo{Should be read through to ensure that this is what we mean.}

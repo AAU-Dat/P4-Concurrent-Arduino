@@ -1,0 +1,36 @@
+%static vs dynamic typing
+%precedence
+%scoping rules
+\section{Syntax specification} \todo{Could maybe use a better name, Lexical rules?}
+In this section, the syntax specification of Arc will be displayed and discussed. This includes topics such as: Precedence, scoping and static vs. dynamic typing.
+
+\paragraph*{Precedence}
+Precedence in a langue determines the order of which expressions are evaluted. different languages might have different precedence, meaning that an expression in one language can evaluate to one thing, but another in a different language.
+For our language, we have based the operator precedence on C, where 1 has the highest precedence and 8 has the lowest. A table of our precedence hierachy, can be seen in table \ref*{Tab: Operator precedence}. 
+
+\begin{table}[]
+    \begin{tabular}{|l|l|}
+    \hline
+    1  & ()                                                         \\ \hline
+    2  & not                                                        \\ \hline
+    3  & *, /                                                       \\ \hline
+    4  & +, -                                                       \\ \hline
+    5  & \textless{}, \textgreater{}, \textless{}=, \textgreater{}= \\ \hline
+    6  & ==, !=                                                     \\ \hline
+    7  & and                                                        \\ \hline
+    8  & or                                                         \\ \hline
+    \end{tabular}
+    \caption{Operator precedence in Arc}
+    \label{Tab: Operator precedence}
+\end{table} \todo{Double check and ensure precedence is correct}
+
+\paragraph*{Scoping} \todo{Write about scoping rules}
+
+\paragraph*{Typing}
+%static vs dynamic - Compile or runtime
+%strong or weakly typed
+When designing a language it is important to decide whether the language will be staticly typed or dynamicly typed. The difference between the two can either give a programmer more freedom, or help ensure less errors when coding. A dynamicly typed language, the code is compiled and then checked when running, and if an issues is encountered, an error is thrown. This allows the user more freedom to focus on the functionality of the code. Although, it can also lead to errors and difficult bugs to fix.
+Then there is static typing, where the entire code is checked at compile time, so insted of code only being checked when running through it, everything is checked from the beginning. This will of course lead to more errors being found, and code must be correctly typed to even check if it functions as intended. \cite*[]{https://www.techtarget.com/searchapparchitecture/tip/Static-vs-dynamic-typing-The-details-and-differences}\todo{Do the cite right}
+
+Because of this, Arc has been decided to be a staticly typed language, such as languages like C and C\#. Since this should ensure that users have a clear view of what their code does, and why some errors might be thrown.
+
