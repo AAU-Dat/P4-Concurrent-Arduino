@@ -7,7 +7,7 @@ start                                         : declaration*;
 declaration                               : (TYPE_TYPEOPERATOR IDENTIFIER '=' ('[' (expression (',' expression)*)? ']' | expression) ';')                                                                                                                #variable_declaration
                                                  | TYPE_TYPEOPERATOR IDENTIFIER '(' (TYPE_TYPEOPERATOR IDENTIFIER ( ',' TYPE_TYPEOPERATOR IDENTIFIER)*)? ')'  statement*                            #function_declaration
                                                  | '#' 'pin' IDENTIFIER '('(PINDIGIT |NUMBER)',' ('INPUT' | 'OUTPUT')')' ';'                                                                                                                                                 #pin_declaration
-                                                 | 'task' ('(' (TYPE_TYPEOPERATOR IDENTIFIER ( ',' TYPE_TYPEOPERATOR IDENTIFIER)*)? ')')? (('every' NUMBER) | ('when' '(' expression ')')) statement*       #task_declaration;
+                                                 | 'task' ('(' (TYPE_TYPEOPERATOR IDENTIFIER ( ',' TYPE_TYPEOPERATOR IDENTIFIER)*)? ')')? (('every' NUMBER) | ('when' '(' expression ')'))? statement*       #task_declaration;
 
 block                                         : '{' statement* '}';
 
