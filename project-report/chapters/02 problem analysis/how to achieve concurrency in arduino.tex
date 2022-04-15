@@ -1,5 +1,4 @@
 \section{Concurrency on an Arduino}\label{sec:concurrencyinarduino}
-
 In this section, some of the more relevant ways of achieving concurrency on an Arduino will be explored. Emphasis will be put on the immediate advantages and disadvantages related to each of the different ways of concurrency, and how well they might fit as a solution to the problem. The first discussion will be about the prospect of using programming libraries to achieve concurrency on an Arduino. The second discussion is going to be about an alternative solution, namely implementing an operating system (OS) to handle the concurrency.
 
 %1. https://all3dp.com/2/best-arduino-operating-system/
@@ -22,9 +21,11 @@ Protothreads is a library for the C language, which has been packaged to a libra
 
 \blockcquote{Artin2020}{Protothreads provides a blocking context on top of an event-driven system, without the overhead of per-thread stacks. The purpose of protothreads is to implement sequential flow of control without complex state machines or full multi-threading.}
 
-Protothreads are lightweight, stackless threads that provide a mechanism for concurrent programming, which is designed for memory-constrained systems, such as a smaller embedded system or wireless sensor nodes. Protothreads can be used with or without any underlying operating system to provide blocking for event handlers'
-\cite{AdamDunkelProtothreads}. It uses a cooperative concurrency form, which means it is up to the user to synchronize the program to run concurrently. This means that the program is event-driven and before the program can continue to another task, it needs to "complete" the current task before moving on to the next one.
-When working with Protothreading, it is nice to know what the overhead is on two bytes. This means that there is no hidden memory cost during the execution of the program. 
+Protothreads are lightweight, stackless threads that provide a mechanism for concurrent programming, which is designed for memory-constrained systems, such as a smaller embedded system or wireless sensor nodes. Protothreads can be used with or without any underlying operating system to provide blocking for event handlers \cite{AdamDunkelProtothreads}.
+
+It uses a cooperative concurrency form, which means it is up to the user to synchronize the program to run concurrently. This means that the program is event-driven and before the program can continue to another task, it needs to "complete" the current task before moving on to the next one.
+
+When working with Protothreading, it is nice to know what the overhead is only two bytes. This means that there is no hidden memory cost during the execution of the program. 
 
 When using local variables inside a Protothread, the local variables are not preserved and therefore can not be allocated onto the memory, therefore the programmer would have to use global variables instead, if they want to store something inside a variable.
 
