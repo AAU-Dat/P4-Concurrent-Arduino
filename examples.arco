@@ -1,102 +1,3 @@
-//Sebastian
-int[7] Array = {0, 1, 2, 3, 4, 5, 6};
-for num i in Array {
-    when (i) {
-        0 => return 5;
-        1 => 6;
-        2 => 11;
-        3 => 55;
-        4 => if Array[4] > 10 {return 5} else {return 0};
-        5 => 677;
-        6 => 112;
-        else { return 4}
-    }
-}
-
-when Array[2] {
-    > 2 => return 2 + 2;
-    else {return 10}
-}
-
-
-//Nutsy
-mut int sum = 0; //Mut
-
-for x in Array {
-    sum = sum + x;
-}
-
-for x in list where index i {
-    sum = sum + x;
-}
-
-
-num functionDeclaration(bool test, num x){
-    if not test and x >= 5{
-        return x*x
-    }
-    return x
-}
-
-void whileFunction() {
-    mut bool y = true;
-    while y {
-        expressions;
-        if y != true {
-            y = true;
-        }
-    }
-}
-
-
-//Actam
-num GAMER_KD = 2.86;
-
-
-//ghost6969
-int main (){
-    bool hello = true;
-    bool true = 1<3;
-    bool[] boolArray2 = [true, false, true];    
-    bool[] boolArray = [true, false, true];
-    if( boolArray == boolArray2){
-
-    }
-}
-
-bool main (int hello, text wello, bool true){
-    int daniel = 7;
-}
-
-//
-num Legal_Age_For_Drinking = 16;
-num Sebastian_Age = 21;
-if (Sebastian_Age >= legal_Age_For_Drinking) {
-    BOOL Sebastian_Can_Drink = true;
-    return Sebastian_Can_Drink;
-}
-else {
-    BOOL Sebastian_Can_Drink = false;
-    return Sebastian_Can_Drink;
-}
-
-//
-int[7] Array = {0, 1, 2, 3, 4, 5, 6};
-int count = 0;
-for num i in Array {
-    if (i == 2){
-        int count = 1;
-        return count;
-    }
-    else {
-        int count = 0;
-        return count;
-    }
-}
-
-
-
-
 #pin blePeripheral(2, INPUT);                     // BLE Peripheral Device (the board you're programming)
 #pin blePeripheral(2, OUTPUT);
 
@@ -125,7 +26,7 @@ num interval = 2000;          // time to wait in up position before the face act
 num SHAKEpreviousMillis = 0;  // last time update
 num SHAKEinterval = 2000;     // time to wait during shaking for face deactivation
 bool keep = false;                   // this is used to count only one time the face orientation change
-int lastFUNCTION = -1;                  // this is used to know what is the previous rientation
+num lastFUNCTION = -1;                  // this is used to know what is the previous rientation
 
 // Faces initilization: at the beginning every face is false
 bool face0 = false;
@@ -136,38 +37,38 @@ bool face4 = false;
 bool face5 = false;
 
 // LIGHTS face
-mut int LEDlights =  11;   // pin 11: yellow led
+mut num LEDlights =  11;   // pin 11: yellow led
 
 // TEMPERATURE face
-mut int pinTemp = 0;      // pin A0: temperature sensor
-mut int LEDhot =  12;      // pin 12: red led
-mut int LEDcold =  13;     // pin 13: blue led
+mut num pinTemp = 0;      // pin A0: temperature sensor
+mut num LEDhot =  12;      // pin 12: red led
+mut num LEDcold =  13;     // pin 13: blue led
   // temperature value memorization
-int B=3975;                  // B value of the thermistor
+num B=3975;                  // B value of the thermistor
 // resistance value memorization
-float tooHot = 260;         // temperature at which the air conditioner is activated [SET]
-float tooCold = 230;        // temperature at which the heater is activated [SET]
+num tooHot = 260;         // temperature at which the air conditioner is activated [SET]
+num tooCold = 230;        // temperature at which the heater is activated [SET]
 
 // TIMER face
-int BUZZER = 3;              // pin 3: buzzer
+num BUZZER = 3;              // pin 3: buzzer
 bool KEEPtime = false;    // this is used to count only one time the face orientation change (not restart while counting)
-int TIMERmillis = 0;         // the following are for the countdown determination
-int prevSHOWsecond = 0;
-int CountdownInMillis = 0;
-int SHOWmillis = 0;          // millis value calculation result
-int SHOWminute = 0;          // minutes value to show in the monitor for the countdown
-int SHOWseconds = 0;         // seconds value to show in the monitor for the countdown
-mut int SETminute =  2;    // set 2 minute timer [SET]
-mut int SETsecond =  30;   // set 30 seconds timer [SET]
+num TIMERmillis = 0;         // the following are for the countdown determination
+num prevSHOWsecond = 0;
+num CountdownInMillis = 0;
+num SHOWmillis = 0;          // millis value calculation result
+num SHOWminute = 0;          // minutes value to show in the monitor for the countdown
+num SHOWseconds = 0;         // seconds value to show in the monitor for the countdown
+mut num SETminute =  2;    // set 2 minute timer [SET]
+mut num SETsecond =  30;   // set 30 seconds timer [SET]
 
 // SOUND face
-mut int soundLED = 9 ;     // pin 9: green led
-mut int soundSENSOR = 1;  // pin A0: sound sensor
-int brightness = 0;          // green led brightness initialization
+mut num soundLED = 9 ;     // pin 9: green led
+mut num soundSENSOR = 1;  // pin A0: sound sensor
+num brightness = 0;          // green led brightness initialization
 
 // TV face
-mut byte ROWS = 4;         // four rows keypad
-mut byte COLS = 3;
+mut num ROWS = 4;         // four rows keypad
+mut num COLS = 3;
 
 num[] keys = ["1","2","3"];
 
@@ -176,10 +77,10 @@ char keypad = Keypad( makeKeymap(keys), rowPins, colPins, ROWS, COLS );  // keyp
 
 
 // OFF face
-mut int LEDOFF =  2;      // pin A2: red led
+mut num LEDOFF =  2;      // pin A2: red led
 
 
-int setupp() {
+num setupp() {
 
   pinMode(LEDlights, OUTPUTa); // every led is set as an output
   pinMode(LEDhot, OUTPUaT);
