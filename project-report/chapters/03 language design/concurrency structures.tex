@@ -4,16 +4,57 @@
 %We are interested in when somethings happens or when certain amount of time has passed
 %Why like this?
 %Include an example of what our structures will look like
+%sleep vs delay
+%concurrency structure vi ikke har taget med: oncem, co-routine (kotlin) og channels
 
 
 \section{Concurrency structures}
-For our language to incorporate concurrency, there has been designed some concurrency structures, to help users take advantage of concurrency for their needs. In Arc they are called 'tasks' and can either work based on time or based on some condition that needs to be met. We believe this gives users a simple and intuitive way to work with concurrency. Combined with this, there has been made an effort to create a simple and understandable syntax for these structures. These structures are based on Protothreads constructs, but with a slightly modified syntax. \todo{Should expand on the part about protothreads especially}
+For our language to incorporate concurrency, there has been designed some concurrency structures, to help users take advantage of concurrency for their needs. In Arc they are called 'tasks' and can either work based on time, on some condition that needs to be met or an unconditional task, that will run whenever possible. We believe this gives users a simple and intuitive way to work with concurrency. Combined with this, there has been made an effort to create a simple and understandable syntax for these structures. These structures are based on Protothreads constructs, but with a slightly modified syntax. \todo{Should expand on the part about protothreads especially}
 
 \subsection{Types of concurrency}
-The two types of tasks are simillar to functions, but they simply have a set condition that has to be met before executing the body. The tasks use the keyword 'task' to define that the function is concurrent, followed by either none or many formal paramaters. Then the keyword 'every' or 'when' is used to define what type of task is to be made. When creating a time based task, the keyword every is used, followed by a number to determine how often that task is to be executed. When creating a task that is based on a condition that has to be met, the keyword 'when' is used, followed by an expression, when the expression evaluates to true, the task is executed. After defining the type of task, the body is made by declarations, theses are the body of the task that will be executed. 
+The types of tasks are simillar to functions, but they simply have a set condition that has to be met before executing the body. The tasks use the keyword 'task' to define that the function is concurrent, followed by either none or many formal paramaters. Then the keyword 'every', 'when' or no keyword is used to define what type of task is to be made. When creating a time based task, the keyword 'every' is used, followed by a number to determine how often that task is to be executed. An example of a timed task can be seen in listing \ref*{List: Timed task example}. When creating a task that is based on a condition that has to be met, the keyword 'when' is used, followed by an expression, when the expression evaluates to true, the task is executed. An example of a conditional task, can be seen in listing \ref*{List: conditional task example}. If there is no keyword, the task is an unconditional, meaning that it will execute the body whenever it can. An example of an unconditional task, can be seen in listing \ref*{List: unconditional task example}. After defining the type of task, the body is made by declarations, theses are the body of the task that will be executed.
+
+\begin{listing}
+    \begin{minted}{arduino}
+        task(LED_Green) every 1000{
+            if(digitalRead(LED_Green) == HIGH){
+                digitalWrite(LED_Green, LOW);
+            }
+            else{
+                digitalWrite(LED_Green, HIGH);
+            }
+        }
+    \end{minted}
+    \caption{How a timed task is created}
+    \label{List: Timed task example}
+\end{listing}
+
+\begin{listing}
+    \begin{minted}{arduino}
+        task(LED_Red) when(digitalRead(button) == HIGH){
+            digitalWrite(LED_Red, HIGH);
+            sleep(500);
+            digitalWrite(LED_Red, LOW); 
+        }
+    \end{minted}
+    \caption{How a conditional task is created}
+    \label{List: conditional task example}
+\end{listing}
+
+\begin{listing}
+    \begin{minted}{arduino}
+        task(sensorValue){
+            sensorValue = digitalRead(button);
+            Serial.println(sensorValue);
+        }
+    \end{minted}
+    \caption{How an unconditional task is created}
+    \label{List: unconditional task example}
+\end{listing}
+
 
 \subsection{Reasoning for concurrency structures}
-The reason for these concurrency structures is, as mentioned previously, that we believe they give a simple and intuitive method of using concurrency. If a programmer, wishes for a sensor to turn on an LED when it detects something, a simple 'when' task could be made, where the condition of the task would be the value the sensor gives. Perhaps in another case, the programmer whishes for a different LED to blink every second. For this they would simply create an 'every' type task, with the number given, being 1000, to represent 1 second.
+The reason for these concurrency structures is, as mentioned previously, that we believe they give a simple and intuitive method of using concurrency. If a programmer, wishes for a sensor to turn on an LED when it detects something, a simple 'when' task could be made, where the condition of the task would be the value the sensor gives. Perhaps in another case, the programmer whishes for a different LED to blink every second. For this they would simply create an 'every' type task, with the number given, being 1000, to represent 1 second. If there was a need for a task to run whenever possible, an unconditional task would be made, this could be if some value of a sensor was needed, not only when something was detected.
 
-By creating these two tasks, they would also be able to run concurrently. The programmer would, in this case, not have to worry about how these two tasks would interfer with eachother.
+By creating these tasks, they would also be able to run concurrently. The programmer would, in this case, not have to worry about how these tasks would interfer with eachother.
 
