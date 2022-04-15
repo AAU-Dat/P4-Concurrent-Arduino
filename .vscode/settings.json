@@ -30,5 +30,11 @@
         "**/*.gls": true,
         "**/*.tdo": true,
     },
-    "editor.wordWrap": "on"
+    "editor.wordWrap": "on",
+    "java.project.sourcePaths": [".antlr"],
+    "java.project.referencedLibraries": [
+        "lib/**/*.jar", 
+        "/usr/local/lib/antlr-4.10-complete.jar"
+    ]
+
 }
