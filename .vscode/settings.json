@@ -1,16 +1,87 @@
 {
+    "antlr4.generation": {
+        "outputDir": ".antlr",
+        "mode": "external",
+        "language": "Java",
+        "listeners": false,
+        "visitors": true,
+        "alternativeJar": "/usr/local/lib/antlr-4.10-complete.jar"
+    },
+    "java.project.sourcePaths": [
+        ".antlr"
+    ],
+    "java.project.referencedLibraries": [
+        "lib/**/*.jar",
+        "/usr/local/lib/antlr-4.10-complete.jar"
+    ],
+    "latex-workshop.latex.recipes": [
+        {
+            "name": "pdflatex, biber, makeglossaries, pdflatex x 2",
+            "tools": [
+                "pdflatex",
+                "biber",
+                "makeglossaries",
+                "pdflatex",
+                "pdflatex"
+            ]
+        }
+    ],
+    "latex-workshop.latex.tools": [
+        {
+            "name": "latexmk",
+            "command": "latexmk",
+            "args": [
+                "--shell-escape",
+                "-synctex=1",
+                "-interaction=nonstopmode",
+                "-file-line-error",
+                "-pdf",
+                "%DOC%"
+            ]
+        },
+        {
+            "name": "pdflatex",
+            "command": "pdflatex",
+            "args": [
+                "--shell-escape",
+                "-synctex=1",
+                "-interaction=nonstopmode",
+                "-file-line-error",
+                "%DOC%"
+            ]
+        },
+        {
+            "name": "biber",
+            "command": "biber",
+            "args": [
+                "%DOC%"
+            ]
+        },
+        {
+            "name": "makeglossaries",
+            "command": "makeglossaries",
+            "args": [
+                "%DOCFILE%"
+            ]
+        }
+    ],
+    "editor.wordWrap": "bounded",
+    "editor.wordWrapColumn": 130,
+    "editor.rulers": [
+        130
+    ],
     "files.exclude": {
         "**/*.aux": true,
         "**/*.lof": true,
         "**/*.log": true,
-        "**/*.lot": true, 
-        "**/*.fls": true, 
-        "**/*.out": true, 
-        "**/*.toc": true, 
-        "**/*.fmt": true, 
-        "**/*.fot": true, 
-        "**/*.cb": true, 
-        "**/*.cb2": true, 
+        "**/*.lot": true,
+        "**/*.fls": true,
+        "**/*.out": true,
+        "**/*.toc": true,
+        "**/*.fmt": true,
+        "**/*.fot": true,
+        "**/*.cb": true,
+        "**/*.cb2": true,
         "**/*.ist": true,
         "**/.*.lb": true,
         "**/*.bbl": true,
@@ -29,12 +100,5 @@
         "**/*.glo": true,
         "**/*.gls": true,
         "**/*.tdo": true,
-    },
-    "editor.wordWrap": "on",
-    "java.project.sourcePaths": [".antlr"],
-    "java.project.referencedLibraries": [
-        "lib/**/*.jar", 
-        "/usr/local/lib/antlr-4.10-complete.jar"
-    ]
-
+    }
 }
