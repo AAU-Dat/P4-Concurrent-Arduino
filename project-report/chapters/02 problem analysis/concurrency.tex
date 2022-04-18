@@ -21,38 +21,29 @@ Since there is only a single core, and that core does not contain any duplicate 
 \end{figure}
 
 
-The Arduino is therefore a uniprocessor\cite{Bryant2016} - its architecture does not support parallel processing - and for the remainder of the report the term concurrency refers to concurrency \textbf{without parallelism}.
+The Arduino is therefore a uniprocessor\cite{Bryant2016} - its architecture does not support parallel processing - and for the remainder of the report the term concurrency refers to: concurrency \textbf{without parallelism}.
 
 \subsection{Models of concurrency}\label{subsec:modelsofcon}
-Even unicore processors can support several models for concurrency at the application software level. This makes sense since a computer often has more processes running than it has \glspl{cpu}. This is done through interweaving instructions of different processes, which lets the \gls{cpu} appear to run multiple programs.
+Even unicore processors can support several models for concurrency at the application software level. This makes sense since most computers often has more processes running than it has \glspl{cpu}. This is done through interweaving instructions of different processes, which lets the \gls{cpu} appear to run multiple programs.
 
-This interweaving is commonly handled through an \gls{os}, which manages the hardware resources \cite{Bryant2016}. A few different approaches for interweaving processes are supported by the \gls{os}:
+This interweaving is commonly handled through an \gls{os}, which manages the hardware resources \cite{Bryant2016}. However by default, the Arduino does not have an \gls{os}. It is still possible to achieve concurrency on an Arduino, but not without a scheduler, or scheduling, of some kind.
+
+The scheduler is the part of the \gls{os} that handles the planning and switching of different tasks on the CPU within the system. However, an \gls{os} is not the only way to obtain scheduling behaviour. Several tutorials \todo{Insert citations to example links} demonstate different techniques to achieve concurrency on an Arduino, such as the use of the Arduino functions millis() and interrupt().
+
+The milis() technique executes different pieces of code, depending on some programmer defined timeslices and comparisons between the current time and a previous time, while the interrupt() method uses the \gls{cpu} interrupt command to interrupt the \gls{cpu}, and restart it from another place in the code.
+
+Both methods require the programmer to think deeply about how they wish for the program to execute, which gets complicated and potentially frustrating fast. In the case of the millis() method, a lot of variables may be required to execute the program correctly, which is hard track of.In the interrupt() case, it is a very low level command which might not work entirely as a novice or hobbyist expects.
+
+It is also possible to install an \gls{os} on the Arduino, and obtain a scheduler (and other things) that way.
+
+\subsection*{Deprecated at the moment}
+% might be relevant to explain the concurrency models of an OS, to compare the choices.
+This interweaving is commonly handled through an \gls{os}, which manages the hardware resources \cite{Bryant2016}. A few different approaches for interweaving processes are supported by most \glspl{os}: 
 
 \subsubsection{Processes}
-In this model the kernel, the portion of the \gls{os} code that resides in memory while the system is running, schedules and maintains each logical control flow, called a process. Each process has its own 
-
-\blockcquote{Bryant2016}{The kernel is the portion of the operating system code that is always resident in memory.}
-
+In this model the kernel, the portion of the \gls{os} code that resides in memory while the system is running, schedules and maintains each logical control flow, called a process. Each process has its own virtual address space, and therefore requires a mechanism for interprocess communication \cite{Bryant2016}.
 
 \subsubsection{I/O multiplexing}
-
+When an application explicitly schedules its own logical control flow, in the context of a single kernel process, you have I/O multiplexing. In the application, each logical control flow is modelled as a state machine, with the transitions defined and managed by the application code. Since this model is a single process, control flows share virtual address space \cite{Bryant2016}.
 
 \subsubsection{Threads}
-
-
-
-% Note: Operating systems, libraries, scheduling, and differences between the options.
-
-
-
-
-\section*{deprecated for now}
-The scheduler is usually what takes care of these choices and prioritization
-
-Concurrency is used for things like coordinating the execution of processes to maximize throughput. Concurrency is not to be confused with parallelism, which requires multiple cores because you have to do several things at the same time. Concurrency, on the other hand, does not need to be at the same time, just in the right order at the correct times, so it is possible to do with a single core. Since the Arduino has only a single core, this project deals with concurrency without parallelism.
-
-It is possible to achieve concurrency on Arduino, but not without scheduling of some kind. Scheduling is to schedule different tasks to run on the same CPU, fooling users to think that they all run at the same time, while in fact it is running different tasks very fast and switching between them. This scheduling is not built into Arduino so the project will have to decide on how to achieve it. Part of the problem is choosing how to do this, while also keeping the end-user in mind. A hobbyist typically tries to achieve concurrency through the standard functions in Arduino, but many of these functions are not ideal for concurrency.
-
-Several tutorials on how to implement different techniques to achieve some sort of concurrency in Arduino exist. These techniques include Milis() and Interrupt(). Milis() uses the milis function to tell the time, while not pausing to achieve the ability to wait and not do unnecessary tasks at all times. The interrupt() function, on the other hand, cancels the process if something happens, and this can be used to change between different tasks.
-
-\todo[inline]{Maybe include references or examples?}
