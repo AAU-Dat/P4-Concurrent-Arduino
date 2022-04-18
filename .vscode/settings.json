@@ -1,19 +1,5 @@
 {
-    "antlr4.generation": {
-        "outputDir": ".antlr",
-        "mode": "external",
-        "language": "Java",
-        "listeners": false,
-        "visitors": true,
-        "alternativeJar": "/usr/local/lib/antlr-4.10-complete.jar"
-    },
-    "java.project.sourcePaths": [
-        ".antlr"
-    ],
-    "java.project.referencedLibraries": [
-        "lib/**/*.jar",
-        "/usr/local/lib/antlr-4.10-complete.jar"
-    ],
+    "latex-workshop.view.pdf.viewer": "browser",
     "latex-workshop.latex.recipes": [
         {
             "name": "pdflatex, biber, makeglossaries, pdflatex x 2",
@@ -100,5 +86,40 @@
         "**/*.glo": true,
         "**/*.gls": true,
         "**/*.tdo": true,
-    }
+    },
+    "antlr4.generation": {
+        "outputDir": "src/antlr",
+        "mode": "external",
+        "package": "antlr",
+        "listeners": false,
+        "visitors": true,
+        "alternativeJar": "/usr/local/lib/antlr-4.10-complete.jar"
+    },
+    "antlr4.format": {
+        "alignTrailingComments": true,
+        "allowShortBlocksOnASingleLine": true,
+        "breakBeforeBraces": false,
+        "columnLimit": 130,
+        "continuationIndentWidth": 4,
+        "indentWidth": 5,
+        "keepEmptyLinesAtTheStartOfBlocks": true,
+        "maxEmptyLinesToKeep": 1,
+        "reflowComments": false,
+        "spaceBeforeAssignmentOperators": false,
+        "tabWidth": 4,
+        "useTab": false,
+        "alignColons": "hanging",
+        "singleLineOverrulesHangingColon": true,
+        "allowShortRulesOnASingleLine": true,
+        "alignSemicolons": "none",
+        "breakBeforeParens": false,
+        "ruleInternalsOnSingleLine": false,
+        "minEmptyLines": 0,
+        "groupedAlignments": false,
+        "alignFirstTokens": true,
+        "alignLexerCommands": true,
+        "alignActions": false,
+        "alignLabels": true,
+        "alignTrailers": false
+    },
 }
