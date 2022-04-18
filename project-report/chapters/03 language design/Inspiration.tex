@@ -4,15 +4,30 @@ During the group discussion, we all tried to find things that other programming 
 When discussing the syntax of the languages we looked at, we agreed that many of these languages might not be very intuitive for a hobbyist. We therefore needed to do more research on how other languages did this. 
 We started looking at more modern languages, to gather ideas from them, and see what we could do to make our language simpler for hobbyists, to learn and write. The languages Dart, Kotlin, Rust, Python and Zyg were all looked at, for inspiration. One thing we all looked for in the languages, was if they had a readable syntax and what made it readable.
 
-By doing this, many ideas were taken from many different programming languages, some where modified to fit our needs or wants better, others were taken straight from one language and put into ours. Therefore you will see inspiration from many programming languages, when describing ours.  
+By doing this, many ideas were taken from many different programming languages, some where modified to fit our needs or wants better, others were taken straight from one language and put into ours. Therefore you will see inspiration from many programming languages, when describing ours.
 
 
 
-\subsection{Types}
 %indsæt den del af grammeren der er af types her
-The language is held simple, and therefore does not contain many different types, the main types in the language are num, text and bool. Num is for all numbers in the language\todo{Behandles som floats, ikke en kombination}, and using a name that is just short for number should make it recognizable for most people. The value of a type num, is a correct input as long it is a real number. This can be both integers and floats, it was decided to combine the two, to try and simplify the language for beginners and hobbyists.
-Bool is like the bool in other languages, as it can only be true or false. We saw no reason to change this, and therefore decided to keep it as many other languages.
-The type text is an array of characters made by using quotation marks, from the start to the end of the input. \todo{I don't understand what Giovannis comments about this sentence means} This is simillar to languages such as Python, C\#, JavaScript and so on. The main difference is that we have decided to call our strings, text. This is much like with num, where we have made it more recognizable for beginners and hobbyists, who might not know what a string is, but should know what text is.
+%hvorfor så få
+%lille sprog, tid* osv.
+%fokus på concurrency
+%bool er important - event baseret
+%char - fordi man skal bruge characters til LCD'er (no print, do we need it?)
+%Num - behandles kun som floats
+%Mafs can be fucky wucky
+%Simple to have a single category of numbers, not seperate 
+%Nothing is mutable by default
+%Harder to fuck stuff up in concurrency
+\subsection{Types}
+The language is held simple, and therefore does not contain many different types, the main types in the language are num, char and bool.
+The reason it does not contain many different types is to keep the language small and not to overwhelm new users with different categories of types that resemble eachother. Such as int, float, long, short and so on, that are all different categories of numbers. The language has a focus on basic use of concurrency, therefore it has been designed arround that and not to include many complex types and structures. When users would need more complex types and structures, they should also have enough understanding of coding in general, that they can find other languages and libaraies to support their needs.
+
+Num is for all numbers in the language, and using a name that is just short for number should make it recognizable for most people. The value of a type num, is a correct input as long it is a real number. It was decided to simply treat all numbers as floats, This would keep all numbers as one type, and not split into many different categories. The goal with this is to simplify the language for beginners and hobbyists.
+
+Bool is like the bool in other languages, as it can only be true or false. We saw no reason to change this, and therefore decided to keep it as many other languages. The value of a bool is written in quoteation marks, the reason for it to be written like this, and not with a syntax such as C, where the value could be 0 or 1, is because it is more readable and easy to understand.The reason it is included in Arc, is because for event based concurrency\todo{Another word instead of concurrency}, it is important to have bools, since an expression needs to be evaluated for events.
+
+The type char is an array of characters made by using quotation marks, from the start to the end of the input. \todo{I don't understand what Giovannis comments about this sentence means} This is simillar to languages such as Python, C\#, JavaScript and so on. The main difference is that we have decided to call our strings, char. Char is shorthand for character, and should be recognizable for beginners and hobbyists, helping readability. The inclusion of the char type, as one on of the few types in Arc, is 
  
 \subsection{Control Structures}
 As mentioned, there has been taken inspiration from languages such as C, C\#, Python, JavaScript and others. There are three main types of control structure, sequence, conditional and iteration.\todo{Måske en kilde?} These are structures like if statements, for loop, while loops and so on. Since many languages use these common control structures in a similar way, we have decided to do the same. These will be described in the following sections:
