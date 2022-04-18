@@ -1,0 +1,43 @@
+{
+    "java.project.sourcePaths": ["src"],
+    "java.project.outputPath": "bin",
+    "java.project.referencedLibraries": [
+        "lib/**/*.jar",
+        "/usr/local/lib/antlr-4.10-complete.jar"
+    ],
+    "antlr4.generation": {
+        "outputDir": "src/antlr",
+        "mode": "external",
+        "package": "antlr",
+        "listeners": false,
+        "visitors": true,
+        "alternativeJar": "/usr/local/lib/antlr-4.10-complete.jar"
+    },
+    "antlr4.format": {
+        "alignTrailingComments": true,
+        "allowShortBlocksOnASingleLine": true,
+        "breakBeforeBraces": false,
+        "columnLimit": 230,
+        "continuationIndentWidth": 4,
+        "indentWidth": 5,
+        "keepEmptyLinesAtTheStartOfBlocks": true,
+        "maxEmptyLinesToKeep": 1,
+        "reflowComments": false,
+        "spaceBeforeAssignmentOperators": false,
+        "tabWidth": 4,
+        "useTab": false,
+        "alignColons": "hanging",
+        "singleLineOverrulesHangingColon": true,
+        "allowShortRulesOnASingleLine": true,
+        "alignSemicolons": "none",
+        "breakBeforeParens": false,
+        "ruleInternalsOnSingleLine": false,
+        "minEmptyLines": 0,
+        "groupedAlignments": false,
+        "alignFirstTokens": true,
+        "alignLexerCommands": true,
+        "alignActions": false,
+        "alignLabels": true,
+        "alignTrailers": false
+    },
+}

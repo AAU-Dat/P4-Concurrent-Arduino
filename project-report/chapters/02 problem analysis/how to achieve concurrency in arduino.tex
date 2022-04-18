@@ -5,7 +5,7 @@ In this section, some of the more relevant ways of achieving concurrency on an A
 %   The arduino uno has the ATmega328 microcontroller as its brain which limits the possible solutions as they would need to fit that particular architecture.
 
 \subsection{Achieving Concurrency with Programming Libraries}
-\todo{Introduce the different programming languages}
+\todo[inline]{Introduce the different programming languages}
 Protothreads, Eventually, ARTe (and maybe TaskManagerIO)
 
 % Hvilke ting skal vi kigge på 
@@ -19,72 +19,73 @@ Protothreads, Eventually, ARTe (and maybe TaskManagerIO)
 \subsubsection{Protothreads}
 Protothreads is a library for the C language, which has been packaged to a library for Arduino. The point of this library is to give programmers a simpler way to write programs for an event-driven system in memory-constrained environments such as an Arduino UNO.
 
+\todo[inline]{Explain what the advantages and disadvantages of protothreads is relative to the our problem}
+
 \blockcquote{Artin2020}{Protothreads provides a blocking context on top of an event-driven system, without the overhead of per-thread stacks. The purpose of protothreads is to implement sequential flow of control without complex state machines or full multi-threading.}
 
-Protothreads are lightweight, stackless threads that provide a mechanism for concurrent programming, which is designed for memory-constrained systems, such as a smaller embedded system or wireless sensor nodes. Protothreads can be used with or without any underlying operating system to provide blocking for event handlers \cite{AdamDunkelProtothreads}.
+Protothreads are lightweight, stackless threads that provide a mechanism for concurrent programming, which is designed for memory constrained systems, such as a smaller embedded system or wireless sensor nodes. Protothreads can be used with or without any underlying operating system to provide blocking for event handlers \cite{AdamDunkelProtothreads}.
 
 It uses a cooperative concurrency form, which means it is up to the user to synchronize the program to run concurrently. This means that the program is event-driven and before the program can continue to another task, it needs to "complete" the current task before moving on to the next one.
 
-When working with Protothreading, it is nice to know what the overhead is only two bytes. This means that there is no hidden memory cost during the execution of the program. 
+When working with Protothreading, it is nice to know what the overhead is only two bytes. This means that there is no hidden memory cost during the execution of the program.
 
 When using local variables inside a Protothread, the local variables are not preserved and therefore can not be allocated onto the memory, therefore the programmer would have to use global variables instead, if they want to store something inside a variable.
 
 Lastly, it is important that the code inside a Protothread needs to be "fast", meaning that the programmer can not use any blocking function such as the delay() function because this would block the other functions to run. \cite{AdamDunkelProtothreads}
 
-In relation to what protothreads are, there has been taken an example of a simple and small program to show what Protothreading can be used to which can be seen at Figure \todo{Insert figure reference} \cite{ArduinoProtothreadsTutorial2019}.
+In relation to what protothreads are, there has been taken an example of a simple and small program to show what Protothreading can be used to which can be seen at listing \ref{List: Protothreads example}.
+
 
 \begin{listing}[htb!]
-\centering
-\begin{minted}{c}
-#include "protothreads.h"
+  \centering
+  \begin{minted}{arduino}
+    #include "protothreads.h"
 
-const int buttonPin = 12;     // the number of the pushbutton pin
-const int ledPin =  8;      // the number of the LED pin
-int buttonState = 0;         // variable for reading the pushbutton status
-pt ptBlink;
-int blinkThread(struct pt* pt) {
-  PT_BEGIN(pt);
-  for(;;) {
-    digitalWrite(ledPin, HIGH);   // turn the LED on (HIGH is the voltage level)
-    PT_SLEEP(pt, 500);
-    digitalWrite(ledPin, LOW);    // turn the LED off by making the voltage LOW
-    PT_SLEEP(pt, 500);
-  }
-  PT_END(pt);
-}
+    const int buttonPin = 12; // the number of the pushbutton pin
+    const int ledPin = 8; // the number of the LED pin
+    int buttonState = 0;  // variable for reading the pushbutton status
+    pt ptBlink, ptButton;
+    int blinkThread(struct pt *pt) {
+      PT_BEGIN(pt);
+      for (;;) {
+        digitalWrite(ledPin, HIGH); // turn the LED on (HIGH is the voltage level)
+        PT_SLEEP(pt, 500);
+        digitalWrite(ledPin, LOW); // turn the LED off by making the voltage LOW
+        PT_SLEEP(pt, 500);
+      }
+      PT_END(pt);
+    }
 
-pt ptButton;
-int buttonThread(struct pt* pt) {
-  PT_BEGIN(pt);
-  for(;;) {
-    int sensorValue = digitalRead(buttonPin);
-    Serial.println(sensorValue);
-    PT_SLEEP(pt, 1);
-    PT_YIELD(pt);
-  }
-  PT_END(pt);
-}
+    int buttonThread(struct pt *pt) {
+      PT_BEGIN(pt);
+      for (;;)
+      {
+        buttonState = digitalRead(buttonPin);
+        Serial.println(buttonState);
+        PT_YIELD(pt);
+      }
+      PT_END(pt);
+    }
 
-void setup() {
-  PT_INIT(&ptBlink);
-  PT_INIT(&ptButton);
-  Serial.begin(9600);
-  pinMode(ledPin, OUTPUT);
-  pinMode(buttonPin, INPUT);
-}
+    void setup() {
+      PT_INIT(&ptBlink);
+      PT_INIT(&ptButton);
+      Serial.begin(9600);
+      pinMode(ledPin, OUTPUT);
+      pinMode(buttonPin, INPUT);
+    }
 
-void loop() {
-  PT_SCHEDULE(blinkThread(&ptBlink));
-  PT_SCHEDULE(buttonThread(&ptButton));
-}
-\end{minted}
-\caption{A small program on how a Protothreads can be implemented}
-\label{List: Protothreads example}
+    void loop() {
+      PT_SCHEDULE(blinkThread(&ptBlink));
+      PT_SCHEDULE(buttonThread(&ptButton));
+    }
+  \end{minted}
+  \caption{A small program on how a Protothreads can be implemented}
+  \label{List: Protothreads example}
 \end{listing}
 
 \cleardoublepage
 
-\todo{Explain what the advantages and disadvantages of protothreads is relative to the our problem}
 
 % I know that the code exsample only use one protothreads, but the point was to show how to use protothread even though it only were one thread.
 
@@ -103,46 +104,46 @@ To give a better understanding of how the Eventually C++ library is working, in 
 
 
 \begin{listing}
-\begin{minted}{arduino}
-#include <Eventually.h>
-#define LIGHT_PIN 8
-#define BUTTON_PIN 12
+  \begin{minted}{arduino}
+    #include <Eventually.h>
+    #define LIGHT_PIN 8
+    #define BUTTON_PIN 12
 
-bool pinState = true;
-EvtManager mgr;
-bool blinker() {
-  mgr.resetContext();
-  mgr.addListener(new EvtTimeListener(1000, true, (EvtAction)blink_pin)); 
-  mgr.addListener(new EvtPinListener(BUTTON_PIN, (EvtAction)digital_read));
-}
+    bool pinState = true;
+    EvtManager mgr;
+    bool blinker() {
+      mgr.resetContext();
+      mgr.addListener(new EvtTimeListener(1000, true, (EvtAction)blink_pin)); 
+      mgr.addListener(new EvtPinListener(BUTTON_PIN, (EvtAction)digital_read));
+    }
 
-void blink_pin() {
-  if (pinState == true) {
-     digitalWrite(LIGHT_PIN, HIGH);
-  }
-  else {
-    digitalWrite(LIGHT_PIN, LOW);
-  }
-  pinState = !pinState;
-}
+    void blink_pin() {
+      if (pinState == true) {
+        digitalWrite(LIGHT_PIN, HIGH);
+      }
+      else {
+        digitalWrite(LIGHT_PIN, LOW);
+      }
+      pinState = !pinState;
+    }
 
-void digital_read() {
-    int sensorVal = digitalRead(BUTTON_PIN);
-    Serial.println(sensorVal);
-    delay(1);
-}
+    void digital_read() {
+        int sensorVal = digitalRead(BUTTON_PIN);
+        Serial.println(sensorVal);
+        delay(1);
+    }
 
-void setup() {
-  Serial.begin(9600);
-  pinMode(LIGHT_PIN, OUTPUT);
-  pinMode(BUTTON_PIN, INPUT);
-  blinker();
-}
+    void setup() {
+      Serial.begin(9600);
+      pinMode(LIGHT_PIN, OUTPUT);
+      pinMode(BUTTON_PIN, INPUT);
+      blinker();
+    }
 
-USE_EVENTUALLY_LOOP(mgr)
-\end{minted}
-\caption{A small program on how Eventually can be implemented}
-\label{List: Eventually example}
+    USE_EVENTUALLY_LOOP(mgr)
+  \end{minted}
+  \caption{A small program on how Eventually can be implemented}
+  \label{List: Eventually example}
 \end{listing}
 
 
@@ -154,12 +155,12 @@ Arduino Real-Time extension (ARTe) is being developed by Real-Time System Labora
 
 
 \subsection{Achieving Concurrency with an Operating System}
-\todo{Introduce the different operative systems}
+\todo[inline]{Introduce the different operative systems}
 (Erika OS), FreeRTOS, Simba OS, TaskManagerIO
 
 
 
-\todo{Is writing about the OS Erika relevant?} % move beneath ARTe
+\todo[inline]{Is writing about the OS Erika relevant?} % move beneath ARTe
 %\subsubsection{Erika}
 
 
@@ -174,8 +175,8 @@ Free Real-Time Operating System (abbreviated to FreeRTOS) is an operating system
 
 
 \begin{listing}[htb!]
-\centering
-\begin{minted}{c}
+  \centering
+  \begin{minted}{c}
 #include <Arduino_FreeRTOS.h>
 
 void TaskBlink( void *pvParameters );
@@ -210,8 +211,8 @@ void TaskAnalogRead(void *pvParameters){ // This is a task.
   }
 }
 \end{minted}
-\caption{A small example of a possible implementation of Free RTOS.}
-\label{List:freeftosexample}
+  \caption{A small example of a possible implementation of Free RTOS.}
+  \label{List:freeftosexample}
 \end{listing}
 
 %and Preemptive concurrency forms \cite{UsingFreeRTOSMultitasking}, the preemptive concurrency form is priority-based, like the cooperative concurrency form the preemptive concurrency form has to prioritise the tasks in the program, but a task has to be completed in the time period which the scheduler has given task, it then switches to another task and if the first task was not completed it switches back \cite{Windows}.
