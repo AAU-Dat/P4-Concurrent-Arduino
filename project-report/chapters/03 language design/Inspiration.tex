@@ -1,32 +1,13 @@
 \section{Inspiration to our language}\label{sec:inspiration}
-When designing a programming language it is a good idea to look at other programming languages for inspiration. We began by discussing the languages we knew: C, JavaScript and C\#. It was also important to check C++, as it was the language, Arc compiles to.
+When designing a programming language it is a good idea to look at other programming languages for inspiration. We began by discussing the languages we knew: C, JavaScript and C\#. It was also important to check C++, as it was the language, that would be used as taget language of our transpiler. During the group discussion, there was found what was liked in each langauge and the reason why it was liked. From this there could be made descisions about what was to be implemented in Arc. More modern languages where also looked at for inspiration: Dart, Kotlin, Rust, Python and Zyg. 
 
-During the group discussion,
-we all tried to find things that other programming languages did well, what we each liked in a language and why we liked it. This was done to get an idea for what our programming language should include.
-When discussing the syntax of the languages we looked at, we agreed that many of these languages might not be very intuitive for a hobbyist. We therefore needed to do more research on how other languages did this.
-
-We started looking at more modern languages, to gather ideas from them, and see what we could do to make our language simpler for hobbyists, to learn and write. The languages Dart, Kotlin, Rust, Python and Zyg were all looked at, for inspiration. One thing we all looked for in the languages, was if they had a readable syntax and what made it readable.
-
-By doing this, many ideas were taken from many different programming languages, some were modified to fit our needs or wants better, others were taken straight from one language and put into ours. Therefore you will see inspiration from many programming languages, when describing ours.\urgent{A lot of we, you and ours}
+By doing this, many ideas were taken from many different programming languages, some were modified to fit our needs or wants better, others were taken straight from one language and put into ours. Therefore there will be seenn inspiration from many programming languages, when describing Arc.
 
 
-
-%indsæt den del af grammeren der er af types her
-%hvorfor så få
-%lille sprog, tid* osv.
-%fokus på concurrency
-%bool er important - event baseret
-%char - fordi man skal bruge characters til LCD'er (no print, do we need it?)
-%Num - behandles kun som floats
-%Mafs can be fucky wucky
-%Simple to have a single category of numbers, not seperate 
-%Nothing is mutable by default
-%Harder to fuck stuff up in concurrency
-%Types must be relevant for concurrency and other parts of our criteria
 \subsection{Types}\label{sec:types}
-When designing a language, the amount of types and what types to be implemented is an important descision, to guide this descision there some set criteria for the language that it must live up to. The language must be a simple language able to work concurrently on the Arduino, be simple to use for hobbyists, and also the language has a time limit for completion, which is also to be taken into consideration. We have a presumtion that fewer types in a language, increases readability and helps to not overwhelm users, but can lead to a lack of options for specific tasks. Since fewer types give users less types to consinder when coding, the choice should become more clear, of what to use. Having a lot of types, has the beenfit of giving users more options and being able to work on more specific tasks easier.
+When designing a language, the amount of types and what types to be implemented is an important descision, to guide this descision there some set criteria for the language that it must live up to. The language must be a simple language able to work concurrently on the Arduino, be simple to use for hobbyists, and also the language has a time limit for completion, which is also to be taken into consideration. We have a presumtion that fewer types in a language, to a certain degree, increases the languages simplicity. According to \todo{Ref to criteria tabel from Sebesta}, simplicity in a language increases readability, writeability and reliability. Since fewer types give users less types to consinder when coding, the choice should become more clear, of what to use. Having a lot of types, has the beenfit of giving users more options and being able to work on more specific tasks easier.
 
-For our criteria, that many types might not be necessary. For a small and simple language that can give hobbyists the oppotunity to work with concurrency, a handfull of types will be sufficient. Also fewer types will help reduce time spent on language design, and give more time to focus on the concurrency aspects of the language. Therefore, in Arc there will only be three types for now: Num, Bool and Char. Num for numbers that can work with arithmetic, Bool for evaluating expressions and giving either true or false values and Char for some simple string manipulation\question{Is it called string manipulation?} these types should be sufficient enough, for hobbyists to create some simple concurrent code, thereby living up the criteria we set for the language. For needs above what is in Arc, other languages or libaraies must be used. 
+For our criteria, that many types might not be necessary. For a small and simple language that can give hobbyists the oppotunity to work with concurrency, a handfull of types will be sufficient. Also fewer types will help reduce time spent on language design, and give more time to focus on the concurrency aspects of the language. Therefore, in Arc there will only be three types for now: Num, Bool and Char. Num for numbers that can work with arithmetic, Bool for boolean, to evaluate expressions and giving either true or false values and Char for some simple string manipulation\question{Is it called string manipulation?} these types should be sufficient enough, for hobbyists to create some simple concurrent code, thereby living up the criteria we set for the language. For needs above what is in Arc, other languages or libaraies must be used. 
 
 \paragraph*{Num}
 Num, is for all numbers in Arc. The name num, is simply used to make it more recognizable for users. Languages such as C, have many different types for different categories of numbers, integers, floats, double and so on. Other languages such as JavaScript only has two types for numbers, Number and BigInt, where number can store both integers and floats.
@@ -36,24 +17,24 @@ Compared to the option of using few or a single type to represent numbers in Arc
 For Arc, a basic ability to manipulate numbers in a simple manner, will be sufficient. For this, a direction in a simmilar manner to how JavaScript handles numbers, will be used. Since the goal of Arc, is simple concurrency, indepth control of arithmetic will not be a concern, and focus will be on giving users an easy way to begin work with concurrency.
 
 \paragraph*{Bool}
-Bool is like the bool in other languages, as it can only be true or false. We saw no reason to change this, and therefore decided to keep it as many other languages. The value of a bool is written in quoteation marks, the reason for it to be written like this, and not with a syntax such as C, where the value could be 0 or 1, is because it is more readable and easy to understand.The reason it is included in Arc, is because for event based concurrency\todo{Another word instead of concurrency}, it is important to have bools, since an expression needs to be evaluated for events.
+Bool is included in Arc, as in many other languages, and simply evaluates to either true for false. The value of a bool is written in quotation marks, as "true" and "false", unlike a language such as C, where the value could be 0 or 1. We assume this makes it more readable and easy to understand for hobbyists. Boolean is an important type to implement, not only for some of Arcs concurrency structures, but for code in general, as it is used to evaluate expressions. 
 
 \paragraph*{Char}
-The type char is an array of characters made by using quotation marks, from the start to the end of the input. \todo{Still missing to fix, to Giovannis feedback} This is simillar to languages such as Python, C\#, JavaScript and so on. The main difference is that we have decided to call our strings, char. Char is shorthand for character, and should be recognizable for beginners and hobbyists, helping readability. The inclusion of the char type, as one on of the few types in Arc, is 
+Char is for all characters in Arc. There are a few different ways of giving users the ability to manipulate text. C does not have built-in strings, but instead uses character arrays. Other languages such as Python, have built-in strings. Arc will use char in a simmilar way to C, where char is a single character, and can be put into an array, to make a character array. Since for simple concurrency, basic string manipulation will be sufficient.
 
 
 \subsection{Control Structures}
-As mentioned, there has been taken inspiration from languages such as C, C\#, Python, JavaScript and others. There are three main types of control structure, sequence, conditional and iteration.\todo{Måske en kilde?} These are structures like if statements, for loop, while loops and so on. Since many languages use these common control structures in a similar way, we have decided to do the same. These will be described in the following sections:
+As mentioned, there has been taken inspiration from languages such as C, C\#, Python, JavaScript and others. There are three main types of control structure: sequence, conditional and iteration.\todo{Måske en kilde?} These are structures like if statements, for loop, while loops and so on. Since many languages use these common control structures in a similar way, we have decided to do the same.
 
 \paragraph*{If statements}
-The if statement is a very common conditional structure. The syntax for it, is simmilar to how many other languages structure it, with a keyword 'if', some statements and the option to add an 'else'. The reason we have not changed the structure of it, is because our language is aimed at hobbyists who might me new to coding. Therefore we have chosen a simmilar syntax to many other languages, such as C, C\# or JavaScript, so that in the future they have an easier time learning new languages.
+The if statement is a very common conditional structure. The syntax for it, is simmilar to how many other languages structure it, with a keyword 'if', some statements and the option to add an 'else'. The reason the structure has not been changed, is because Arc is aimed at hobbyists who might me new to coding. Therefore there has chosen a simmilar syntax to many other languages, such as C, C\# or JavaScript, so that in the future users may have an easier time learning new languages.
 
 \paragraph*{For loop}
-In the same way that we have not changed much about the structure of the if statement, much has not been changed about the iteration structure, 'for' loop either. It is written with a keyword\todo{Do we call it keyword, or terminal?} 'for', then declaring a variable, another keyword 'in', with another variable which could be an array. This is the followed by some statements.
+In the same way that the structure of the if statement was not changed compared to other languages, much has not been changed about the iteration structure, 'for' loop either. It is written with a keyword\todo{Do we call it keyword, or terminal?} 'for', then declaring a variable, another keyword 'in', with another variable which could be an array. This is the followed by some statements.
 This structure is made to resemble that of Python, where a lot of the work of iterating through something is done behind the scene.
 
 \paragraph*{While loop}
 The iterative structure, 'while' loop is, as the if statement and for loop, simmilar to how other widely used programming languages use it. With a keyword 'while', with an expression in paratheses, that when evaluated to true will execute the body. The body is the set of statements in brackets. 
 
 \paragraph*{Switch case}
-The switch case structure has been omitted from this language, the reasioning for this is simply that we saw the structure as something that can easlisy be done with if statements, and also that the structure would not be widely used by users of a hobbyists skill level. Not that it was planned to be cut from the beginning of designing the language, it stated off as being called 'when' and to be used as many other languages structure the swith case. But by discussing the design of the language, the when structure became less favored, and we therefore decided to simple ommit it from the language to also simplify the creation of the language itself. \todo{Should be read through to ensure that this is what we mean.}
+The switch case structure has been omitted from this language. It stated off as being called 'when' and to be used as many other languages structure the switch case. But by discussing the design of the language, the when structure became less favored, and it was therefore decided to simple ommit it from the language to also simplify the creation of the language itself.
