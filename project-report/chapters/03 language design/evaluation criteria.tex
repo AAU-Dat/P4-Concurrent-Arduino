@@ -11,30 +11,20 @@ The secondary concern is the concurrency issue that follows from the primary con
 The tertiary and last concern follows from the secondary issue - determining how to use concurrency to solve the problem in an Arduino. Concurrency problems can be subtle and complex, so understanding that you are even dealing with a concurrency issue may not be immediately apparent, and thus a simple solution may be hard to spot.
 
 \subsection{Priority of criteria characteristics}
-\citetitle{Sebesta2016} lists four criteria: readability, writability, reliability, and cost. These criteria are each affected by several characteristics, with varying influence and importance \cite{Sebesta2016}.
+\citetitle{Sebesta2016} lists four criteria: readability, writability, reliability, and cost. These criteria are each affected by several characteristics, with varying influence and importance \cite{Sebesta2016}. It is important to note that there characteristics can not be measured, but are important to keep in mind, when designing the criteria of a language.
 
-\question{Description or subsections?}
+\paragraph{Readability}
+Readability is described as, how easy programs can be read and understood, in \citetitle*{Sebesta2016}. The importance of readability can be seen in maintenance of programs. Where programs with low readability, would be difficult and overwhelming to programmars, to work with. 
 
-\begin{description}
-\item[Readability] 
-\item[Writability] 
-\item[Reliability] 
-\item[Cost] 
-\end{description}
+\paragraph{Writability}
+Writeability is describes as, how easy the program is to write, in \citetitle*{Sebesta2016}. A program with good writeability, will be able to be written easier and more expressive, compared to a program with low writeability. 
 
-\subsubsection{Readability}
+\paragraph*{Reliability}
+Reliability is describes as, how reliable a program is, in \citetitle*{Sebesta2016}. Reliability is important, as a program with high reliability, will perform correctly under all conditions.
 
+\paragraph*{Cost}
+In \citetitle*{Sebesta2016}, cost is described as many things combined, such as the cost of teaching new programmars to use the language, the cost of writing the language, and so on. These costs all add up, and many things can be done to reduce this cost. Such as better readability and writeability, faster compile times, better reliability, and more.
 
-\subsubsection{Writability}
-
-
-\subsubsection{Reliability}
-
-
-\subsubsection{Cost}
-
-
-\feedback{Maybe briefly mention the criteria in full. Not detailed or copied, but mentions.}
 
 With these considerations in mind, we have prioritized and selected the characteristics for each criterion as we expect them to matter in this context.
 
@@ -42,7 +32,7 @@ The primary concern deals primarily with a subset of considerations related to t
 
 Expressivity and syntax design are also important characteristics, as seen from the secondary and tertiary concerns. The language should express new constructs that are not available in the Arduino language in a concise manner. An aim of the syntax could be to describe concurrent programs simply.
 
-The number of data types is probably a somewhat important characteristic. As long as the expressivity of the language is not greatly affected, the number of data types is reduced \feedback{What does it mean to reduce data types. Perhaps explain it as generalizing data types with an example.} compared to the Arduino language is likely to have a positive effect on overall simplicity and writability. On the other hand, good support for abstraction, that is, user-defined types, may enable advanced users to have the freedom of many primitive types, without significantly impacting the overall simplicity of the language. \feedback{Abstraction should be explained properly as from the perspective of the type system.}
+The number of data types is probably a somewhat important characteristic. As long as the expressivity of the language is not greatly affected, the number of data types is reduced, by generalizing them. An example of this would be datatypes such as integers, doubles, and floats all being generalized to a single data type, Number. This reduction of datatypes, compared to the Arduino language, is likely to have a positive effect on overall simplicity and writability. On the other hand, good support for abstraction, that is, user-defined types, may enable advanced users to have the freedom of many primitive types, without significantly impacting the overall simplicity of the language. \feedback{Abstraction should be explained properly as from the perspective of the type system.}
 
 It is important to consider the language paradigm as well, as this has a large effect on the type checking mechanisms commonly used, not to mention the syntax design. It is a determinant factor in the description of mutability versus immutability, state versus statelessness, aliasing, and pointer management.
 
