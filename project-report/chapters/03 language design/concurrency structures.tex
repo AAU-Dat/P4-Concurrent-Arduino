@@ -9,10 +9,19 @@
 
 %parameters are mutable
 \section{Concurrency structures}\label{sec:concurrency structures}
-For our language to incorporate concurrency, there has been designed some concurrency structures, to help users take advantage of concurrency for their needs. In Arc they are called 'tasks' and can either work based on time, on some condition that needs to be met or an unconditional task, that will run whenever possible. We believe this gives users a simple and intuitive way to work with concurrency. Combined with this, there has been made an effort to create a simple and understandable syntax for these structures. These structures are based on Protothreads constructs, but with a slightly modified syntax. \todo{Should expand on the part about protothreads especially}
+For Arc to incorporate concurrency, there has been designed some concurrency structures, to help users take advantage of concurrency, for their needs. In Arc they are called 'tasks' and can either work based on time, on some condition that needs to be met or an unconditional task, that will run whenever possible. We believe this gives users a simple and intuitive way to work with concurrency. Combined with this, there has been made an effort to create a simple and understandable syntax for these structures. These structures are based on Protothreads constructs, but with a slightly modified syntax.
 
+
+%mention paramaters
 \subsection{Types of concurrency}
-The types of tasks are simillar to functions, but they simply have a set condition that has to be met before executing the body. The tasks use the keyword 'task' to define that the function is concurrent, followed by either none or many formal paramaters. Then the keyword 'every', 'when' or no keyword is used to define what type of task is to be made. When creating a time based task, the keyword 'every' is used, followed by a number to determine how often that task is to be executed. An example of a timed task can be seen in listing \ref*{List: Timed task example}. When creating a task that is based on a condition that has to be met, the keyword 'when' is used, followed by an expression, when the expression evaluates to true, the task is executed. An example of a conditional task, can be seen in listing \ref*{List: conditional task example}. If there is no keyword, the task is an unconditional, meaning that it will execute the body whenever it can. An example of an unconditional task, can be seen in listing \ref*{List: unconditional task example}. After defining the type of task, the body is made by declarations, theses are the body of the task that will be executed.
+Tasks are simillar to functions, but they simply have a set condition that has to be met before executing the body. The tasks use the keyword 'task' to define that the function is concurrent, followed by either none or many formal paramaters, these paramaters are what the task is allowed to mutate. Since Arc for the most part uses immutables to avoid racecondition, the only way a task can mutate a variable is if it has that variable as a paramater. Then the keyword 'every', 'when', or no keyword is used to define, what type of task is to be made.
+
+When creating a time based task, the keyword 'every' is used, followed by a number to determine how often that task is to be executed. This number is represented in milliseconds, since that is how Arduino handles it.A number system was considered, so that a user could write 1s for one second. This was assumed to be more intuitive for users, but was later scrapped, as the gain seemed minimal.\todo{Måske bare drop den her sætning}
+An example of a timed task can be seen in listing \ref*{List: Timed task example}. This task executes every 1000 milliseconds, and simply turns an LED on or off, depending on it's current state.
+
+When creating a task that is based on a condition that has to be met, the keyword 'when' is used, followed by an expression, when the expression evaluates to true, the task is executed. An example of a conditional task, can be seen in listing \ref*{List: conditional task example}. This task executes when a button reads a value of HIGH, which means when it is pressed. When this happends, an LED is turned on, then waits for half a second, and then turns off.
+
+If there is no keyword, the task is an unconditional, meaning that it will execute the body whenever it can. An example of an unconditional task, can be seen in listing \ref*{List: unconditional task example}. After defining the type of task, the body is made by declarations, theses are the body of the task that will be executed. This task inititalizes a sensorValue, and sets it to be the value read from a button, this value will either be 1 or 0. The value is then printed to Arduinos serial.\todo{Hedder det serial?}
 
 \begin{listing}
     \begin{minted}{arduino}
@@ -31,7 +40,7 @@ The types of tasks are simillar to functions, but they simply have a set conditi
 
 \begin{listing}
     \begin{minted}{arduino}
-        task(LED_Red) when(digitalRead(button) == HIGH){
+        task(LED_Red) when digitalRead(button) == HIGH{
             digitalWrite(LED_Red, HIGH);
             sleep(500);
             digitalWrite(LED_Red, LOW); 
@@ -43,8 +52,8 @@ The types of tasks are simillar to functions, but they simply have a set conditi
 
 \begin{listing}
     \begin{minted}{arduino}
-        task(sensorValue){
-            sensorValue = digitalRead(button);
+        task(){
+            num sensorValue = digitalRead(button);
             Serial.println(sensorValue);
         }
     \end{minted}
