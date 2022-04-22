@@ -56,6 +56,10 @@
     "editor.rulers": [
         130
     ],
+    "[markdown]": {
+        "editor.wordWrap": "bounded",
+        "editor.wordWrapColumn": 130
+    },
     "files.exclude": {
         "**/*.aux": true,
         "**/*.lof": true,

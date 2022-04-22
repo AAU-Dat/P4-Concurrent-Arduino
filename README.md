@@ -1,58 +1,7 @@
 # P4-Concurrent-Arduino
 Extension of the arduino programming language to handle concurrency.
 
-## Latex Workshop Settings
->Ctrl + Shift + p to open the command palette. Search for seetings as JSON.
-```json
-"latex-workshop.latex.recipes": [
-    {
-        "name": "pdflatex, biber, makeglossaries, pdflatex x 2",
-        "tools": [
-            "pdflatex",
-            "biber",
-            "makeglossaries",
-            "pdflatex",
-            "pdflatex"
-        ]
-    }
-],
-"latex-workshop.latex.tools": [
-    {
-        "name": "latexmk",
-        "command": "latexmk",
-        "args": [
-            "--shell-escape",
-            "-synctex=1",
-            "-interaction=nonstopmode",
-            "-file-line-error",
-            "-pdf",
-            "%DOC%"
-        ]
-    },
-    {
-        "name": "pdflatex",
-        "command": "pdflatex",
-        "args": [
-            "--shell-escape",
-            "-synctex=1",
-            "-interaction=nonstopmode",
-            "-file-line-error",
-            "%DOC%"
-        ]
-    },
-    {
-        "name": "biber",
-        "command": "biber",
-        "args": [
-          "%DOC%"
-        ]
-    },
-    {
-        "name": "makeglossaries",
-        "command": "makeglossaries",
-        "args": [
-            "%DOCFILE%"
-        ]
-    }
-]
-```
+## Visual Studio Code Settings
+>Ctrl + Shift + p opens the command palette. Search for settings as JSON if you want to modify your settings.
+
+Several workspace setting files are included for VS Code, in the .vscode folders. These settings handle antlr generation and java project rules, as well as a few miscellaneous settings, like wordwrapping and matching vertical ruler.
