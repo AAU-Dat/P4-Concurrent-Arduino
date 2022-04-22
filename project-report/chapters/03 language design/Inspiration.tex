@@ -1,10 +1,10 @@
-\section{Inspiration to our language}\label{sec:inspiration}
+\subsection{Inspiration to our language}\label{sec:inspiration}
 When designing a programming language it is a good idea to look at other programming languages for inspiration. We began by discussing the languages we knew: C, JavaScript, and C\#. It was also important to check C++, as it was the language, that would be used as the taget language of our transpiler. During the group discussion, there was found what was liked in each language and the reason why it was liked. From this, there could be made decisions about what was to be implemented in Arc. More modern languages were also looked at for inspiration: Dart, Kotlin, Rust, Python, and Zyg. 
 
 By doing this, many ideas were taken from many different programming languages, some were modified to fit our needs or wants better and others were taken straight from one language and put into ours. Therefore there will be seen inspiration from many programming languages, when describing Arc.
 
-
-\subsection{Types}\label{sec:types}
+%Among us
+\subsubsection{Types}\label{sec:types}
 When designing a language, the amount of types and what types to be implemented is an important decisions, to guide this decision there were some set criteria for the language that it must live up to. The language must be a simple language, able to work concurrently on the Arduino, be simple to use for hobbyists, and also the language has a time limit for completion, which is also to be taken into consideration. We have a presumption that fewer types in a language, to a certain degree, increases the simplicity of the language. According to \citetitle*{Sebesta2016}, simplicity in a language increases readability, writeability and reliability. Since fewer types give users less types to consider when coding, the choice should become more clear, of what to use. Having a lot of types has the benefit of giving users more options and being able to work on more specific tasks easier.
 
 For our criteria, many types might not be necessary. For a small and simple language that can give hobbyists the opportunity to work with concurrency, a handfull of types will be sufficient. Also, fewer types will help reduce time spent on language design, and give more time to focus on the concurrency aspects of the language. Therefore, in Arc there will only be three types for now: Num, Bool, and Char. Num for numbers that can work with arithmetic, Bool for boolean, to evaluate expressions and give either true or false values, and Char for some simple string manipulation\question{Is it called string manipulation?}. These types should be sufficient enough, for hobbyists to create some simple concurrent code, thereby living up the criteria we set for the language. For needs above what is in Arc, other languages or libaraies must be used. 
@@ -23,7 +23,7 @@ Bool is included in Arc, as in many other languages, and simply evaluates to eit
 Char is for all characters in Arc. There are a few different ways of giving users the ability to manipulate text. C does not have built-in strings, but instead uses character arrays. Other languages such as Python, have built-in strings. Arc will use char in a similar way to C, where char is a single character, and can be put into an array, to make a character array. Since for simple concurrency, basic string manipulation will be sufficient.
 
 
-\subsection{Control Structures}
+\subsubsection{Control Structures}
 As mentioned, there has been taken inspiration from languages such as C, C\#, Python, JavaScript, and others. There are three main types of control structure: sequence, conditional, and iteration \cite*{CBook}. These are structures such as if statements, for loop, and while loops. Since many languages use these common control structures, we have decided to do the same.
 
 \paragraph*{If statements}

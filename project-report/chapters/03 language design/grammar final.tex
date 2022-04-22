@@ -1,0 +1,6 @@
+\subsection{Arc grammar}\label{sec:arcgrammar}
+
+\begin{align*}
+    start       & \to \text{declaration*}                                                                                           \\
+    declaration & \to \text{TYPE\_TYPEOPERATOR IDENTIFIER '=' ('[' (expression (',' expression)*)? ']'} \mid \text{expression) ';'} \\
+\end{align*}
