@@ -2,8 +2,8 @@
     "java.project.sourcePaths": ["src"],
     "java.project.outputPath": "bin",
     "java.project.referencedLibraries": [
-        "lib/**/*.jar",
-        "/usr/lib/antlr-4.10-complete.jar"
+        "local/**/*.jar",
+        "/usr/local/antlr-4.10-complete.jar"
     ],
     "antlr4.generation": {
         "outputDir": "src/antlr",
@@ -11,7 +11,7 @@
         "package": "antlr",
         "listeners": false,
         "visitors": true,
-        "alternativeJar": "/usr/lib/antlr-4.10-complete.jar"
+        "alternativeJar": "/usr/local/antlr-4.10-complete.jar"
     },
     "antlr4.format": {
         "alignTrailingComments": true,
