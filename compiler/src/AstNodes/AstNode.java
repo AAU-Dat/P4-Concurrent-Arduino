@@ -13,14 +13,14 @@ public abstract class AstNode {
 
     }
     public AstNode(){}
-    void print (){
+    public void print (){
         System.out.println(name);
         if(child != null){
             child.print();
         }
     }
 
-    void MakeSiblings(AstNode newSibling){
+    public void MakeSiblings(AstNode newSibling){
         //this only works if the this object does not have any rightmost sibling and new siblings does not have any siblings themselves
         if(this.rightSibling == null){
             this.rightSibling = newSibling;
@@ -29,7 +29,7 @@ public abstract class AstNode {
         }
     }
 
-    void adoptChildren(AstNode newChild){
+    public void adoptChildren(AstNode newChild){
         //this only works of no previuos children
         if(this.child == null){
             this.child = newChild.leftMostSibling;
@@ -42,7 +42,7 @@ public abstract class AstNode {
 
     }
     //how do i do this if i need them to be differint types of ast nodes fx 1 while node and one expression node
-    void makeFamily(int i){
+    public void makeFamily(int i){
         child = new AstNode() {
             
         };
