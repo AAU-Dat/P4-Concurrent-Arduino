@@ -5,7 +5,7 @@ import antlr.*;
 
 public class App {
     public static void main(String[] args) throws Exception {
-        CharStream input = CharStreams.fromString("num a = 777;");
+        CharStream input = CharStreams.fromString("num a = 7;");
         arcv2Lexer lexer = new arcv2Lexer(input);
         CommonTokenStream tokens = new CommonTokenStream(lexer);
         arcv2Parser parser = new arcv2Parser(tokens);

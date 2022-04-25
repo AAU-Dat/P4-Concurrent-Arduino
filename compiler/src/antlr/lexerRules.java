@@ -1,4 +1,4 @@
-// Generated from /home/runge/semester-project/P4-Concurrent-Arduino/compiler/lexerRules.g4 by ANTLR 4.10
+// Generated from /home/gustav/projects/P4-Concurrent-Arduino/compiler/lexerRules.g4 by ANTLR 4.10
 package antlr;
 import org.antlr.v4.runtime.Lexer;
 import org.antlr.v4.runtime.CharStream;

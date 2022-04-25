@@ -1,12 +1,23 @@
+package AstNodes;
 public abstract class AstNode {
 
     public AstNode parent;
     public AstNode leftMostSibling;
     public AstNode rightSibling;
     public AstNode child;
+    public String name;
 
-    public AstNode() {
+    public AstNode(String name) {
+        this.name = name;
+        System.out.println(name);
 
+    }
+    public AstNode(){}
+    void print (){
+        System.out.println(name);
+        if(child != null){
+            child.print();
+        }
     }
 
     void MakeSiblings(AstNode newSibling){
@@ -30,7 +41,15 @@ public abstract class AstNode {
         }
 
     }
-    void makeFamily(){
+    //how do i do this if i need them to be differint types of ast nodes fx 1 while node and one expression node
+    void makeFamily(int i){
+        child = new AstNode() {
+            
+        };
+        for (int j = 0; j < i; j++) {
+
+            
+        }
         
     }
 
