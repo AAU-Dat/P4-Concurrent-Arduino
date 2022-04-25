@@ -1,6 +1,11 @@
 \subsection{Arc grammar}\label{sec:arcgrammar}
 
 \begin{align*}
-    start       & \to \text{declaration*}                                                                                           \\
-    declaration & \to \text{TYPE\_TYPEOPERATOR IDENTIFIER '=' ('[' (expression (',' expression)*)? ']'} \mid \text{expression) ';'} \\
-\end{align*}
+    start       & \to \text{declaration*}                                                                                                               \\ %variable_declaration
+    declaration & \to \text{TYPE\_TYPEOPERATOR IDENTIFIER '=' ('[' (expression (',' expression)*)? ']'} \mid \text{expression) ';'}                     \\ %function_declaration
+                & \mid \text{TYPE\_TYPEOPERATOR IDENTIFIER '(' (TYPE\_TYPEOPERATOR IDENTIFIER (',' TYPE\_TYPEOPERATOR IDENTIFIER)*)? ')' statement*}    \\ %function_declaration
+                & \mid \text{'\#' 'pin' IDENTIFIER '(' (PINDIGIT} \mid \text{NUMBER) ',' ('INPUT' | 'OUTPUT') ')' ';' }                                 \\ %pin_declaration
+                & \mid \text{'task' ('(' (TYPE\_TYPEOPERATOR IDENTIFIER ( ',' TYPE\_TYPEOPERATOR IDENTIFIER)*)? ')')? (('every' NUMBER)} \mid \text{('when' '(' expression ')'))? statement*} \\ %task_declaration
+    block & \to \text{'\{' statement* '\}'} \\
+            \end{align*}
+ 

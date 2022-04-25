@@ -9,19 +9,21 @@
 
 %parameters are mutable
 \subsection{Concurrency structures}\label{sec:concurrency structures}
-For Arc to incorporate concurrency, there has been designed some concurrency structures, to help users take advantage of concurrency, for their needs. In Arc they are called 'tasks' and can either work based on time, on some condition that needs to be met or an unconditional task, that will run whenever possible. We believe this gives users a simple and intuitive way to work with concurrency. Combined with this, there has been made an effort to create a simple and understandable syntax for these structures. These structures are based on Protothreads constructs, but with a slightly modified syntax.
+For Arc to incorporate concurrency, there has been designed some concurrency structures, to help users take advantage of concurrency, for their needs. In Arc they are called 'tasks' and can either work based on time, on some condition that needs to be met or an unconditional task, that will run whenever possible. Combined with this, there has been made an effort to create a simple and understandable syntax for these structures. These structures are based on Protothreads constructs, but with a slightly modified syntax. \todo{Maybe just ref to the section where we decided to use protothreads}
 
 
 %mention paramaters
 \subsubsection{Types of concurrency}
 Tasks are simillar to functions, but they simply have a set condition that has to be met before executing the body. The tasks use the keyword 'task' to define that the function is concurrent, followed by either none or many formal paramaters, these paramaters are what the task is allowed to mutate. Since Arc for the most part uses immutables to avoid racecondition, the only way a task can mutate a variable is if it has that variable as a paramater. Then the keyword 'every', 'when', or no keyword is used to define, what type of task is to be made.
 
-When creating a time based task, the keyword 'every' is used, followed by a number to determine how often that task is to be executed. This number is represented in milliseconds, since that is how Arduino handles it. A number system was considered, so that a user could write 1s for one second. This was assumed to be more intuitive for users, but was later scrapped, as the gain seemed minimal.\todo{Måske bare drop den her sætning}
+When creating a time based task, the keyword 'every' is used, followed by a number to determine how often that task is to be executed. This number is represented in milliseconds, since that is how Arduino handles it. A number system was considered, so that a user could write 1s for one second.
 An example of a timed task can be seen in listing \ref*{List: Timed task example}. This task executes every 1000 milliseconds, and simply turns an LED on or off, depending on it's current state.
 
 When creating a task that is based on a condition that has to be met, the keyword 'when' is used, followed by an expression, when the expression evaluates to true, the task is executed. An example of a conditional task, can be seen in listing \ref*{List: conditional task example}. This task executes when a button reads a value of HIGH, which means when it is pressed. When this happends, an LED is turned on, then waits for half a second, and then turns off.
 
-If there is no keyword, the task is an unconditional, meaning that it will execute the body whenever it can. An example of an unconditional task, can be seen in listing \ref*{List: unconditional task example}. After defining the type of task, the body is made by declarations, theses are the body of the task that will be executed. This task inititalizes a sensorValue, and sets it to be the value read from a button, this value will either be 1 or 0. The value is then printed to Arduinos serial.\todo{Hedder det serial?}
+If there is no keyword, the task is an unconditional, meaning that it will execute the body whenever it can. An example of an unconditional task, can be seen in listing \ref*{List: unconditional task example}. After defining the type of task, the body is made by declarations, theses are the body of the task that will be executed. This task inititalizes a sensorValue, and sets it to be the value read from a button, this value will either be 1 or 0. The value is then printed to Arduinos serial.
+
+These methods of creating concurrent code, seemed to be intuitive, as the tasks are made in a similar way to how they would be spoken about. We assume that, this makes learning Arcs concurrency structures, fast and intuituve for users.
 
 \begin{listing}
     \begin{minted}{arduino}
@@ -62,7 +64,7 @@ If there is no keyword, the task is an unconditional, meaning that it will execu
 \end{listing}
 
 
-\subsubsection{Reasoning for concurrency structures}
-The reason for these concurrency structures is, as mentioned previously, that we believe they give a simple and intuitive method of using concurrency. If a programmer, wishes for a sensor to turn on an LED when it detects something, a simple 'when' task could be made, where the condition of the task would be the value the sensor gives. Perhaps in another case, the programmer whishes for a different LED to blink every second. For this they would simply create an 'every' type task, with the number given, being 1000, to represent 1 second. If there was a need for a task to run whenever possible, an unconditional task would be made, this could be if some value of a sensor was needed, not only when something was detected.
+%\subsubsection{Reasoning for concurrency structures}
+%The reason for these concurrency structures is, as mentioned previously, that we believe they give a simple and intuitive method of using concurrency. If a programmer, wishes for a sensor to turn on an LED when it detects something, a simple 'when' task could be made, where the condition of the task would be the value the sensor gives. Perhaps in another case, the programmer whishes for a different LED to blink every second. For this they would simply create an 'every' type task, with the number given, being 1000, to represent 1 second. If there was a need for a task to run whenever possible, an unconditional task would be made, this could be if some value of a sensor was needed, not only when something was detected.
 
-By creating these tasks, they would also be able to run concurrently. The programmer would, in this case, not have to worry about how these tasks would interfer with eachother.
+%By creating these tasks, they would also be able to run concurrently. The programmer would, in this case, not have to worry about how these tasks would interfer with eachother.
