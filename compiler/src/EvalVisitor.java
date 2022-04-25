@@ -2,6 +2,7 @@ import antlr.arcv2BaseVisitor;
 import antlr.arcv2Parser;
 
 import AstNodes.*;
+import AstNodes.AstNode.Types;
 
 public class EvalVisitor extends arcv2BaseVisitor<AstNode> {
 
@@ -18,12 +19,19 @@ public class EvalVisitor extends arcv2BaseVisitor<AstNode> {
     public AstNode visitTerminal_expression(arcv2Parser.Terminal_expressionContext ctx) {
 
         String name;
-        if (ctx.IDENTIFIER() != null) {
+        name = ctx.getText();
+        AstNode terminal = new Terminal_expression_node(name);
+        if (ctx.NUMBER() != null)
+            terminal.type = Types.NUM;
+        else if (ctx.BOOL() != null)
+            terminal.type = Types.BOOL;
+        else if (ctx.CHAR() != null)
+            terminal.type = Types.CHAR;
+        else if (ctx.IDENTIFIER() != null) {
             name = "ID";
         } else {
-            name = ctx.getText();
+            System.out.println("OHHHH NOOO");
         }
-        AstNode terminal = new Terminal_expression_node(name);
         return terminal;
     }
 
@@ -35,11 +43,15 @@ public class EvalVisitor extends arcv2BaseVisitor<AstNode> {
             plus_minus_node = new StartNode("plus");
         else
             plus_minus_node = new StartNode("minus");
-
         plus_minus_node.child = visit(ctx.expression(0));
         plus_minus_node.child.MakeSiblings(visit(ctx.expression(1)));
-        return plus_minus_node;
 
+        AstNode[] astnodearray = {plus_minus_node.child, plus_minus_node.child.rightSibling};
+        if (Typecheck.Check(astnodearray, Types.NUM))
+            System.out.println("good typing");
+        else
+            System.out.println("bad typing");
+        return plus_minus_node;
     }
 
     @Override
@@ -53,13 +65,18 @@ public class EvalVisitor extends arcv2BaseVisitor<AstNode> {
 
         mult_divide_node.child = visit(ctx.expression(0));
         mult_divide_node.child.MakeSiblings(visit(ctx.expression(1)));
+        AstNode[] astnodearray = {mult_divide_node.child, mult_divide_node.child.rightSibling};
+        if (Typecheck.Check(astnodearray, Types.NUM))
+            System.out.println("good typing");
+        else
+            System.out.println("bad typing");
         return mult_divide_node;
 
     }
 
     @Override
     public AstNode visitRelational_equality_expression(arcv2Parser.Relational_equality_expressionContext ctx) {
-        AstNode equality_node; 
+        AstNode equality_node;
         if (ctx.children.get(1).getText().toCharArray()[0] == '=')
             equality_node = new StartNode("equality");
         else
@@ -91,7 +108,7 @@ public class EvalVisitor extends arcv2BaseVisitor<AstNode> {
     }
 
     @Override
-    public AstNode visitOr_expression(arcv2Parser.Or_expressionContext ctx){
+    public AstNode visitOr_expression(arcv2Parser.Or_expressionContext ctx) {
         AstNode Or_node = new StartNode("or");
         Or_node.child = visit(ctx.expression(0));
         Or_node.child.MakeSiblings(visit(ctx.expression(1)));
@@ -107,7 +124,7 @@ public class EvalVisitor extends arcv2BaseVisitor<AstNode> {
     }
 
     @Override
-    public AstNode visitParentheses_expression(arcv2Parser.Parentheses_expressionContext ctx){
+    public AstNode visitParentheses_expression(arcv2Parser.Parentheses_expressionContext ctx) {
         AstNode parantheses_node = new StartNode("parantheses");
         parantheses_node.child = visitChildren(ctx);
         return parantheses_node;
@@ -120,14 +137,17 @@ public class EvalVisitor extends arcv2BaseVisitor<AstNode> {
         return unary_node;
     }
 
+    // /* TODO gewg*/
     @Override
     public AstNode visitArray_access_expression(arcv2Parser.Array_access_expressionContext ctx) {
-        AstNode array_node =new StartNode("array_access");
+        Array_access_node array_node = new Array_access_node("array_access",
+                Integer.parseInt(ctx.children.get(2).toString()));
         return array_node;
     }
 
+    // // TODO
     @Override
-    public AstNode visitFunction_access_expression(arcv2Parser.Function_access_expressionContext ctx){
+    public AstNode visitFunction_access_expression(arcv2Parser.Function_access_expressionContext ctx) {
         AstNode function_call = new StartNode("function");
         if (ctx.ARDUINOFUNCTIONS() != null)
             System.out.println("arduinofunction");
