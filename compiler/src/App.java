@@ -4,7 +4,7 @@ import antlr.*;
 
 public class App {
     public static void main(String[] args) throws Exception {
-        CharStream input = CharStreams.fromFileName("src/sourceCode.txt");
+        CharStream input = CharStreams.fromFileName("src/astTestFile.txt");
         arcv2Lexer lexer = new arcv2Lexer(input);
         CommonTokenStream tokens = new CommonTokenStream(lexer);
         arcv2Parser parser = new arcv2Parser(tokens);
