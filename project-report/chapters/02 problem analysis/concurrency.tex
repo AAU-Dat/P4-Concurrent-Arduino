@@ -3,9 +3,9 @@ The term concurrency is a general term for ways a computer system performs multi
 
 \blockcquote{Bryant2016}{We use the term concurrency to refer to the general concept of a system with multiple, simultaneous activities, and the term parallelism to refer to the use of concurrency to make a system run faster.}
 
-We infer that parallelism is a type of concurrency with the purpose to speed up the system, while concurrency in general may have purposes not related to speed.
+We infer that parallelism is a type of concurrency with the purpose to speed up the system, while concurrency in general may have purposes not related to speed, for example synchronization of tasks.
 
-Concurrency is a large and hardware dependant subject. To prevent falling into a concurrency rabbit hole, the limitations of the Arduino hardware in relation to concurrency, specifically the \gls{cpu}, is explored before concurrency in general. This is done because the project is, first and foremost, about programming language design - not concurrency.
+Concurrency is a complex, large and hardware dependant subject~\cite{Sebesta2016}. The limitations of the Arduino hardware in relation to concurrency, specifically the \gls{cpu}, is explored before concurrency in general. This is done because the project is, first and foremost, about programming language design - not concurrency.
 
 \subsection{Arduino hardware}\label{subsec:arduinohardware}
 The Arduino Uno board uses the ATmega328P microcontroller \cite{ArduinoUno}. The architecture of this microcontroller is a scalar single core processor, without hyperthreading(intel) or \gls{smt} (AMD) equivalents \cite{ATmega328P}.

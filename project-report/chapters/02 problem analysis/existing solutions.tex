@@ -65,7 +65,7 @@ Protothreads is a library for the C language, which has been implemented as a li
 
 \blockcquote{Artin2020, AdamDunkelProtothreads}{Protothreads provides a blocking context on top of an event-driven system, without the overhead of per-thread stacks. The purpose of protothreads is to implement sequential flow of control without complex state machines or full multi-threading.}
 
-The pitch for Protothreads is promising, and directly addresses the concern about overhead. However it does not describe the model of concurrency in great detail. Fortunately the documentation is excellent on both the Arduino implementation~\cite{Artin2020} as well as the general Protothreads specification~\cite{AdamDunkelProtothreads}.
+The pitch for Protothreads is promising, and directly addresses the concern about overhead. However it does not describe the model of concurrency in great detail. Fortunately the documentation is excellent on both the Arduino specific implementation~\cite{Artin2020} as well as the general Protothreads specification~\cite{AdamDunkelProtothreads}.
 
 
 \begin{table}[htb!]
@@ -88,15 +88,15 @@ Protothreads uses a cooperative form of concurrency, which means it is us to the
 
 Protothreads is also implemented on a single stack with stack rewinding, unlike traditional multithreadings which has a stack per thread. This is the reason for the low overhead of Protothreads. On the Arduino, this is achieved through utilization of \textbf{local continuations} - threads are simply a struct with an unsigned short - together with macros that expand to a switch statement with a number of returns. The short contained in the thread is the set and compared against the switch defined by the macros to set the state and continuation.
 
-Because threads are a struct with a short, they have a size of only two bytes. This means that there is no hidden memory cost during the execution of the program. However, the implementation details of the Protothread library does have a few effects on how to write programs when using it.
+Because protothreads are structs with a only short, they have a size of only two bytes. This means that there is no hidden memory cost during the execution of the program. However, the implementation details of the Protothread library does have a few effects on how to write programs when using it.
 
 First, a protothread only saves the short across blocking calls. This means that local variables inside a thread are not preserved - a rule of thumb from the designer is that local variables simply should not be used inside a protothread. Instead, it is prudent to use global variables, if data should be preserved.
 
 Secondly, the scheduling of protothreads uses a switch statement in a way that restricts the rest of the code, such that code cannot use switch statements with protothreads.
 
-Lastly, when using protothreads, programmers some of the Arduino functions, like delay(), should not be used. Protothreads are already blocking if written to be, so blocking the cpu with delay() would prevent protothreads from executing correctly~\cite{AdamDunkelProtothreads}.
+Lastly, when using protothreads, some of the Arduino functions - like delay() - should not be used. Protothreads are already blocking if written to be, so blocking the cpu with delay() could potentially prevent protothreads from executing correctly~\cite{AdamDunkelProtothreads}.
 
-The implementation of our sample project with protothreads can be seen in Listing~\ref{lst:protothreadsexample}.
+The implementation of the sample project with protothreads can be seen in Listing~\ref{lst:protothreadsexample}.
 
 
 \subsubsection{Eventually}
@@ -147,7 +147,7 @@ Eventually is another library for Arduino, implementing an event-driven concurre
 
 Based on the pitch, the concurrency model implemented in the Eventually library is somewhat similar to the event loop model employed by the Node runtime for JavaScript~\cite{NodeJSdocs}. It is simpler, less powerful, and smaller - but similar.
 
-The documentation for Eventually is very sparse, compared to Protothreads, which makes it difficult to obtain information outside reading the sourcecode. In short, it is a callback oriented model with two inbuilt listener types - \textit{timed listener} and \textit{pin listener} - with the option to extend the model by writing additional listeners. These listeners listen for timing events or pinstate events, and fire the relevant callback function when the event is registered~\cite{bartlettEventually2022Bartlett}.
+The documentation for Eventually is very sparse, which makes it difficult to obtain information outside reading the sourcecode. In short, it is a callback oriented model with two inbuilt listener types - \textit{timed listener} and \textit{pin listener} - with the option to extend the model by writing additional listeners. These listeners listen for timing events or pinstate events, and fire the relevant callback function when the event is registered~\cite{bartlettEventually2022Bartlett}.
 
 One of the issues with a callback based approach is the concept of callback hell - continuous callbacks inside callbacks, which can become complicated and difficult to read. In Node this is addressed with Promises, but no such construct is available in the Eventually library.
 
@@ -155,7 +155,7 @@ The implementation of our sample project with eventually can be seen in Listing~
 
 Unfortunately, Eventually has not been updated in more than 5 years, and the latest changes on the library repository are not released. This means that to have events both states of the digital pin, a small workaround is needed: lines \ref{minted:eventually1} and \ref{minted:eventually2} create two similar EvtPinListener variables outside the scope of the blinker function. This is done to set the targetValues of the PinListeners in the setup function at lines \ref{minted:eventually3} and \ref{minted:eventually4}.
 
-Because of the poor documentation, the lack of updates, and the need for the above workaround, Eventually is not used.
+Because of the poor documentation, the lack of updates, and the need for the above workaround, Eventually is not used for this project.
 
 
 \subsection{Achieving Concurrency with an Operating System}\label{subsec:arduinoos}
