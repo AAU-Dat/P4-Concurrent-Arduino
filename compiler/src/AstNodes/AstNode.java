@@ -1,12 +1,23 @@
 package AstNodes;
+
+import java.security.PublicKey;
+
 public abstract class AstNode {
+
+    public enum Types {
+        NUM,
+        CHAR,
+        BOOL,
+        PIN
+    }
 
     public AstNode parent;
     public AstNode leftMostSibling;
     public AstNode rightSibling;
     public AstNode child;
     public String name;
-
+    public Types type; 
+    
     public AstNode(String name) {
         this.name = name;
         System.out.println(name);

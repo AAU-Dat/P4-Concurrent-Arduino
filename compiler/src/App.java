@@ -1,5 +1,8 @@
 import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.tree.*;
+
+import AstNodes.*;
+import AstNodes.AstNode.Types;
 import antlr.*;
 
 public class App {
@@ -10,7 +13,7 @@ public class App {
         arcv2Parser parser = new arcv2Parser(tokens);
         ParseTree tree = parser.start();
         EvalVisitor eval = new EvalVisitor();
-        eval.visit(tree);
+        AstNode AST = eval.visit(tree);
         System.out.println("Hello, World!");
     }
 }
