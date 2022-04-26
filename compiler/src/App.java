@@ -1,8 +1,6 @@
 import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.tree.*;
-
 import AstNodes.*;
-import AstNodes.AstNode.Types;
 import antlr.*;
 
 public class App {
@@ -14,6 +12,6 @@ public class App {
         ParseTree tree = parser.start();
         EvalVisitor eval = new EvalVisitor();
         AstNode ast = eval.visit(tree);
-        System.out.println("Hello, World!");
+        System.out.println("Hello, World!" + ast.child.child.name);
     }
 }
