@@ -66,11 +66,19 @@ public class AstNode {
         // this only works of no previuos children
         if (this.child == null) {
             this.child = newChild.leftMostSibling;
-            newChild.parent = this;
             while (newChild.rightSibling != null) {
                 newChild.parent = this;
                 newChild = newChild.rightSibling;
             }
+            newChild.parent = this;
+        }
+        // Add new children to the right of the rightmost child
+        else {
+            while (newChild.rightSibling != null) {
+                this.child.MakeSiblings(newChild);
+                newChild = newChild.rightSibling;
+            }
+            this.child.MakeSiblings(newChild);
         }
     }
 
