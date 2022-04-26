@@ -1,6 +1,8 @@
 import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.tree.*;
+
 import AstNodes.*;
+import AstNodes.AstNode.Types;
 import antlr.*;
 
 public class App {
