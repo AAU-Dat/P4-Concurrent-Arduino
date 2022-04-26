@@ -127,7 +127,7 @@ public class EvalVisitor extends arcv2BaseVisitor<AstNode> {
         Or_node.child = visit(ctx.expression(0));
         Or_node.child.MakeSiblings(visit(ctx.expression(1)));
         AstNode[] astnode_array = { Or_node.child, Or_node.child.rightSibling };
-        if (Typecheck.Check(astnode_array, Or_node.child.type)) {
+        if (Typecheck.Check(astnode_array, Types.BOOL)) {
             Or_node.type = Types.BOOL;
         } else {
             throw new Expression_type_exception("the Or expression has bad typing");
@@ -141,7 +141,7 @@ public class EvalVisitor extends arcv2BaseVisitor<AstNode> {
         And_node.child = visit(ctx.expression(0));
         And_node.child.MakeSiblings(visit(ctx.expression(1)));
         AstNode[] astnode_array = { And_node.child, And_node.child.rightSibling };
-        if (Typecheck.Check(astnode_array, And_node.child.type)) {
+        if (Typecheck.Check(astnode_array, Types.BOOL)) {
             And_node.type = Types.BOOL;
         } else {
             throw new Expression_type_exception("the And expression has bad typing");
