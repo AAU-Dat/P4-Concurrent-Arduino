@@ -6,59 +6,83 @@ import AstNodes.*;
 import org.junit.Test;
 
 public class AstNodeTest {
+    // Naming convention
+    // FunctionName_WhatItDoes_WhatItReturns
 
-    public AstNode defualtAST(String var, String var2) {
-        AstNode testNode = new AstNode("Start");
-        testNode.child = new AstNode("Decl");
-        testNode.child.rightSibling = new AstNode(var);
-        testNode.child.rightSibling.rightSibling = new AstNode(var2);
-        testNode.child.rightSibling.parent = testNode;
-        testNode.child.rightSibling.rightSibling.parent = testNode;
-        testNode.child.rightSibling.leftMostSibling = testNode;
-        testNode.child.rightSibling.rightSibling.leftMostSibling = testNode;
-
-        return testNode;
-    }
-
-    public AstNode defualtAST(String var) {
-        AstNode testNode = new AstNode("Start");
-        testNode.child = new AstNode("Decl");
-        testNode.child.rightSibling = new AstNode(var);
-        testNode.child.rightSibling.parent = testNode;
-        testNode.child.rightSibling.leftMostSibling = testNode;
-
-        return testNode;
-    }
-
-    // region Test Evaluation of each individual Node
-
-    // endregion
-
-    // region Test AST Nodes
-
+    // This test enters the if-part
     @Test
-    public void twoNodesCanBeMadeSiblings() {
-        // Variable for naming the nodes
-        String var = "7";
+    public void MakeSiblings_HasRightSibling_ReturnTrue(){
+        // Arrange
+        AstNode origin = new AstNode();
+        AstNode originRight = new AstNode();
+        AstNode right = new AstNode();
 
-        // Responsible for setting up the defaultAST
-        AstNode defualtAST = defualtAST(var);
+        // Act
+        origin.rightSibling = originRight;
+        origin.MakeSiblings(right);
 
-        // Responsible for creating two test notes for us to run our test on
-        AstNode testNode1 = new AstNode("Start");
-        testNode1.child = new AstNode("Decl");
-
-        // Responsible for running the test on Make Siblings
-        testNode1.child.MakeSiblings(new AstNode(var));
-
-        // Responsible for testing that defaultAST and testNode1's rightSibling share
-        // the same name
-        assertEquals(defualtAST.child.rightSibling.name, testNode1.child.rightSibling.name);
+        // Assert
+        assertEquals(origin.rightSibling.rightSibling, right);
     }
-
+    
+    // This test enters the else part
     @Test
-    public void findRightmostSiblingReturnsRightmostSibling() {
+    public void MakeSiblings_NoRightSibling_ReturnTrue(){
+        // Arrange
+        AstNode origin = new AstNode();
+        AstNode right = new AstNode();
 
+        // Act
+        origin.MakeSiblings(right);
+
+        // Assert
+        assertEquals(origin.rightSibling, right);
     }
-    // endregion
+    
+    // This test ensures correct parent update
+    @Test
+    public void MakeSiblings_HasParent_ReturnTrue(){
+        // Arrange
+        AstNode origin = new AstNode();
+        AstNode parent = new AstNode();
+        AstNode right = new AstNode();
+
+        // Act
+        origin.parent = parent;
+        origin.MakeSiblings(right);
+
+        // Assert
+        assertEquals(origin.parent, right.parent);
+    }
+    
+    // This test ensures correct left sibling
+    @Test
+    public void MakeSiblings_UpdateLeftSibling_ReturnTrue(){
+        // Arrange
+        AstNode origin = new AstNode();
+        AstNode right = new AstNode();
+
+        // Act
+        origin.MakeSiblings(right);
+
+        // Assert
+        assertEquals(origin, right.leftSibling);
+    }
+
+    // This test ensures that the new nodes.leftmostSiblings is the
+    // same as the origin node.leftmostSibling
+    @Test
+    public void MakeSiblings_UpdateLeftmostSibling_ReturnTrue(){
+        // Arrange
+        AstNode origin = new AstNode();
+        AstNode leftmostSibling = new AstNode();
+        AstNode right = new AstNode();
+
+        // Act
+        origin.leftMostSibling = leftmostSibling;
+        origin.MakeSiblings(right);
+
+        // Assert
+        assertEquals(origin.leftMostSibling, right.leftMostSibling);
+    }
 }
