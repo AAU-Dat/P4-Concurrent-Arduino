@@ -49,9 +49,9 @@ Protothreads is a library for the C language, which has been implemented as a li
       PT_END(pt);
     }
     void setup() {
+      Serial.begin(9600);
       PT_INIT(&ptBlink);
       PT_INIT(&ptButton);
-      Serial.begin(9600);
     }
     void loop() {
       PT_SCHEDULE(blinkThread(&ptBlink));
@@ -104,7 +104,7 @@ Eventually is another library for Arduino, implementing an event-driven concurre
 
 
 \begin{listing}[htb!]
-  \begin{minted}[mathescape, highlightlines={18-19,31-32},label=Eventually example]{arduino}
+  \begin{minted}[escapeinside=\#\#, highlightlines={18-19,28-29},label=Eventually example]{arduino}
     #include <Eventually.h>
     #define BUTTON_PIN 12
     bool pinState = true;
@@ -122,8 +122,8 @@ Eventually is another library for Arduino, implementing an event-driven concurre
       }
       pinState = !pinState;
     }
-    EvtPinListener *reader1 = new EvtPinListener(BUTTON_PIN, (EvtAction)digital_read);//$\label{minted:eventually1}$
-    EvtPinListener *reader2 = new EvtPinListener(BUTTON_PIN, (EvtAction)digital_read);//$\label{minted:eventually2}$
+    EvtPinListener *reader1 = new EvtPinListener(BUTTON_PIN, (EvtAction)digital_read);#\label{minted:eventually1}#
+    EvtPinListener *reader2 = new EvtPinListener(BUTTON_PIN, (EvtAction)digital_read);#\label{minted:eventually2}#
     bool blinker() {
       mgr.resetContext();
       mgr.addListener(new EvtTimeListener(1000, true, (EvtAction)blink_pin));
@@ -131,10 +131,10 @@ Eventually is another library for Arduino, implementing an event-driven concurre
       mgr.addListener(reader2);
     }
     void setup() {
-      Serial.begin(9600);
+      Serial.begin(9600);#\label{esc:test}#
+      reader1->targetValue = HIGH; #\label{minted:eventually3}#
+      reader2->targetValue = LOW; #\label{minted:eventually4}#
       blinker();
-      reader1->targetValue = HIGH; // $\label{minted:eventually3}$
-      reader2->targetValue = LOW; // $\label{minted:eventually4}$
     }
     USE_EVENTUALLY_LOOP(mgr)
   \end{minted}
@@ -153,7 +153,7 @@ One of the issues with a callback based approach is the concept of callback hell
 
 The implementation of our sample project with eventually can be seen in Listing~\ref{lst:eventuallyexample}. It shows the use of both types of builtin listeners, and the difficulty of describing everything with listenable events, even in a relatively simple project.
 
-Unfortunately, Eventually has not been updated in more than 5 years, and the latest changes on the library repository are not released. This means that to have events both states of the digital pin, a small workaround is needed: lines \ref{minted:eventually1} and \ref{minted:eventually2} create two similar EvtPinListener variables outside the scope of the blinker function. This is done to set the targetValues of the PinListeners in the setup function at lines \ref{minted:eventually3} and \ref{minted:eventually4}.
+Unfortunately, Eventually has not been updated in more than 5 years, and the latest changes on the library repository are not released. This means that to have events both states of the digital pin, a small workaround is needed: lines \ref{minted:eventually1} and \ref{minted:eventually2} in Listing~\ref{lst:eventuallyexample} create two similar EvtPinListener variables outside the scope of the blinker function. This is done to set the targetValues of the PinListeners in the setup function at lines \ref{minted:eventually3} and \ref{minted:eventually4}.
 
 Because of the poor documentation, the lack of updates, and the need for the above workaround, Eventually is not used for this project.
 
