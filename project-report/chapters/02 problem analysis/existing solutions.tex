@@ -8,7 +8,7 @@ A small sample project is implemented in each model for the sake of comparison: 
   \centering
   \missingfigure[figwidth=0.8\textwidth]{Insert image of Arduino schematic?}
   %\includegraphics[width=0.8\textwidth]{example-image-a}
-  \caption{Example project schematic}
+  \caption{Example project schematic.}
   \label{fig:exampleprojectschematic}
 \end{figure}
 
@@ -29,7 +29,6 @@ Protothreads is a library for the C language, which has been implemented as a li
     #define BUTTON_PIN 12
     int buttonState = 0;  // variable for reading the pushbutton status
     pt ptBlink, ptButton;
-
     int blinkThread(struct pt *pt) {
       PT_BEGIN(pt);
       for (;;) {
@@ -40,7 +39,6 @@ Protothreads is a library for the C language, which has been implemented as a li
       }
       PT_END(pt);
     }
-
     int buttonThread(struct pt *pt) {
       PT_BEGIN(pt);
       for (;;) {
@@ -50,28 +48,24 @@ Protothreads is a library for the C language, which has been implemented as a li
       }
       PT_END(pt);
     }
-
     void setup() {
       PT_INIT(&ptBlink);
       PT_INIT(&ptButton);
       Serial.begin(9600);
-      pinMode(LED_BUILTIN, OUTPUT);
-      pinMode(BUTTON_PIN, INPUT);
     }
-
     void loop() {
       PT_SCHEDULE(blinkThread(&ptBlink));
       PT_SCHEDULE(buttonThread(&ptButton));
     }
   \end{minted}
-  \caption{A small example on how a Protothreads can be implemented}
+  \caption{Protothreads implementation of the sample project.}
   \label{lst:protothreadsexample}
 \end{listing}
 
 
 \blockcquote{Artin2020, AdamDunkelProtothreads}{Protothreads provides a blocking context on top of an event-driven system, without the overhead of per-thread stacks. The purpose of protothreads is to implement sequential flow of control without complex state machines or full multi-threading.}
 
-The pitch for Protothreads is promising, and directly addresses the concern about overhead. However it does not describe the model of concurrency in great detail. Fortunately the documentation is excellent on both the Arduino implementation~\cite{Artin2020} as well as the general Protothreads specification~\cite{AdamDunkelProtothreads}.
+The pitch for Protothreads is promising, and directly addresses the concern about overhead. However it does not describe the model of concurrency in great detail. Fortunately the documentation is excellent on both the Arduino specific implementation~\cite{Artin2020} as well as the general Protothreads specification~\cite{AdamDunkelProtothreads}.
 
 
 \begin{table}[htb!]
@@ -85,7 +79,7 @@ The pitch for Protothreads is promising, and directly addresses the concern abou
     Preemption           & no     & yes     & no           \\
     Automatic variables  & no     & yes     & no
   \end{tabular}
-  \caption{Qualitative comparison between events, threads and protothreads ~\cite{dunkels05using}}
+  \caption{Qualitative comparison between events, threads and protothreads~\cite{dunkels05using}.}
   \label{tab:protothreadscomparison}
 \end{table}
 
@@ -94,40 +88,32 @@ Protothreads uses a cooperative form of concurrency, which means it is us to the
 
 Protothreads is also implemented on a single stack with stack rewinding, unlike traditional multithreadings which has a stack per thread. This is the reason for the low overhead of Protothreads. On the Arduino, this is achieved through utilization of \textbf{local continuations} - threads are simply a struct with an unsigned short - together with macros that expand to a switch statement with a number of returns. The short contained in the thread is the set and compared against the switch defined by the macros to set the state and continuation.
 
-Because threads are a struct with a short, they have a size of only two bytes. This means that there is no hidden memory cost during the execution of the program. However, the implementation details of the Protothread library does have a few effects on how to write programs when using it.
+Because protothreads are structs with a only short, they have a size of only two bytes. This means that there is no hidden memory cost during the execution of the program. However, the implementation details of the Protothread library does have a few effects on how to write programs when using it.
 
 First, a protothread only saves the short across blocking calls. This means that local variables inside a thread are not preserved - a rule of thumb from the designer is that local variables simply should not be used inside a protothread. Instead, it is prudent to use global variables, if data should be preserved.
 
 Secondly, the scheduling of protothreads uses a switch statement in a way that restricts the rest of the code, such that code cannot use switch statements with protothreads.
 
-Lastly, when using protothreads, programmers some of the Arduino functions, like delay(), should not be used. Protothreads are already blocking if written to be, so blocking the cpu with delay() would prevent protothreads from executing correctly~\cite{AdamDunkelProtothreads}.
+Lastly, when using protothreads, some of the Arduino functions - like delay() - should not be used. Protothreads are already blocking if written to be, so blocking the cpu with delay() could potentially prevent protothreads from executing correctly~\cite{AdamDunkelProtothreads}.
 
-The implementation of our sample project with protothreads can be seen in Listing~\ref{lst:protothreadsexample}.
+The implementation of the sample project with protothreads can be seen in Listing~\ref{lst:protothreadsexample}.
 
-
-%---Links to Eventually c++ Libary---
-%1. https://github.com/johnnyb/Eventually
-%2. https://www.arduino.cc/reference/en/libraries/eventually/
-% What is Eventually C++ Library?
-% Advantages and disadvantages of Eventually Library (C++ issues)
 
 \subsubsection{Eventually}
 Eventually is another library for Arduino, implementing an event-driven concurrency model in C++. It is written by Jonathan Bartlett and Ben Jenkinson.
 
 
-\begin{listing}
-  \begin{minted}[label=Eventually example]{arduino}
+\begin{listing}[htb!]
+  \begin{minted}[mathescape, highlightlines={18-19,31-32},label=Eventually example]{arduino}
     #include <Eventually.h>
     #define BUTTON_PIN 12
     bool pinState = true;
     EvtManager mgr;
-
-    bool blinker() {
-      mgr.resetContext();
-      mgr.addListener(new EvtTimeListener(1000, true, (EvtAction)blink_pin)); 
-      mgr.addListener(new EvtPinListener(BUTTON_PIN, (EvtAction)digital_read));
+    void digital_read() {
+      int sensorVal = digitalRead(BUTTON_PIN);
+      Serial.println(sensorVal);
+      delay(1);
     }
-
     void blink_pin() {
       if (pinState == true) {
         digitalWrite(LED_BUILTIN, HIGH);
@@ -136,23 +122,23 @@ Eventually is another library for Arduino, implementing an event-driven concurre
       }
       pinState = !pinState;
     }
-
-    void digital_read() {
-        int sensorVal = digitalRead(BUTTON_PIN);
-        Serial.println(sensorVal);
-        delay(1);
+    EvtPinListener *reader1 = new EvtPinListener(BUTTON_PIN, (EvtAction)digital_read);//$\label{minted:eventually1}$
+    EvtPinListener *reader2 = new EvtPinListener(BUTTON_PIN, (EvtAction)digital_read);//$\label{minted:eventually2}$
+    bool blinker() {
+      mgr.resetContext();
+      mgr.addListener(new EvtTimeListener(1000, true, (EvtAction)blink_pin));
+      mgr.addListener(reader1);
+      mgr.addListener(reader2);
     }
-
     void setup() {
       Serial.begin(9600);
-      pinMode(LED_BUILTIN, OUTPUT);
-      pinMode(BUTTON_PIN, INPUT);
       blinker();
+      reader1->targetValue = HIGH; // $\label{minted:eventually3}$
+      reader2->targetValue = LOW; // $\label{minted:eventually4}$
     }
-
     USE_EVENTUALLY_LOOP(mgr)
   \end{minted}
-  \caption{A small program on how Eventually can be implemented}
+  \caption{Eventually implementation of the sample project.}
   \label{lst:eventuallyexample}
 \end{listing}
 
@@ -161,30 +147,25 @@ Eventually is another library for Arduino, implementing an event-driven concurre
 
 Based on the pitch, the concurrency model implemented in the Eventually library is somewhat similar to the event loop model employed by the Node runtime for JavaScript~\cite{NodeJSdocs}. It is simpler, less powerful, and smaller - but similar.
 
-The documentation for Eventually is very sparse, compared to Protothreads, which makes it difficult to obtain information outside reading the sourcecode. In short, it is a callback oriented model with two inbuilt listener types - \textit{timed listener} and \textit{pin listener} - with the option to extend the model by writing additional listeners. These listeners listen for timing events or pinstate events, and fire the relevant callback function when the event is registered.
+The documentation for Eventually is very sparse, which makes it difficult to obtain information outside reading the sourcecode. In short, it is a callback oriented model with two inbuilt listener types - \textit{timed listener} and \textit{pin listener} - with the option to extend the model by writing additional listeners. These listeners listen for timing events or pinstate events, and fire the relevant callback function when the event is registered~\cite{bartlettEventually2022Bartlett}.
 
-One of the issues with a callback based approach is the notion of callback hell, callbacks inside callbacks inside callbacks, which can become complicated and difficult to read. In Node this is addressed with Promises, but no such construct is available in the Eventually library.
+One of the issues with a callback based approach is the concept of callback hell - continuous callbacks inside callbacks, which can become complicated and difficult to read. In Node this is addressed with Promises, but no such construct is available in the Eventually library.
 
-The implementation of our sample project with eventually can be seen in Listing~\ref{lst:eventuallyexample}. It shows the use of 
+The implementation of our sample project with eventually can be seen in Listing~\ref{lst:eventuallyexample}. It shows the use of both types of builtin listeners, and the difficulty of describing everything with listenable events, even in a relatively simple project.
 
+Unfortunately, Eventually has not been updated in more than 5 years, and the latest changes on the library repository are not released. This means that to have events both states of the digital pin, a small workaround is needed: lines \ref{minted:eventually1} and \ref{minted:eventually2} create two similar EvtPinListener variables outside the scope of the blinker function. This is done to set the targetValues of the PinListeners in the setup function at lines \ref{minted:eventually3} and \ref{minted:eventually4}.
 
-
-To give a better understanding of how the Eventually C++ library is working, in this section there has been taken an example from a GitHub page ~\cite{bartlettEventually2022Bartlett} where there can be seen, a code example on how to use the Eventually library. Since it is a C++ library it would work on any Arduino board, which includes the one the group has acquired ~\cite{bartlettEventually2022Bartlett}
-
-
-
+Because of the poor documentation, the lack of updates, and the need for the above workaround, Eventually is not used for this project.
 
 
 \subsection{Achieving Concurrency with an Operating System}\label{subsec:arduinoos}
+Rather than a library, an actual \gls{os} can be installed on the Arduino instead. Several options exist, such as Simba~\cite{SimbaOS} and \gls{frtos}~\cite{AboutRTOS}. Compared to a library, \glspl{os} are much bigger projects. This typically also reflects in the documentation, and documentation is therefore not considered a quality to search for when evaluating them. Instead the overhead - size in particular - is considered.
+
+For this project, only \gls{frtos} is considered, as it is the only \gls{os} mentioned as a solution on the Arduino site, which has a version 1 release.
 
 
-
-%---Links to Free rtos---
-%1. https://github.com/feilipu/Arduino_FreeRTOS_Library
-%   Forklar hvad link går ud på
 \subsubsection{FreeRTOS}
-Free Real-Time Operating System (abbreviated to FreeRTOS) is an operating system specifically designed for microcontrollers and microcomputers, such as the Arduino. It has been developed in partnership with the leading chip companies in the world, over more than 18 years, and with a special emphasis on reliability, accessibility and ease of use ~\cite{AboutRTOS}. This leads itself well to our project, while we are targeting hobbyists. FreeRTOS utilises preemptive scheduling ~\cite{SchedulingRTOS}, which means that it implements a scheduler to be responsible for deciding which tasks to do in which order.
-
+\glspl{os} are installed on the Arduino the same way libraries are - by including them in the code. Unlike the libraries from subsection~\ref{subsec:arduinolibraries}, \gls{frtos} contains additional libraries which may be included together with the \gls{os}. These additional libraries contain the non-core features of the \gls{os}, for example as semaphores, which may be included if needed.
 
 
 \begin{listing}[htb!]
@@ -192,7 +173,6 @@ Free Real-Time Operating System (abbreviated to FreeRTOS) is an operating system
   \begin{minted}[label=FreeRTOS example]{arduino}
     #include <Arduino_FreeRTOS.h>
     #define BUTTON_PIN 12
-
     void TaskBlink(void *pvParameters){ // This is a task.
       (void) pvParameters;
       pinMode(LED_BUILTIN, OUTPUT);
@@ -203,8 +183,7 @@ Free Real-Time Operating System (abbreviated to FreeRTOS) is an operating system
         vTaskDelay( 1000 / portTICK_PERIOD_MS );
       }
     }
-
-    void TaskAnalogRead(void *pvParameters){ // This is a task.
+    void TaskDigitalRead(void *pvParameters){ // This is a task.
       (void) pvParameters;
       for (;;) {
         int sensorValue = digitalRead(BUTTON_PIN);
@@ -212,57 +191,42 @@ Free Real-Time Operating System (abbreviated to FreeRTOS) is an operating system
         vTaskDelay(1);
       }
     }
-
     void setup() {
       Serial.begin(9600);
       while (!Serial) {;}
       xTaskCreate(TaskBlink, "Blink", 128, NULL, 2, NULL);
-      xTaskCreate(TaskAnalogRead, "AnalogRead", 128, NULL, 1, NULL);
+      xTaskCreate(TaskDigitalRead, "DigitalRead", 128, NULL, 1, NULL);
     }
-
     void loop(){}
 \end{minted}
-  \caption{A small example of a possible implementation of Free RTOS.}
+  \caption{Free RTOS implementation of the sample project.}
   \label{lst:freeftosexample}
 \end{listing}
 
-%and Preemptive concurrency forms \cite{UsingFreeRTOSMultitasking}, the preemptive concurrency form is priority-based, like the cooperative concurrency form the preemptive concurrency form has to prioritise the tasks in the program, but a task has to be completed in the time period which the scheduler has given task, it then switches to another task and if the first task was not completed it switches back \cite{Windows}.
-%the library has a scheduler to set up when the tasks have to be executed, the programmer can also set up when the Arduino has to do a specific task, if no specific timed workflow, the scheduler assigns the priority of the tasks \cite{UsingFreeRTOSMultitasking}. 
 
-%---Links to Simba library---
-% 1. https://simba-os.readthedocs.io/en/latest/
-%   Forklar hvad link går ud på
-% 2. https://all3dp.com/2/best-arduino-operating-system/
-%   Forklar hvad link går ud på
-%\subsubsection{Simba}
+\blockcquote{AboutRTOS}{\gls{frtos} is an operating system specifically designed for microcontrollers and microcomputers, such as the Arduino. It has been developed in partnership with the leading chip companies in the world, over more than 18 years, with special emphasis on reliability, accessibility and ease of use.}
 
+From the pitch \gls{frtos} sounds promising, and the list of available features is much bigger than Protothreads. Where Protothreads only allow for cooperative scheduling, described explicitly by the programmer, \gls{frtos} has support for cooperative and preemptive scheduling, as well scheduling handled implicitly.
 
+Comparing Listing~\ref{lst:freeftosexample} and Listing~\ref{lst:protothreadsexample}, the base implementation of \gls{frtos} resembles Protothreads. Both implementations describe similar tasks, and setup the task in the setup() function. Protothreads also schedule the tasks in the loop function, but this is nothing major.
 
-%---Links to TaskManagerIO library---
-% 1. https://github.com/davetcc/TaskManagerIO
-%   Forklar hvad link går ud på
-% 2. https://all3dp.com/2/best-arduino-operating-system/
-%   Forklar hvad link går ud på
-%\subsubsection{TaskManagerIO }
+What is interesting is the use of YIELD in Protothreads, which is not used in \gls{frtos}. This is the explicit control of Protothreads, which the programmer has to describe. In \gls{frtos} the same line contains a delay - this is simply a small safety detail, and makes no real difference. To utilize similar explicit, if necessary, additional libraries may be included for \gls{frtos}, such as <task.h>.
+
+Another important difference is the size and strength of each task. Unlike Protothreads, \gls{frtos} uses a proper stack with context switching, and as a consequence each stack is much larger. Protothreads use 2 bytes per stack, while \gls{frtos} uses 64 bytes + task stack size~\cite{AboutRTOS}. On the other hand, this allows \gls{frtos} tasks to have local variables. The library size of Protothreads is a lot smaller than \gls{frtos} installation as well.
 
 
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.8\textwidth]{figures/FreeRTOS_Prioritization.png}
+  \caption{Scheduling of three tasks with prioritization~\cite{SchedulingRTOS}.}
+  \label{fig:freertosprio}
+\end{figure}
 
 
-It is also possible to install an \gls{os} on the Arduino, and obtain a scheduler (and other things) that way.
-
-\subsection*{Deprecated at the moment}
-\subsection{Models of concurrency}\label{subsec:modelsofcon}
-% might be relevant to explain the concurrency models of an OS, to compare the choices.
-This interleaving is commonly handled through an \gls{os}, which manages the hardware resources ~\cite{Bryant2016}. A few different approaches for interleaving processes are supported by most \glspl{os}:
-
-\subsubsection{Processes}
-In this model the kernel, the portion of the \gls{os} code that resides in memory while the system is running, schedules and maintains each logical control flow, called a process. Each process has its own virtual address space, and therefore requires a mechanism for interprocess communication ~\cite{Bryant2016}.
-
-\subsubsection{I/O multiplexing}
-When an application explicitly schedules its own logical control flow, in the context of a single kernel process, you have I/O multiplexing. In the application, each logical control flow is modelled as a state machine, with the transitions defined and managed by the application code. Since this model is a single process, control flows share virtual address space ~\cite{Bryant2016}.
-
-\subsubsection{Threads}
+Because the scheduler is much more complex, prioritization is also possible in \gls{frtos}. Figure~\ref{fig:freertosprio} illustrates how the scheulder can be instructed to prioritize certain tasks, in this case vControlTask, higher than vKeyHandlerTask, which is again prioritised higher than the idle task. This concept is not supported in Protothreads, and can only be simulated partially by scheduling a task more frequently than another, which has drawbacks as well.
 
 
-\subsection{Summary}
+\subsection{Summary}\label{subsec:concurrencysummary}
+\gls{frtos} is more powerful than Protothreads, with a powerful scheduler supporting multiple concurrency models. However, compared to Protothreads it also has a much larger memory footprint, especially as the amount of tasks in the program increases.
 
+To focus on the design of a programming language aimed at hobbyists - with few surprises, such as surprising memory constraints - the simpler Protothreads library is chosen for this project. This limits the options available for language constructs related to concurrency in the design of the programming language, but should still be enough for a small language.
