@@ -11,7 +11,12 @@ public class App {
         arcv2Parser parser = new arcv2Parser(tokens);
         ParseTree tree = parser.start();
         EvalVisitor eval = new EvalVisitor();
-        AstNode ast = eval.visit(tree);
-        System.out.println("Hello, World!" + ast.child.child.name);
+        try {
+            AstNode AST = eval.visit(tree);
+            System.out.println("Hello, World!");
+            
+        } catch (RuntimeException e) {
+            System.out.println(e.getMessage());
+        }
     }
 }
