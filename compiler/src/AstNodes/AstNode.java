@@ -12,7 +12,7 @@ public class AstNode {
     public AstNode parent;
     public AstNode leftMostSibling;
     public AstNode rightSibling;
-    public AstNode leftSibling;
+    // public AstNode leftSibling;
     public AstNode child;
     public String name;
     public Types type; 
@@ -40,16 +40,16 @@ public class AstNode {
         //        a
         //    b       c
         //
-        AstNode right = new AstNode();
-
+        AstNode rightMostSibling = new AstNode();
+    
         if(this.rightSibling != null){
-            right = FindRightMostSibling(this.rightSibling);
+            rightMostSibling = FindRightMostSibling(this.rightSibling);
         } else {
-            right = this;
+            rightMostSibling = this;
         }
-        right.rightSibling = newSibling;
+        rightMostSibling.rightSibling = newSibling;
         newSibling.parent = this.parent;
-        newSibling.leftSibling = right;
+        // newSibling.leftSibling = rightMostSibling;
         newSibling.leftMostSibling = this.leftMostSibling;
     }
 
