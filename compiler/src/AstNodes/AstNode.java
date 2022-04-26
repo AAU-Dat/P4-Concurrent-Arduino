@@ -1,8 +1,6 @@
 package AstNodes;
 
-import java.security.PublicKey;
-
-public abstract class AstNode {
+public class AstNode {
 
     public enum Types {
         NUM,
@@ -14,6 +12,7 @@ public abstract class AstNode {
     public AstNode parent;
     public AstNode leftMostSibling;
     public AstNode rightSibling;
+    // public AstNode leftSibling;
     public AstNode child;
     public String name;
     public Types type; 
@@ -32,12 +31,34 @@ public abstract class AstNode {
     }
 
     public void MakeSiblings(AstNode newSibling){
-        //this only works if the this object does not have any rightmost sibling and new siblings does not have any siblings themselves
-        if(this.rightSibling == null){
-            this.rightSibling = newSibling;
-            newSibling.parent = this.parent;
-            newSibling.leftMostSibling = this.leftMostSibling;
+        // Exsample one
+        //        a
+        //    b       c     d     e
+        //          e
+
+        // Exsample two
+        //        a
+        //    b       c
+        //
+        AstNode rightMostSibling = new AstNode();
+    
+        if(this.rightSibling != null){
+            rightMostSibling = FindRightMostSibling(this.rightSibling);
+        } else {
+            rightMostSibling = this;
         }
+        rightMostSibling.rightSibling = newSibling;
+        newSibling.parent = this.parent;
+        // newSibling.leftSibling = rightMostSibling;
+        newSibling.leftMostSibling = this.leftMostSibling;
+    }
+
+    public AstNode FindRightMostSibling(AstNode right){
+        AstNode res = right;
+        while(res.rightSibling != null){
+            res = res.rightSibling;
+        }
+        return res;
     }
 
     public void adoptChildren(AstNode newChild){
@@ -50,8 +71,8 @@ public abstract class AstNode {
                 newChild = newChild.rightSibling;
             }
         }
-
     }
+
     //how do i do this if i need them to be differint types of ast nodes fx 1 while node and one expression node
     public void makeFamily(int i){
         child = new AstNode() {
@@ -59,9 +80,7 @@ public abstract class AstNode {
         };
         for (int j = 0; j < i; j++) {
 
-            
         }
-        
     }
 
 }
