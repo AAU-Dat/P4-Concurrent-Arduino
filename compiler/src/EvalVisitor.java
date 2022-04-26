@@ -8,7 +8,7 @@ public class EvalVisitor extends arcv2BaseVisitor<AstNode> {
 
     @Override
     public AstNode visitStart(arcv2Parser.StartContext ctx) {
-        AstNode start = new StartNode("start");
+        AstNode start = new AstNode("start");
         // this only works with a single declaration will have to find out how to go
         // through them one by one
         start.child = visitChildren(ctx);
@@ -40,9 +40,9 @@ public class EvalVisitor extends arcv2BaseVisitor<AstNode> {
         AstNode plus_minus_node;
 
         if (ctx.children.get(1).getText().toCharArray()[0] == '+')
-            plus_minus_node = new StartNode("plus");
+            plus_minus_node = new AstNode("plus");
         else
-            plus_minus_node = new StartNode("minus");
+            plus_minus_node = new AstNode("minus");
         plus_minus_node.child = visit(ctx.expression(0));
         plus_minus_node.child.MakeSiblings(visit(ctx.expression(1)));
 
@@ -60,9 +60,9 @@ public class EvalVisitor extends arcv2BaseVisitor<AstNode> {
         AstNode mult_divide_node;
 
         if (ctx.children.get(1).getText().toCharArray()[0] == '*')
-            mult_divide_node = new StartNode("mult");
+            mult_divide_node = new AstNode("mult");
         else
-            mult_divide_node = new StartNode("devide");
+            mult_divide_node = new AstNode("devide");
 
         mult_divide_node.child = visit(ctx.expression(0));
         mult_divide_node.child.MakeSiblings(visit(ctx.expression(1)));
@@ -80,9 +80,9 @@ public class EvalVisitor extends arcv2BaseVisitor<AstNode> {
     public AstNode visitRelational_equality_expression(arcv2Parser.Relational_equality_expressionContext ctx) {
         AstNode equality_node;
         if (ctx.children.get(1).getText().toCharArray()[0] == '=')
-            equality_node = new StartNode("equality");
+            equality_node = new AstNode("equality");
         else
-            equality_node = new StartNode("inequality");
+            equality_node = new AstNode("inequality");
 
         equality_node.child = visit(ctx.expression(0));
         equality_node.child.MakeSiblings(visit(ctx.expression(1)));
@@ -101,14 +101,14 @@ public class EvalVisitor extends arcv2BaseVisitor<AstNode> {
         char[] operator_array = ctx.children.get(1).getText().toCharArray();
         if (operator_array.length == 1) {
             if (operator_array[0] == '<')
-                relational_node = new StartNode("less");
+                relational_node = new AstNode("less");
             else
-                relational_node = new StartNode("greater");
+                relational_node = new AstNode("greater");
         } else {
             if (operator_array[0] == '<')
-                relational_node = new StartNode("less than or equal");
+                relational_node = new AstNode("less than or equal");
             else
-                relational_node = new StartNode("greater than or equal");
+                relational_node = new AstNode("greater than or equal");
         }
         relational_node.child = visit(ctx.expression(0));
         relational_node.child.MakeSiblings(visit(ctx.expression(1)));
@@ -123,7 +123,7 @@ public class EvalVisitor extends arcv2BaseVisitor<AstNode> {
 
     @Override
     public AstNode visitOr_expression(arcv2Parser.Or_expressionContext ctx) {
-        AstNode Or_node = new StartNode("or");
+        AstNode Or_node = new AstNode("or");
         Or_node.child = visit(ctx.expression(0));
         Or_node.child.MakeSiblings(visit(ctx.expression(1)));
         AstNode[] astnode_array = { Or_node.child, Or_node.child.rightSibling };
@@ -137,7 +137,7 @@ public class EvalVisitor extends arcv2BaseVisitor<AstNode> {
 
     @Override
     public AstNode visitAnd_expression(arcv2Parser.And_expressionContext ctx) {
-        AstNode And_node = new StartNode("And");
+        AstNode And_node = new AstNode("And");
         And_node.child = visit(ctx.expression(0));
         And_node.child.MakeSiblings(visit(ctx.expression(1)));
         AstNode[] astnode_array = { And_node.child, And_node.child.rightSibling };
@@ -151,7 +151,7 @@ public class EvalVisitor extends arcv2BaseVisitor<AstNode> {
 
     @Override
     public AstNode visitParentheses_expression(arcv2Parser.Parentheses_expressionContext ctx) {
-        AstNode parantheses_node = new StartNode("parantheses");
+        AstNode parantheses_node = new AstNode("parantheses");
         parantheses_node.child = visit(ctx.expression());
         if (parantheses_node.child.type != Types.CHAR) {
             parantheses_node.type = parantheses_node.child.type;
@@ -163,7 +163,7 @@ public class EvalVisitor extends arcv2BaseVisitor<AstNode> {
 
     @Override
     public AstNode visitUnary_negation_expression(arcv2Parser.Unary_negation_expressionContext ctx) {
-        AstNode unary_node = new StartNode("unary");
+        AstNode unary_node = new AstNode("unary");
         unary_node.child = visitChildren(ctx);
         if (unary_node.child.type == Types.BOOL) {
             unary_node.type = Types.BOOL;
@@ -184,7 +184,7 @@ public class EvalVisitor extends arcv2BaseVisitor<AstNode> {
     // // TODO
     @Override
     public AstNode visitFunction_access_expression(arcv2Parser.Function_access_expressionContext ctx) {
-        AstNode function_call = new StartNode("function");
+        AstNode function_call = new AstNode("function");
         if (ctx.ARDUINOFUNCTIONS() != null)
             System.out.println("arduinofunction");
         return function_call;
@@ -204,6 +204,6 @@ public class EvalVisitor extends arcv2BaseVisitor<AstNode> {
     }
     // @Override
     // public AstNode visit(arcv2Parser.Plus_minus_expressionContext ctx) {
-    // AstNode plus = new StartNode("plus");
+    // AstNode plus = new AstNode("plus");
     // return plus; }
 }
