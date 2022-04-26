@@ -33,7 +33,7 @@ public class EvalVisitor extends arcv2BaseVisitor<AstNode> {
         else if (ctx.IDENTIFIER() != null) {
             name = "ID";
         } else {
-            System.out.println("OHHHH NOOO");
+            throw new RuntimeException("problems with terminal expression");
         }
         return terminal;
     }
@@ -72,8 +72,9 @@ public class EvalVisitor extends arcv2BaseVisitor<AstNode> {
         AstNode[] astnodearray = { mult_divide_node.child, mult_divide_node.child.rightSibling };
         if (Typecheck.Check(astnodearray, Types.NUM))
             mult_divide_node.type = Types.NUM;
-        else{
-            throw new Expression_type_exception("the mult/divide expression has bad typing");}
+        else {
+            throw new Expression_type_exception("the mult/divide expression has bad typing");
+        }
         return mult_divide_node;
 
     }
@@ -91,9 +92,8 @@ public class EvalVisitor extends arcv2BaseVisitor<AstNode> {
         AstNode[] astnode_array = { equality_node.child, equality_node.child.rightSibling };
         if (Typecheck.Check(astnode_array, equality_node.child.type)) {
             equality_node.type = Types.BOOL;
-        }
-        else {
-            throw new Expression_type_exception("the compare expression has bad typing");
+        } else {
+            throw new Expression_type_exception("the equality expression has bad typing");
         }
         return equality_node;
     }
@@ -118,9 +118,8 @@ public class EvalVisitor extends arcv2BaseVisitor<AstNode> {
         AstNode[] astnode_array = { relational_node.child, relational_node.child.rightSibling };
         if (Typecheck.Check(astnode_array, relational_node.child.type)) {
             relational_node.type = Types.BOOL;
-        }
-        else {
-            throw new Expression_type_exception("the relational compare expression has bad typing");
+        } else {
+            throw new Expression_type_exception("the relational operator expression has bad typing");
         }
         return relational_node;
     }
@@ -130,11 +129,10 @@ public class EvalVisitor extends arcv2BaseVisitor<AstNode> {
         AstNode Or_node = new StartNode("or");
         Or_node.child = visit(ctx.expression(0));
         Or_node.child.MakeSiblings(visit(ctx.expression(1)));
-        AstNode[] astnode_array = {Or_node.child, Or_node.child.rightSibling};
-        if (Typecheck.Check(astnode_array, Or_node.child.type)){
+        AstNode[] astnode_array = { Or_node.child, Or_node.child.rightSibling };
+        if (Typecheck.Check(astnode_array, Or_node.child.type)) {
             Or_node.type = Types.BOOL;
-        }
-        else{
+        } else {
             throw new Expression_type_exception("the Or expression has bad typing");
         }
         return Or_node;
@@ -145,11 +143,10 @@ public class EvalVisitor extends arcv2BaseVisitor<AstNode> {
         AstNode And_node = new StartNode("And");
         And_node.child = visit(ctx.expression(0));
         And_node.child.MakeSiblings(visit(ctx.expression(1)));
-        AstNode[] astnode_array = {And_node.child, And_node.child.rightSibling};
-        if (Typecheck.Check(astnode_array, And_node.child.type)){
+        AstNode[] astnode_array = { And_node.child, And_node.child.rightSibling };
+        if (Typecheck.Check(astnode_array, And_node.child.type)) {
             And_node.type = Types.BOOL;
-        }
-        else{
+        } else {
             throw new Expression_type_exception("the And expression has bad typing");
         }
         return And_node;
@@ -158,12 +155,10 @@ public class EvalVisitor extends arcv2BaseVisitor<AstNode> {
     @Override
     public AstNode visitParentheses_expression(arcv2Parser.Parentheses_expressionContext ctx) {
         AstNode parantheses_node = new StartNode("parantheses");
-        parantheses_node.child = visitChildren(ctx);
-        AstNode[] astnode_array = {parantheses_node.child, parantheses_node.child.rightSibling};
-        if (Typecheck.Check(astnode_array, parantheses_node.child.type)){
+        parantheses_node.child = visit(ctx.expression());
+        if (parantheses_node.child.type != Types.CHAR) {
             parantheses_node.type = parantheses_node.child.type;
-        }
-        else{
+        } else {
             throw new Expression_type_exception("the parantheses expression has bad typing");
         }
         return parantheses_node;
@@ -173,11 +168,9 @@ public class EvalVisitor extends arcv2BaseVisitor<AstNode> {
     public AstNode visitUnary_negation_expression(arcv2Parser.Unary_negation_expressionContext ctx) {
         AstNode unary_node = new StartNode("unary");
         unary_node.child = visitChildren(ctx);
-        AstNode[] astnode_array = {unary_node.child, unary_node.child.rightSibling};
-        if (Typecheck.Check(astnode_array, unary_node.child.type)){
+        if (unary_node.child.type == Types.BOOL) {
             unary_node.type = Types.BOOL;
-        }
-        else{
+        } else {
             throw new Expression_type_exception("the unary expression has bad typing");
         }
         return unary_node;
