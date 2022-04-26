@@ -1,8 +1,5 @@
 import antlr.arcv2BaseVisitor;
 import antlr.arcv2Parser;
-
-import org.antlr.v4.runtime.atn.SemanticContext.OR;
-
 import AstNodes.*;
 import AstNodes.AstNode.Types;
 import Exemptions.Expression_type_exception;

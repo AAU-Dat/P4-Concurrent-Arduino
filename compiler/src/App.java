@@ -1,8 +1,6 @@
 import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.tree.*;
-
 import AstNodes.*;
-import AstNodes.AstNode.Types;
 import antlr.*;
 
 public class App {
@@ -17,8 +15,8 @@ public class App {
             AstNode AST = eval.visit(tree);
             System.out.println("Hello, World!");
             
-        } catch (Exception e) {
-            //TODO: handle exception
+        } catch (RuntimeException e) {
+            System.out.println(e.getMessage());
         }
     }
 }
