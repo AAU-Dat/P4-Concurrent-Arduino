@@ -10,9 +10,8 @@ public class AstNode {
     }
 
     public AstNode parent;
-    public AstNode leftMostSibling;
+    public AstNode leftMostSibling = this;
     public AstNode rightSibling;
-    public AstNode leftSibling;
     public AstNode child;
     public String name;
     public Types type;
@@ -33,13 +32,12 @@ public class AstNode {
         }
     }
 
+    // Exsample one
+    //      a
+    //   b     c
+    //      e
+
     public void MakeSiblings(AstNode newSibling) {
-
-        // Exsample one
-        // a
-        // b c
-        // e
-
         AstNode rightMostSibling = new AstNode();
 
         if (this.rightSibling != null) {
@@ -50,7 +48,6 @@ public class AstNode {
 
         rightMostSibling.rightSibling = newSibling;
         newSibling.parent = this.parent;
-        newSibling.leftSibling = rightMostSibling;
         newSibling.leftMostSibling = this.leftMostSibling;
     }
 
@@ -63,7 +60,6 @@ public class AstNode {
     }
 
     public void adoptChildren(AstNode newChild) {
-        // this only works of no previuos children
         if (this.child == null) {
             this.child = newChild.leftMostSibling;
             while (newChild.rightSibling != null) {
