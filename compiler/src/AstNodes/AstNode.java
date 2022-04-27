@@ -12,71 +12,81 @@ public class AstNode {
     public AstNode parent;
     public AstNode leftMostSibling;
     public AstNode rightSibling;
-    // public AstNode leftSibling;
+    public AstNode leftSibling;
     public AstNode child;
     public String name;
-    public Types type; 
-    
+    public Types type;
+
     public AstNode(String name) {
         this.name = name;
         System.out.println(name);
 
     }
-    public AstNode(){}
-    public void print (){
+
+    public AstNode() {
+    }
+
+    public void print() {
         System.out.println(name);
-        if(child != null){
+        if (child != null) {
             child.print();
         }
     }
 
-    public void MakeSiblings(AstNode newSibling){
-        // Exsample one
-        //        a
-        //    b       c     d     e
-        //          e
+    public void MakeSiblings(AstNode newSibling) {
 
-        // Exsample two
-        //        a
-        //    b       c
-        //
+        // Exsample one
+        // a
+        // b c
+        // e
+
         AstNode rightMostSibling = new AstNode();
-    
-        if(this.rightSibling != null){
-            rightMostSibling = FindRightMostSibling(this.rightSibling);
+
+        if (this.rightSibling != null) {
+            rightMostSibling = FindRightmostSibling(this.rightSibling);
         } else {
             rightMostSibling = this;
         }
+
         rightMostSibling.rightSibling = newSibling;
         newSibling.parent = this.parent;
-        // newSibling.leftSibling = rightMostSibling;
+        newSibling.leftSibling = rightMostSibling;
         newSibling.leftMostSibling = this.leftMostSibling;
     }
 
-    public AstNode FindRightMostSibling(AstNode right){
+    public AstNode FindRightmostSibling(AstNode right) {
         AstNode res = right;
-        while(res.rightSibling != null){
+        while (res.rightSibling != null) {
             res = res.rightSibling;
         }
         return res;
     }
 
-    public void adoptChildren(AstNode newChild){
-        //this only works of no previuos children
-        if(this.child == null){
+    public void adoptChildren(AstNode newChild) {
+        // this only works of no previuos children
+        if (this.child == null) {
             this.child = newChild.leftMostSibling;
-            newChild.parent = this;
-            while (newChild.rightSibling != null){
+            while (newChild.rightSibling != null) {
                 newChild.parent = this;
                 newChild = newChild.rightSibling;
             }
+            newChild.parent = this;
+        }
+        // Add new children to the right of the rightmost child
+        else {
+            while (newChild.rightSibling != null) {
+                this.child.MakeSiblings(newChild);
+                newChild = newChild.rightSibling;
+            }
+            this.child.MakeSiblings(newChild);
         }
     }
 
-    //how do i do this if i need them to be differint types of ast nodes fx 1 while node and one expression node
-    public void makeFamily(int i){
+    // how do i do this if i need them to be differint types of ast nodes fx 1 while
+    // node and one expression node
+    public void makeFamily(int i) {
         child = new AstNode() {
-            
+
         };
         for (int j = 0; j < i; j++) {
 
