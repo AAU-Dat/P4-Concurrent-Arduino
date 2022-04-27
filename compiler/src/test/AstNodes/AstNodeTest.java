@@ -6,8 +6,31 @@ import AstNodes.*;
 import org.junit.Test;
 
 public class AstNodeTest {
-    // Naming convention
-    // FunctionName_WhatItDoes_WhatItReturns
+    
+
+    // This part under here is for trying to merge all the test to fewer onces
+    @Test
+    public void MakeSiblings_TestFunction_ReturnTrue(){
+        // Arrange
+        AstNode a = new AstNode();
+        AstNode b = new AstNode();
+        AstNode c = new AstNode();
+
+        a.adoptChildren(b);
+        b.adoptChildren(c);
+
+        // Act
+        b.MakeSiblings(c);
+
+        // Assert
+        assertEquals(a, b.parent);
+        assertEquals(a, c.parent);
+        assertEquals(b, a.child.leftMostSibling);
+        assertEquals(c, a.child.rightSibling);
+        assertEquals(c, b.rightSibling);
+        assertTrue(c.rightSibling == null);
+        assertEquals(a.child.leftMostSibling, c.leftMostSibling);
+    }
 
     // This test enters the if-part
     @Test
@@ -53,20 +76,6 @@ public class AstNodeTest {
 
         // Assert
         assertEquals(origin.parent, right.parent);
-    }
-    
-    // This test ensures correct left sibling
-    @Test
-    public void MakeSiblings_UpdateLeftSibling_ReturnTrue(){
-        // Arrange
-        AstNode origin = new AstNode();
-        AstNode right = new AstNode();
-
-        // Act
-        origin.MakeSiblings(right);
-
-        // Assert
-        assertEquals(origin, right.leftSibling);
     }
 
     // This test ensures that the new nodes.leftmostSiblings is the
