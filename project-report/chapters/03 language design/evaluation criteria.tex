@@ -1,66 +1,95 @@
 \section{Language evaluation criteria}\label{sec:languageeval}
-There is no common consensus on objectively evaluating a language. The measurement of compilation speed, execution speed, and file size speak to the efficiency of the \textit{implementation} of the language, not the \textit{design} of the language. Popularity could be measured, but would vary greatly with time, and contain several skews from bias,  as well as popularity not necessarily meaning it is better, which would have to be considered as well.
+There is no common consensus on objectively evaluating a language. The measurement of compilation speed, execution speed, and file size speak to the efficiency of the \textit{implementation} of the language, not the \textit{design} of the language. Popularity could be measured, but would vary greatly with time, and contain several skews from bias. Popularity also does not necessarily mean that a language is generally good, which would have to be considered as well.
 
-As such, a set of prioritized language evaluation criteria has been determined based on the criteria presented in \cite{Sebesta2016}. An objective evaluation of the language based on these criteria is not practically possible \cite{Sebesta2016}, however, the criteria may work well when making decisions during language design, implementation, and evaluation. The most relevant concerns in regard to the choice of relevant criteria are presented in this section.
+As such, a set of prioritized language evaluation criteria has been determined based on the criteria presented in~\cite{Sebesta2016}. An objective evaluation of the language based on these criteria is not practically possible~\cite{Sebesta2016}, however, the criteria may work well when making decisions during language design, implementation, and evaluation. The most relevant concerns in regard to the choice of relevant criteria are presented in this section.
 
-The primary concern is with the users of the programming language; writers of Arduino programs, in this case, the Arduino hobbyist, as described earlier. The programming of an Arduino project may be secondary to hobbyists, who prioritize the hardware aspects of their project.
+The primary concern is with the users of the programming language; writers of Arduino programs, in this case, the Arduino hobbyist. The programming of an Arduino project may be secondary to hobbyists, who prioritize the hardware aspects of their project.
 
-The secondary concern is the concurrency issue that follows from the primary concern - making an Arduino behave concurrently is not a trivial programming task. There are several variations on the theme of simulating concurrency, but each with different issues, and none solve the issue in a general way \cite{Restucia2022}.
+The secondary concern is the concurrency issue that follows from the primary concern - making an Arduino behave concurrently is not a trivial programming task. There are several variations on the theme of simulating concurrency, but each with different issues, and none solve the issue in a general way~\cite{Restucia2022}.
 
 The tertiary and last concern follows from the secondary issue - determining how to use concurrency to solve the problem in an Arduino. Concurrency problems can be subtle and complex, so understanding that you are even dealing with a concurrency issue may not be immediately apparent, and thus a simple solution may be hard to spot.
 
-\subsection{Priority of criteria characteristics}
-\citetitle{Sebesta2016} lists four criteria: readability, writability, reliability, and cost. These criteria are each affected by several characteristics, with varying influence and importance \cite{Sebesta2016}. It is important to note that there characteristics can not be measured, but are important to keep in mind, when designing the criteria of a language.
+\subsection{Criteria and characteristics}\label{subsec:priorityofcriteria}
+\citetitle{Sebesta2016} lists four criteria: readability, writability, reliability, and cost. These criteria are each affected by several characteristics, with varying influence and importance~\cite{Sebesta2016}. It is important to note that while these characteristics can not be measured, they are important to keep in mind when designing the language. Table~\ref{tab:langevalcrit} lists many of the characteristics that a programming language might want, and what criteria they impact.
+
+
+\begin{table}[htb!]
+    \centering
+    \begin{tabular}{lccc}
+        \toprule
+                                & \multicolumn{3}{c}{CRITERIA}                                               \\
+        \textbf{Characteristic} & \textit{Readability}         & \textit{Writability} & \textit{Reliability} \\
+        \cmidrule(r){2-4}
+        Simplicity              & \textbullet                  & \textbullet          & \textbullet          \\
+        Orthogonality           & \textbullet                  & \textbullet          & \textbullet          \\
+        Data types              & \textbullet                  & \textbullet          & \textbullet          \\
+        Syntax design           & \textbullet                  & \textbullet          & \textbullet          \\
+        Support for abstraction &                              & \textbullet          & \textbullet          \\
+        Expressivity            &                              & \textbullet          & \textbullet          \\
+        Type checking           &                              &                      & \textbullet          \\
+        Exception Handling      &                              &                      & \textbullet          \\
+        Restricted Aliasing     &                              &                      & \textbullet          \\
+        \bottomrule
+    \end{tabular}
+    \caption{The three main criteria and the related characteristics~\cite{Sebesta2016}}
+    \label{tab:langevalcrit}
+\end{table}
+
 
 \subsubsection{Readability}
-Readability is described as, how easy programs can be read and understood, in \citetitle*{Sebesta2016}. The importance of readability can be seen in maintenance of programs. Where programs with low readability, would be difficult and overwhelming to programmars, to work with. 
+Readability is described as: how easy programs can be read and understood\cite{Sebesta2016}. The importance of readability can be seen in maintenance of programs. Where programs with low readability, would be difficult and overwhelming to programmars, to work with.
+
 \subsubsection{Writability}
-Writeability is describes as, how easy the program is to write, in \citetitle*{Sebesta2016}. A program with good writeability, will be able to be written easier and more expressive, compared to a program with low writeability. 
+Writeability is describes as, how easy the program is to write~\cite{Sebesta2016}. A program with good writeability, will be able to be written easier and more expressive, compared to a program with low writeability.
+
 \subsubsection{Reliability}
-Reliability is describes as, how reliable a program is, in \citetitle*{Sebesta2016}. Reliability is important, as a program with high reliability, will perform correctly under all conditions.
+Reliability is describes as, how reliable a program is~\cite{Sebesta2016}. Reliability is important, as a program with high reliability, will perform correctly under all conditions.
+
 \subsubsection{Cost}
-In \citetitle*{Sebesta2016}, cost is described as many things combined, such as the cost of teaching new programmars to use the language, the cost of writing the language, and so on. These costs all add up, and many things can be done to reduce this cost. Such as better readability and writeability, faster compile times, better reliability, and more.
+In~\citetitle*{Sebesta2016}, cost is described as many things combined, such as the cost of teaching new programmars to use the language, the cost of writing the language, and so on. These costs all add up, and many things can be done to reduce this cost. Such as better readability and writeability, faster compile times, better reliability, and more.
 
-
+\subsection{Priority of characteristics by importance}
 With these considerations in mind, we have prioritized and selected the characteristics for each criterion as we expect them to matter in this context.
 
-The primary concern deals with a subset of considerations related to the cost criterion. Specifically, the cost associated with time spent learning and understanding the programming language is important. This suggests that general simplicity, in the form of few but expressive language constructs as well as clear, consistent combination and application of the constructs is important.
+The primary concern deals with a subset of considerations related to the cost criterion. Specifically, the cost associated with time spent learning and understanding the programming language is important. This suggests that general simplicity, in the form of few but expressive language constructs as well as clear, consistent combination and application of the constructs is \textbf{very important}. It may also be difficult, because concurrency is a complex topic.
 
-Expressivity and syntax design are also important characteristics, as seen from the secondary and tertiary concerns. The language should express new constructs that are not available in the Arduino language in a concise manner. An aim of the syntax could be to describe concurrent programs simply.
+Syntax design is also a \textbf{very important} characteristic, as seen from the secondary and tertiary concerns. The language should express new constructs that are not available in the Arduino language in a concise manner. An aim of the syntax could be to describe concurrent programs simply. 
 
-The number of data types is probably a somewhat important characteristic. As long as the expressivity of the language is not greatly affected, the number of data types is reduced, by generalizing them. An example of this would be datatypes such as integers, doubles, and floats all being generalized to a single data type, Number. This reduction of datatypes, compared to the Arduino language, is likely to have a positive effect on overall simplicity and writability. On the other hand, good support for abstraction, that is, user-defined types, may enable advanced users to have the freedom of many primitive types, without significantly impacting the overall simplicity of the language. \feedback{Abstraction should be explained properly as from the perspective of the type system.}
+Data types is probably also an \textbf{important} characteristic. As long as the expressivity of the language is not greatly affected, the number of data types is reduced by generalizing them. An example of this would be datatypes such as integers, doubles, and floats all being generalized to a single data type. This reduction of datatypes, compared to the Arduino language, is likely to have a positive effect on overall simplicity and writability, and therefore cost, which is important to hobbyists. This is also related to orthogonality - having fewer constructs, and a consistent rule set for combining them, is often better than having a lot of primitives. Orthogonality is therefore also an \textbf{important} characteristic.
+
+On the other hand, good support for abstraction, that is, user-defined types, may enable advanced users to have a larger degree of freedom. In fact, too few data types is likely to have a negative effect on the simplicity of the language, since some things would take more work to express. However, readability is more important to learning than writability, and as such support for abstraction is \textbf{not important}. Expressivity is only \textbf{somewhat important}, since concurrency language constructs is an aim of the language.
+
+Type checking at compile time, especially concurrency related issues, such as mutability would potentially be incredibly powerful, but it depends on the rest of the design. For now it is \textbf{less important}.
 
 It is important to consider the language paradigm as well, as this has a large effect on the type checking mechanisms commonly used, not to mention the syntax design. It is a determinant factor in the description of mutability versus immutability, state versus statelessness, aliasing, and pointer management.
 
-By default, Arduino does not use exceptions and exception handling as per the C++ language. The common solution for Arduino code writers is to write code that handles the possible exceptions that may occur without the language construct. For the sake of footprint, this will also be the preferred solution for this project.
+By default, Arduino does not use the exceptions and exception handling available in the C++ language. The common solution for Arduino code writers is to write code that handles the possible exceptions that may occur without the exception language constructs. For the sake of footprint, this will also be the preferred solution for this project, and exception handling is therefore \textbf{not important}.
+
+Aliasing refers to having two or more distinct names in a program that refers to the same memory location~\cite{Sebesta2016}. The simpler the language is, for example not having pointers, the easier this is to restrict. It is also very important when dealing with concurrency, to avoid accidental data corruption. As such, while restricted aliasing is \textbf{very important}, it is expected to be easy to manage in a simple language.
 
 
 \begin{table}[htb]
-\centering
-\begin{tabular}{l>
-{\centering}p{2cm}>
-{\centering}p{2cm}>
-{\centering}p{2cm}>
-{\centering\arraybackslash}p{2cm}}
-\toprule
-\textbf{Characteristics}    & 
-\textbf{Very important}     & 
-\textbf{Important}          & 
-\textbf{Somewhat important} &
-\textbf{Not important}      \\ \midrule
-Simplicity              &   & X &   &   \\
-Orthogonality           &   & X &   &   \\
-Data types              &   &   & X &   \\
-Syntax design           &   & X &   &   \\
-Support for abstraction &   &   & X &   \\
-Expressivity            &   & X &   &   \\
-Type checking           &   & X &   &   \\
-Exception handling      &   &   &   & X \\
-Restricted aliasing     & X &   &   &   \\
-\bottomrule
-\end{tabular}
-\caption{Summary of priorities. Characteristics not mentioned are of low or no priority.}
-\label{tab:priorityofcharacteristics}
+    \centering
+    \begin{tabular}{l>{\centering}p{2cm}>{\centering}p{2cm}>{\centering}p{2cm}>{\centering\arraybackslash}p{2cm}}
+        \toprule
+        \textbf{Characteristics}    &
+        \textbf{Very important}     &
+        \textbf{Important}          &
+        \textbf{Somewhat important} &
+        \textbf{Not important}                      \\ \midrule
+        Simplicity                  & X &   &   &   \\
+        Orthogonality               &   & X &   &   \\
+        Data types                  &   & X &   &   \\
+        Syntax design               & X &   &   &   \\
+        Support for abstraction     &   &   &   & X \\
+        Expressivity                &   &   & X &   \\
+        Type checking               &   &   & X &   \\
+        Exception handling          &   &   &   & X \\
+        Restricted aliasing         & X &   &   &   \\
+        \bottomrule
+    \end{tabular}
+    \caption{Summary of the characteristics and their importance.}
+    \label{tab:priorityofcharacteristics}
 \end{table}
 
 
