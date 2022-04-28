@@ -1,0 +1,48 @@
+\begin{table}[htb!]
+    \centering
+    \begin{tabular}{ll>{\arraybackslash}p{10cm}}
+        \textit{start}       & $\to$  & $declaration$*                                                                                                                            \\
+        \textit{declaration} & $\to$  & TYPE\_TYPEOPERATOR IDENTIFIER = ([ ($expression$ (, $expression$)*)?] $\mid$ $expression$) ;                                              \\
+                             & $\mid$ & TYPE\_TYPEOPERATOR IDENTIFIER ((TYPE\_TYPEOPERATOR IDENTIFIER (, TYPE\_TYPEOPERATOR IDENTIFIER)*)?) $statement$*                          \\
+                             & $\mid$ & \# pin IDENTIFIER ((PINDIGIT $\mid$ NUMBER), (INPUT $\mid$ OUTPUT));                                                                      \\
+                             & $\mid$ & task (((TYPE\_TYPEOPERATOR IDENTIFIER (, TYPE\_TYPEOPERATOR IDENTIFIER)*)?))? ((every NUMBER) $\mid$ (when ($expression$)))? $statement$* \\
+        \textit{block}       & $\to$  & \{$statement$*\}                                                                                                                          \\
+        \textit{statement}   & $\to$  & $block$                                                                                                                                   \\
+                             & $\mid$ & return $expression$;                                                                                                                      \\
+                             & $\mid$ & if ($expression$) $statement$ (else $statement$)?                                                                                         \\
+                             & $\mid$ & for (TYPE\_TYPEOPERATOR IDENTIFIER in IDENTIFIER ) $statement$                                                                            \\
+                             & $\mid$ & (TYPE\_TYPEOPERATOR IDENTIFIER = ([($expression$ (, $expression$)*)?] $\mid$ $expression$);)                                              \\
+                             & $\mid$ & IDENTIFIER ([NUMBER])? = ([($expression$ (, $expression$)*)? ] $\mid$ $expression$);                                                      \\
+                             & $\mid$ & (IDENTIFIER $\mid$ ARDUINOFUNCTIONS) (($expression$ (, $expression$)*)?);                                                                 \\
+        \textit{expression}  & $\to$  & (NUMBER $\mid$ IDENTIFIER $\mid$ BOOL $\mid$ CHAR)                                                                                        \\
+                             & $\mid$ & (IDENTIFIER $\mid$ ARDUINOFUNCTIONS) (($expression$ (, $expression$)*)?)                                                                  \\
+                             & $\mid$ & IDENTIFIER [NUMBER]                                                                                                                       \\
+                             & $\mid$ & ($expression$)                                                                                                                            \\
+                             & $\mid$ & not $expression$                                                                                                                          \\
+                             & $\mid$ & $expression$ (* $\mid$ /) $expression$                                                                                                    \\
+                             & $\mid$ & $expression$ (+ $\mid$ -) $expression$                                                                                                    \\
+                             & $\mid$ & $expression$ RELATIONEQOPERATORS $expression$                                                                                             \\
+                             & $\mid$ & $expression$ RELATIONOPERATORS $expression$                                                                                               \\
+                             & $\mid$ & $expression$ and $expression$                                                                                                             \\
+                             & $\mid$ & $expression$ or $expression$                                                                                                              \\
+    \end{tabular}
+\end{table}
+
+\begin{table}[htb!]
+    \centering
+    \begin{tabular}{ll>{\arraybackslash}p{10cm}}
+        \textit{NUMBER}                  & $\to$ & "-"? DIGIT+ ("." DIGIT+)?;             \\
+        \textit{PINDIGIT}                & $\to$ & "A" [0-5];                             \\
+        \textit{INT}                     & $\to$ & DIGIT;                                 \\
+        \textit{fragment DIGIT}          & $\to$ & [0-9];                                 \\
+        \\
+        \textit{TYPE\_TYPEOPERATOR}      & $\to$ & PREFIXOPERATOR? TYPE (TYPEOPERATOR)*;  \\
+        \\
+        \textit{RELATIONEQOPERATORS}     & $\to$ & "==" $\mid$ "!="                       \\
+        \textit{RELATIONOPERATORS}       & $\to$ & "<" $\mid$ ">" $\mid$ "<=" $\mid$ ">=" \\
+        \\
+        \textit{fragment TYPEOPERATOR}   & $\to$ & "[]";                                  \\
+        \textit{fragment PREFIXOPERATOR} & $\to$ & "mut ";                                \\
+        \textit{fragment TYPE}           & $\to$ & "num" $\mid$ "bool" $\mid$ "char";     \\
+    \end{tabular}
+\end{table}
