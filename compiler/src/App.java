@@ -12,7 +12,7 @@ public class App {
         ParseTree tree = parser.start();
         EvalVisitor eval = new EvalVisitor();
         try {
-            AstNode AST = eval.visit(tree);
+            AST_node AST = eval.visit(tree);
             System.out.println("Hello, World!");
             
         } catch (RuntimeException e) {
