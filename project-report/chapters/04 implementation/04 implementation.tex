@@ -1,0 +1,34 @@
+\chapter{Implementation}\label{cha:implementation}
+This chapter covers the implementation of the Arc programming language. This includes a model of the compilation process and the compilation target, a short discussion of the visitor pattern, and a look at the implementation of the visitors, symboltable, typechecking, and scopechecking.
+
+
+\input{chapters/04 implementation/compiler.tex}
+\input{chapters/04 implementation/visitor.tex}
+
+
+
+\section{MOVE ME EVENTUALLY}
+This section contains text that has to be moved to proper sections.
+
+\subsection*{Arc implemementation of the sample project}
+The sample project implemented in Arc.
+
+\begin{listing}[htb!]
+    \begin{minted}[label=Arc example]{text}
+        #pin BUTTON_PIN(12, OUTPUT);
+        mut num buttonState = 0;
+        mut bool ledState = HIGH;
+
+        task(bool ledState) every 1000 {
+            ledState = !ledState;
+            digitalWrite(LED_BUILTIN, ledState)
+        }
+
+        task(num buttonState) {
+            buttonState = digitalRead(BUTTON_PIN);
+            Serial.Println(buttonState);
+        }
+    \end{minted}
+    \caption{Project example implemented in Arc, assuming print is possible.}
+    \label{lst:arcexample}
+\end{listing}
