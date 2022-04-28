@@ -10,9 +10,8 @@ public class AstNode {
     }
 
     public AstNode parent;
-    public AstNode leftMostSibling;
+    public AstNode leftMostSibling = this;
     public AstNode rightSibling;
-    public AstNode leftSibling;
     public AstNode child;
     public String name;
     public Types type;
@@ -33,13 +32,15 @@ public class AstNode {
         }
     }
 
+    /**
+     * MakeSiblings function takes a node and gives it a new sibling.
+     * While doing that it also make sure that they new siblings gets
+     * the correct parent and gets the correct leftmost siblings as the
+     * parent nodes leftmost sibling.
+     * @param newSibling new sibling of caller
+     */
+
     public void MakeSiblings(AstNode newSibling) {
-
-        // Exsample one
-        // a
-        // b c
-        // e
-
         AstNode rightMostSibling = new AstNode();
 
         if (this.rightSibling != null) {
@@ -50,10 +51,15 @@ public class AstNode {
 
         rightMostSibling.rightSibling = newSibling;
         newSibling.parent = this.parent;
-        newSibling.leftSibling = rightMostSibling;
         newSibling.leftMostSibling = this.leftMostSibling;
     }
 
+    /**
+     * FindRighmostSibling checks if the leftmost sibling have a right sibling.
+     * until the right sibling has no right sibling.
+     * @param right The node to the right from the leftmost node 
+     * @return      The rightmost sibling
+     */
     public AstNode FindRightmostSibling(AstNode right) {
         AstNode res = right;
         while (res.rightSibling != null) {
@@ -62,8 +68,11 @@ public class AstNode {
         return res;
     }
 
+    /**
+     * adoptChildren ensures that the caller gets a new child which param newChild.
+     * @param newChild becomes child of caller
+     */
     public void adoptChildren(AstNode newChild) {
-        // this only works of no previuos children
         if (this.child == null) {
             this.child = newChild.leftMostSibling;
             while (newChild.rightSibling != null) {
@@ -82,6 +91,10 @@ public class AstNode {
         }
     }
 
+    /**
+     * Make comment here jamie
+     * @param i
+     */
     // how do i do this if i need them to be differint types of ast nodes fx 1 while
     // node and one expression node
     public void makeFamily(int i) {
