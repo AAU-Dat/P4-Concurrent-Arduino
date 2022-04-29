@@ -1,8 +1,9 @@
+*.txt
 ## Core latex/pdflatex auxiliary files:
 *.aux
 *.lof
 *.log
-*.lot
+*.lotgit
 *.fls
 *.out
 *.toc
