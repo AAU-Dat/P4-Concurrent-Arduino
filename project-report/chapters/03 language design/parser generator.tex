@@ -65,18 +65,44 @@ Because the generated parser is recursive descent LL(1), the input grammar must 
 \todo[inline]{I think we need to remove this section.}
 
 
+% \begin{table}[htb!]
+%   \centering
+%   \begin{align*}
+%     S  & \rightarrow x \coloneqq a S' \mid \text{skip } S' \mid \text{while } S'          \\
+%     S' & \rightarrow \text{;} S S'\mid \epsilon                                           \\
+%     b  & \rightarrow a_1 = a_2 \mid a_1 < a_2 \mid \neg b_1 \mid b_1 \land b_2 \mid (b_1) \\
+%     a  & \rightarrow n \mid a_1 + a_2 \mid a_1 * a_2 \mid a_1 - a_2 \mid (a_1)
+%   \end{align*}
+%   \caption{Rewrite of Bims without left recursion}
+%   \label{tab:bimsrewrite}
+% \end{table}
+
 \begin{table}[htb!]
   \centering
-  \begin{align*}
-    S  & \rightarrow x \coloneqq a S' \mid \text{skip } S' \mid \text{while } S'          \\
-    S' & \rightarrow \text{;} S S'\mid \epsilon                                           \\
-    b  & \rightarrow a_1 = a_2 \mid a_1 < a_2 \mid \neg b_1 \mid b_1 \land b_2 \mid (b_1) \\
-    a  & \rightarrow n \mid a_1 + a_2 \mid a_1 * a_2 \mid a_1 - a_2 \mid (a_1)
-  \end{align*}
-  \caption{Rewrite of Bims without left recursion}
+  \begin{tabular}{ll>{\arraybackslash}p{10cm}}
+    \textit{S}  & $\to$  & $x$ $\coloneqq$ $a$ $S'$      \\
+                & $\mid$ & skip $S'$                     \\
+                & $\mid$ & if $b$ then $S$ else $S$ $S'$ \\
+                & $\mid$ & while $b$ do $S$ $S'$         \\
+    \textit{b}  & $\to$  & $a$ ? $a$ $b'$                \\
+                & $\mid$ & $a$ < $b'$                    \\
+                & $\mid$ & $\neg$$b$ $b'$                \\
+                & $\mid$ & ($b$) $b'$                    \\
+    \textit{a}  & $\to$  & $n$ $a'$                      \\
+                & $\mid$ & $x$ $a'$                      \\
+                & $\mid$ & ($a$) $a'$                    \\
+    \textit{S'} & $\to$  & ; $S$ $S'$                    \\
+                & $\mid$ & $\epsilon$                    \\
+    \textit{b'} & $\to$  & $\land$ $b$ $b'$              \\
+                & $\mid$ & $\epsilon$                    \\
+    \textit{a'} & $\to$  & + $a$ $a'$                    \\
+                & $\mid$ & * $a$ $a'$                    \\
+                & $\mid$ & - $a$ $a'$                    \\
+                & $\mid$ & $\epsilon$                    \\
+  \end{tabular}
+  \caption{Bims rewritten without left recursion}
   \label{tab:bimsrewrite}
 \end{table}
-
 
 \subsection{ANTLR4}
 ANTLR (short for ANother Tool for Language Recognition) is a powerful parser generator that can be used to process, execute, or even translate structured text or binary files. It is widely used around the world by both Twitter and Oracle for parsing queries~\cite{ANTLR_About}.\todo{add ANTLR to acronyms}
@@ -91,12 +117,32 @@ ANTLR is very easy to work with. One simply installs the plugin in their IDE of 
 "CUP stands for Construction of Useful Parsers and is a Look-Ahead Left-to-right, Rightmost derivation (LALR) parser generator for Java"~\cite{cupParserGenerator}. CUP implements a standard LALR(1) parser generation. Documentation for CUP recommends using the scanner generator JFlex, as a Lexical Analyzer Generator. Figure~\ref{fig:cup_example} is an example of how CUP was used.
 
 
-\begin{figure}[htb!]
+\begin{listing}[htb!]
   \centering
-  \includegraphics[width=0.8\textwidth]{figures/Cup_Example.png}
-  \caption{An example of CUP}
-  \label{fig:cup_example}
-\end{figure}
+  \begin{minted}{c}
+    /* Simple +/-*/ expression language; parser evaluates constant expressions
+    import java_cup.runtime.*;
+
+    parser code {:
+      parser p = new parser(new Scanner(new FileReader(fileName)));
+      Object result = p.parse().value;  
+      :}
+
+    /*define how to connect to the scanner!*/
+    init with {: p.init(); :};
+    scan with {: return p.next_token(); :};
+
+    terminal PLUS;
+    terminal Integer NUMBER;
+
+    non terminal exp;
+
+    exp ::= exp PLUS NUMBER | NUMBERM;
+
+  \end{minted}
+  \caption{An example of the CUP syntax}
+  \label{List:cup}
+\end{listing}
 
 In this we created a simple grammar that could add two integers together; this was done to try using CUP and to understand how everything worked.
 
@@ -106,15 +152,33 @@ JFlex is an abbreviation for Java Flex. Flex is an abbreviation for Fast Lexical
 
 In Figure~\ref{fig:JFlex_example} there is an example of how JFlex looked, in conjunction with our previously mentioned CUP file.
 
-\begin{figure}[htb!]
-  \centering
-  \includegraphics[width=0.8\textwidth]{figures/JFlex_Example.png}
-  \caption{An example of JFlex}
-  \label{fig:JFlex_example}
-\end{figure}
 
-\subsection{Experiences with CUP}
-The general experience with CUP was good, except for connecting the parser and the lexical analyzer. At first, CUP was easy and workable, and setting up a simple grammar and creating the parser and symbol tree for it went well. But when there were specific issues it was difficult to find solutions, as CUP is not a very popular parser generator, which meant there was a minimal amount of information to be found. \todo{Maybe remove this since we don't have a section e.g "experience with ANTLR"}
+\begin{listing}[htb!]
+  \centering
+  \begin{minted}{c}
+    LineTerminator  = \r|\n|\r\n
+    WhiteSpace      = {LineTerminator} | [\t\f]
+
+    DecIntergerLiteral = 0 | [1-9][0-9]*
+
+    %%
+
+    /* literals */
+    {DecIntergerLiteral}    {return symbol(sym.NUMBER);}
+    \                       {string.setLenght(0); yybegin(STRING);}
+
+    /*whitespace*/ 
+    {WhiteSpace}            {/*ignore */}  
+    
+    /*operators*/
+    "+"                     {return symbol(sym.PLUS);}
+  \end{minted}
+  \caption{An example of the JFlex syntax}
+  \label{List:jflex}
+\end{listing}
+
+%\subsection{Experiences with CUP}
+%The general experience with CUP was good, except for connecting the parser and the lexical analyzer. At first, CUP was easy and workable, and setting up a simple grammar and creating the parser and symbol tree for it went well. But when there were specific issues it was difficult to find solutions, as CUP is not a very popular parser generator, which meant there was a minimal amount of information to be found. \todo{Maybe remove this since we don't have a section e.g "experience with ANTLR"}
 
 \subsection{Result}
 CUP will not be used in the project, as it proved difficult, combined with a lack of documentation, to connect the parser generator with the lexical analyzer generator, whereas other tools, such as JavaCC and ANTLR, automatically creates the lexical analyzer.
