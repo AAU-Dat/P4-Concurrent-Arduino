@@ -1,1 +1,5 @@
-num a = 7;
+num a = (7 + 10);
+mut num b = 10;
+mut char c = "h";
+mut bool d = (hello(10, true));
+char k = j[5];

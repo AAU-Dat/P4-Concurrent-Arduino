@@ -2,6 +2,7 @@ import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.tree.*;
 import AstNodes.*;
 import antlr.*;
+import CodeGen.*;
 
 public class App {
     public static void main(String[] args) throws Exception {
@@ -18,5 +19,8 @@ public class App {
         } catch (RuntimeException e) {
             System.out.println(e.getMessage());
         }
+        CodeGenVisitor cgv = new CodeGenVisitor();
+        CodeGenStringObject cppc = cgv.visit(tree);
+        System.out.println(cppc.GlobalScope + "helkjlsjd");
     }
 }
