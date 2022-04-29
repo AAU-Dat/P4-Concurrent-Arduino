@@ -10,73 +10,96 @@ public class AstNode {
     }
 
     public AstNode parent;
-    public AstNode leftMostSibling;
+    public AstNode leftMostSibling = this;
     public AstNode rightSibling;
-    // public AstNode leftSibling;
     public AstNode child;
     public String name;
-    public Types type; 
-    
+    public Types type;
+
     public AstNode(String name) {
         this.name = name;
         System.out.println(name);
 
     }
-    public AstNode(){}
-    public void print (){
+
+    public AstNode() {
+    }
+
+    public void print() {
         System.out.println(name);
-        if(child != null){
+        if (child != null) {
             child.print();
         }
     }
 
-    public void MakeSiblings(AstNode newSibling){
-        // Exsample one
-        //        a
-        //    b       c     d     e
-        //          e
+    /**
+     * MakeSiblings function takes a node and gives it a new sibling.
+     * While doing that it also make sure that they new siblings gets
+     * the correct parent and gets the correct leftmost siblings as the
+     * parent nodes leftmost sibling.
+     * @param newSibling new sibling of caller
+     */
 
-        // Exsample two
-        //        a
-        //    b       c
-        //
+    public void MakeSiblings(AstNode newSibling) {
         AstNode rightMostSibling = new AstNode();
-    
-        if(this.rightSibling != null){
-            rightMostSibling = FindRightMostSibling(this.rightSibling);
+
+        if (this.rightSibling != null) {
+            rightMostSibling = FindRightmostSibling(this.rightSibling);
         } else {
             rightMostSibling = this;
         }
+
         rightMostSibling.rightSibling = newSibling;
         newSibling.parent = this.parent;
-        // newSibling.leftSibling = rightMostSibling;
         newSibling.leftMostSibling = this.leftMostSibling;
     }
 
-    public AstNode FindRightMostSibling(AstNode right){
+    /**
+     * FindRighmostSibling checks if the leftmost sibling have a right sibling.
+     * until the right sibling has no right sibling.
+     * @param right The node to the right from the leftmost node 
+     * @return      The rightmost sibling
+     */
+    public AstNode FindRightmostSibling(AstNode right) {
         AstNode res = right;
-        while(res.rightSibling != null){
+        while (res.rightSibling != null) {
             res = res.rightSibling;
         }
         return res;
     }
 
-    public void adoptChildren(AstNode newChild){
-        //this only works of no previuos children
-        if(this.child == null){
+    /**
+     * adoptChildren ensures that the caller gets a new child which param newChild.
+     * @param newChild becomes child of caller
+     */
+    public void adoptChildren(AstNode newChild) {
+        if (this.child == null) {
             this.child = newChild.leftMostSibling;
-            newChild.parent = this;
-            while (newChild.rightSibling != null){
+            while (newChild.rightSibling != null) {
                 newChild.parent = this;
                 newChild = newChild.rightSibling;
             }
+            newChild.parent = this;
+        }
+        // Add new children to the right of the rightmost child
+        else {
+            while (newChild.rightSibling != null) {
+                this.child.MakeSiblings(newChild);
+                newChild = newChild.rightSibling;
+            }
+            this.child.MakeSiblings(newChild);
         }
     }
 
-    //how do i do this if i need them to be differint types of ast nodes fx 1 while node and one expression node
-    public void makeFamily(int i){
+    /**
+     * Make comment here jamie
+     * @param i
+     */
+    // how do i do this if i need them to be differint types of ast nodes fx 1 while
+    // node and one expression node
+    public void makeFamily(int i) {
         child = new AstNode() {
-            
+
         };
         for (int j = 0; j < i; j++) {
 

@@ -1,0 +1,33 @@
+\section{Language semantics}\label{sec:languagesemantics}
+While syntax describes the structure of the language, semantics describes the \textit{meaning}. Even if a sentence is syntactically correct, it might be nonsensical according to the semantics. For example, the english sentence "What is the difference between a duck?" is syntactically correct, but not meaningful.
+
+For a complete definition of a programming language, both syntax and semantics definitions are required. This section describes the semantics of the Arc language using operational semantics.
+
+
+
+A sentence might 
+
+
+This section describes the semantics of the Arc language. If a sentence is written syntactically correct, it must be checked if the sentence is meaningful. 
+
+Example semantics:
+
+\begin{align*}
+    [COMPOSITION] \quad &
+    \frac
+    {S_1, \sigma \rightarrow \sigma \prime \quad S_2, \sigma \prime \rightarrow \sigma \prime \prime}
+    {S_1;S_2, \sigma \rightarrow \sigma \prime \prime}
+    \\
+    [RULE]     \quad    &
+    \frac
+    {Premises}
+    {Conclusion}
+\end{align*}
+
+\begin{align*}
+    [RULE]     \quad &
+    \frac
+    {Premises}
+    {Conclusion}
+    Side condition
+\end{align*}
