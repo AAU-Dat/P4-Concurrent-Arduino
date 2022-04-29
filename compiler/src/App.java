@@ -2,6 +2,7 @@ import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.tree.*;
 import AstNodes.*;
 import antlr.*;
+import CodeGen.*;
 
 public class App {
     public static void main(String[] args) throws Exception {
@@ -12,11 +13,14 @@ public class App {
         ParseTree tree = parser.start();
         EvalVisitor eval = new EvalVisitor();
         try {
-            AstNode AST = eval.visit(tree);
+            AST_node AST = eval.visit(tree);
             System.out.println("Hello, World!");
             
         } catch (RuntimeException e) {
             System.out.println(e.getMessage());
         }
+        CodeGenVisitor cgv = new CodeGenVisitor();
+        CodeGenStringObject cppc = cgv.visit(tree);
+        System.out.println(cppc.GlobalScope + "helkjlsjd");
     }
 }

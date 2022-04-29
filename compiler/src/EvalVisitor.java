@@ -1,14 +1,14 @@
 import antlr.arcv2BaseVisitor;
 import antlr.arcv2Parser;
 import AstNodes.*;
-import AstNodes.AstNode.Types;
+import AstNodes.AST_node.Types;
 import Exemptions.Expression_type_exception;
 
-public class EvalVisitor extends arcv2BaseVisitor<AstNode> {
+public class EvalVisitor extends arcv2BaseVisitor<AST_node> {
 
     @Override
-    public AstNode visitStart(arcv2Parser.StartContext ctx) {
-        AstNode start = new AstNode("start");
+    public AST_node visitStart(arcv2Parser.StartContext ctx) {
+        AST_node start = new AST_node("start");
         // this only works with a single declaration will have to find out how to go
         // through them one by one
         start.child = visitChildren(ctx);
@@ -16,11 +16,11 @@ public class EvalVisitor extends arcv2BaseVisitor<AstNode> {
     }
 
     @Override
-    public AstNode visitTerminal_expression(arcv2Parser.Terminal_expressionContext ctx) {
+    public AST_node visitTerminal_expression(arcv2Parser.Terminal_expressionContext ctx) {
 
         String name;
         name = ctx.getText();
-        AstNode terminal = new Terminal_expression_node(name);
+        AST_node terminal = new Terminal_expression_node(name);
         if (ctx.NUMBER() != null)
             terminal.type = Types.NUM;
         else if (ctx.BOOL() != null)
@@ -36,17 +36,17 @@ public class EvalVisitor extends arcv2BaseVisitor<AstNode> {
     }
 
     @Override
-    public AstNode visitPlus_minus_expression(arcv2Parser.Plus_minus_expressionContext ctx) {
-        AstNode plus_minus_node;
+    public AST_node visitPlus_minus_expression(arcv2Parser.Plus_minus_expressionContext ctx) {
+        AST_node plus_minus_node;
 
         if (ctx.children.get(1).getText().toCharArray()[0] == '+')
-            plus_minus_node = new AstNode("plus");
+            plus_minus_node = new AST_node("plus");
         else
-            plus_minus_node = new AstNode("minus");
+            plus_minus_node = new AST_node("minus");
         plus_minus_node.child = visit(ctx.expression(0));
         plus_minus_node.child.MakeSiblings(visit(ctx.expression(1)));
 
-        AstNode[] astnodearray = { plus_minus_node.child, plus_minus_node.child.rightSibling };
+        AST_node[] astnodearray = { plus_minus_node.child, plus_minus_node.child.rightSibling };
         if (Typecheck.Check(astnodearray, Types.NUM))
             plus_minus_node.type = Types.NUM;
         else {
@@ -56,17 +56,17 @@ public class EvalVisitor extends arcv2BaseVisitor<AstNode> {
     }
 
     @Override
-    public AstNode visitMultiplication_divide_expression(arcv2Parser.Multiplication_divide_expressionContext ctx) {
-        AstNode mult_divide_node;
+    public AST_node visitMultiplication_divide_expression(arcv2Parser.Multiplication_divide_expressionContext ctx) {
+        AST_node mult_divide_node;
 
         if (ctx.children.get(1).getText().toCharArray()[0] == '*')
-            mult_divide_node = new AstNode("mult");
+            mult_divide_node = new AST_node("mult");
         else
-            mult_divide_node = new AstNode("devide");
+            mult_divide_node = new AST_node("devide");
 
         mult_divide_node.child = visit(ctx.expression(0));
         mult_divide_node.child.MakeSiblings(visit(ctx.expression(1)));
-        AstNode[] astnodearray = { mult_divide_node.child, mult_divide_node.child.rightSibling };
+        AST_node[] astnodearray = { mult_divide_node.child, mult_divide_node.child.rightSibling };
         if (Typecheck.Check(astnodearray, Types.NUM))
             mult_divide_node.type = Types.NUM;
         else {
@@ -77,16 +77,16 @@ public class EvalVisitor extends arcv2BaseVisitor<AstNode> {
     }
 
     @Override
-    public AstNode visitRelational_equality_expression(arcv2Parser.Relational_equality_expressionContext ctx) {
-        AstNode equality_node;
+    public AST_node visitRelational_equality_expression(arcv2Parser.Relational_equality_expressionContext ctx) {
+        AST_node equality_node;
         if (ctx.children.get(1).getText().toCharArray()[0] == '=')
-            equality_node = new AstNode("equality");
+            equality_node = new AST_node("equality");
         else
-            equality_node = new AstNode("inequality");
+            equality_node = new AST_node("inequality");
 
         equality_node.child = visit(ctx.expression(0));
         equality_node.child.MakeSiblings(visit(ctx.expression(1)));
-        AstNode[] astnode_array = { equality_node.child, equality_node.child.rightSibling };
+        AST_node[] astnode_array = { equality_node.child, equality_node.child.rightSibling };
         if (Typecheck.Check(astnode_array, equality_node.child.type)) {
             equality_node.type = Types.BOOL;
         } else {
@@ -96,23 +96,23 @@ public class EvalVisitor extends arcv2BaseVisitor<AstNode> {
     }
 
     @Override
-    public AstNode visitRelational_operator_expression(arcv2Parser.Relational_operator_expressionContext ctx) {
-        AstNode relational_node;
+    public AST_node visitRelational_operator_expression(arcv2Parser.Relational_operator_expressionContext ctx) {
+        AST_node relational_node;
         char[] operator_array = ctx.children.get(1).getText().toCharArray();
         if (operator_array.length == 1) {
             if (operator_array[0] == '<')
-                relational_node = new AstNode("less");
+                relational_node = new AST_node("less");
             else
-                relational_node = new AstNode("greater");
+                relational_node = new AST_node("greater");
         } else {
             if (operator_array[0] == '<')
-                relational_node = new AstNode("less than or equal");
+                relational_node = new AST_node("less than or equal");
             else
-                relational_node = new AstNode("greater than or equal");
+                relational_node = new AST_node("greater than or equal");
         }
         relational_node.child = visit(ctx.expression(0));
         relational_node.child.MakeSiblings(visit(ctx.expression(1)));
-        AstNode[] astnode_array = { relational_node.child, relational_node.child.rightSibling };
+        AST_node[] astnode_array = { relational_node.child, relational_node.child.rightSibling };
         if (Typecheck.Check(astnode_array, relational_node.child.type)) {
             relational_node.type = Types.BOOL;
         } else {
@@ -122,11 +122,11 @@ public class EvalVisitor extends arcv2BaseVisitor<AstNode> {
     }
 
     @Override
-    public AstNode visitOr_expression(arcv2Parser.Or_expressionContext ctx) {
-        AstNode Or_node = new AstNode("or");
+    public AST_node visitOr_expression(arcv2Parser.Or_expressionContext ctx) {
+        AST_node Or_node = new AST_node("or");
         Or_node.child = visit(ctx.expression(0));
         Or_node.child.MakeSiblings(visit(ctx.expression(1)));
-        AstNode[] astnode_array = { Or_node.child, Or_node.child.rightSibling };
+        AST_node[] astnode_array = { Or_node.child, Or_node.child.rightSibling };
         if (Typecheck.Check(astnode_array, Types.BOOL)) {
             Or_node.type = Types.BOOL;
         } else {
@@ -136,11 +136,11 @@ public class EvalVisitor extends arcv2BaseVisitor<AstNode> {
     }
 
     @Override
-    public AstNode visitAnd_expression(arcv2Parser.And_expressionContext ctx) {
-        AstNode And_node = new AstNode("And");
+    public AST_node visitAnd_expression(arcv2Parser.And_expressionContext ctx) {
+        AST_node And_node = new AST_node("And");
         And_node.child = visit(ctx.expression(0));
         And_node.child.MakeSiblings(visit(ctx.expression(1)));
-        AstNode[] astnode_array = { And_node.child, And_node.child.rightSibling };
+        AST_node[] astnode_array = { And_node.child, And_node.child.rightSibling };
         if (Typecheck.Check(astnode_array, Types.BOOL)) {
             And_node.type = Types.BOOL;
         } else {
@@ -150,8 +150,8 @@ public class EvalVisitor extends arcv2BaseVisitor<AstNode> {
     }
 
     @Override
-    public AstNode visitParentheses_expression(arcv2Parser.Parentheses_expressionContext ctx) {
-        AstNode parantheses_node = new AstNode("parantheses");
+    public AST_node visitParentheses_expression(arcv2Parser.Parentheses_expressionContext ctx) {
+        AST_node parantheses_node = new AST_node("parantheses");
         parantheses_node.child = visit(ctx.expression());
         if (parantheses_node.child.type != Types.CHAR) {
             parantheses_node.type = parantheses_node.child.type;
@@ -162,8 +162,8 @@ public class EvalVisitor extends arcv2BaseVisitor<AstNode> {
     }
 
     @Override
-    public AstNode visitUnary_negation_expression(arcv2Parser.Unary_negation_expressionContext ctx) {
-        AstNode unary_node = new AstNode("unary");
+    public AST_node visitUnary_negation_expression(arcv2Parser.Unary_negation_expressionContext ctx) {
+        AST_node unary_node = new AST_node("unary");
         unary_node.child = visitChildren(ctx);
         if (unary_node.child.type == Types.BOOL) {
             unary_node.type = Types.BOOL;
@@ -175,7 +175,7 @@ public class EvalVisitor extends arcv2BaseVisitor<AstNode> {
 
     // /* TODO gewg*/
     @Override
-    public AstNode visitArray_access_expression(arcv2Parser.Array_access_expressionContext ctx) {
+    public AST_node visitArray_access_expression(arcv2Parser.Array_access_expressionContext ctx) {
         Array_access_node array_node = new Array_access_node("array_access",
                 Integer.parseInt(ctx.children.get(2).toString()));
         return array_node;
@@ -183,17 +183,17 @@ public class EvalVisitor extends arcv2BaseVisitor<AstNode> {
 
     // // TODO
     @Override
-    public AstNode visitFunction_access_expression(arcv2Parser.Function_access_expressionContext ctx) {
-        AstNode function_call = new AstNode("function");
+    public AST_node visitFunction_access_expression(arcv2Parser.Function_access_expressionContext ctx) {
+        AST_node function_call = new AST_node("function");
         if (ctx.ARDUINOFUNCTIONS() != null)
             System.out.println("arduinofunction");
         return function_call;
     }
 
     @Override
-    public AstNode visitVariable_declaration(arcv2Parser.Variable_declarationContext ctx) {
+    public AST_node visitVariable_declaration(arcv2Parser.Variable_declarationContext ctx) {
 
-        AstNode variable_declaration = new Variable_declaration_node("varDec");
+        AST_node variable_declaration = new Variable_declaration_node("varDec");
         variable_declaration.child = visit(ctx.expression(0));
 
         if (ctx.STARTSQUAREBRACKET() != null) {
