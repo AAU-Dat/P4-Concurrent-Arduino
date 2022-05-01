@@ -1,7 +1,8 @@
 import antlr.arcv2BaseVisitor;
 import antlr.arcv2Parser;
 import AstNodes.*;
-import AstNodes.AST_node.Types;
+import Types.Types;
+
 import Exemptions.Expression_type_exception;
 
 public class EvalVisitor extends arcv2BaseVisitor<AST_node> {

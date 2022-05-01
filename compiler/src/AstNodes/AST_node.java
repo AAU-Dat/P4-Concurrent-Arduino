@@ -1,13 +1,10 @@
 package AstNodes;
 
+import Types.Types;
+
 public class AST_node {
 
-    public enum Types {
-        NUM,
-        CHAR,
-        BOOL,
-        PIN
-    }
+
 
     public AST_node parent;
     public AST_node leftMostSibling = this;
