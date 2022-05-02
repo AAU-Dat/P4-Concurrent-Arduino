@@ -1,8 +1,16 @@
 \section{Visitor pattern}\label{sec:visitorpattern}
+This section will briefly discuss what the visitor pattern is, how it is used in Arc, and why it is used. 
+
+ANTLR provides two methods of traversing a \gls{cst}, listeners and visitors. 
+
+The listener pattern, is not responsible for calling methods to traverse the tree. Instead, when it visits a node, it visits all child nodes og that node before continuing. The benefits of doing it this way, is that it is automatic, and there is not needed to write code for each visitor method.
+
+For Arc there is made use of visitors.The visitor pattern, is a method used to traverse the \gls{cst} in a specific manner, where methods are used to visit each child node. By using the visitor pattern, there is more control over how the traversal of the \gls{cst} is done, and how much of the \gls{cst} is visited. ANTLR can generate a visitor interface, this interface is created from Arcs grammar, and creates all the needed visitor methods. These act as boilerplate for Arcs needed visitor methods, that can then be written out to do excatly as needed.
+
+The visitor pattern is used, because cocks
 
 
-
-%What is a visitor pattern
+%Options
+%pros and cons of both
+%How is it used
 %How do we use it
-%Why do we use it
-%Other options
