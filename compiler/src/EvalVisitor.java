@@ -2,10 +2,13 @@ import antlr.arcv2BaseVisitor;
 import antlr.arcv2Parser;
 import AstNodes.*;
 import Types.Types;
+import symbolTable.*;
 
 import Exemptions.Expression_type_exception;
 
+
 public class EvalVisitor extends arcv2BaseVisitor<AST_node> {
+    SymbolTable symbolTable = new SymbolTable(); 
 
     @Override
     public AST_node visitStart(arcv2Parser.StartContext ctx) {
@@ -201,10 +204,36 @@ public class EvalVisitor extends arcv2BaseVisitor<AST_node> {
 
             System.out.println(ctx.STARTSQUAREBRACKET().getText());
         }
+
+
+
         return variable_declaration;
     }
+    @Override
+    public AST_node visitBlock(arcv2Parser.BlockContext ctx) {
+
+        symbolTable.push();
+
+        AST_node block = new Variable_declaration_node("block");
+
+
+        return block;
+    }
+
+
     // @Override
     // public AstNode visit(arcv2Parser.Plus_minus_expressionContext ctx) {
     // AstNode plus = new AstNode("plus");
     // return plus; }
+    // private Types String_to_Types(String input) {
+    //     switch (input) {
+    //         case value:
+                
+    //             break;
+        
+    //         default:
+    //             break;
+    //     }
+        
+    // }
 }
