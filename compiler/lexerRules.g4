@@ -7,11 +7,10 @@ fragment DIGIT:          [0-9];
 
 BOOL:                    'true' | 'false';
 CHAR:                    '"' . '"'; //Is this ascii or unicode?
-TYPE_TYPEOPERATOR:       PREFIXOPERATOR? TYPE ( TYPEOPERATOR)*;
 
-fragment TYPEOPERATOR:   '[]';
-fragment PREFIXOPERATOR: 'mut ';
-fragment TYPE:           'num' | 'bool' | 'char';
+TYPEOPERATOR:   '[]';
+PREFIXOPERATOR: 'mut ';
+TYPE:           'num' | 'bool' | 'char';
 
 COMMENTS:                '//' .*? '\n' -> skip;
 LINECOMMENTS:            '/*' .*? '*/' -> skip;

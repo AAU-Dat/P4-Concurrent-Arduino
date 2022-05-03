@@ -49,10 +49,14 @@ public class CodeGenVisitor extends arcv2BaseVisitor<CodeGenStringObject> {
         return cpp; 
     }
 
+    // Fix: Needs to handle more than one expression
     @Override
     public CodeGenStringObject visitFunction_access_expression(arcv2Parser.Function_access_expressionContext ctx){
         CodeGenStringObject cpp = new CodeGenStringObject();
-        cpp.GlobalScope = ctx.getText();
+        CodeGenStringObject temp = new CodeGenStringObject();
+
+        temp = visit(ctx.expression(0));
+        cpp.GlobalScope += temp.GlobalScope;
 
         return cpp;
     }
@@ -76,18 +80,33 @@ public class CodeGenVisitor extends arcv2BaseVisitor<CodeGenStringObject> {
         return cpp;
     }
 
-    // Todo
     @Override
     public CodeGenStringObject visitUnary_negation_expression(arcv2Parser.Unary_negation_expressionContext ctx){
         CodeGenStringObject cpp = new CodeGenStringObject();
+        CodeGenStringObject temp = new CodeGenStringObject();
+
+        temp = visit(ctx.expression());
+        cpp.GlobalScope = "not " + temp.GlobalScope;
 
         return cpp;
     }
 
-    // Todo
     @Override
     public CodeGenStringObject visitMultiplication_divide_expression(arcv2Parser.Multiplication_divide_expressionContext ctx){
         CodeGenStringObject cpp = new CodeGenStringObject();
+        CodeGenStringObject temp = new CodeGenStringObject();
+
+        temp = visit(ctx.expression(0));
+        cpp.GlobalScope += temp.GlobalScope + " ";
+
+        if(ctx.MULTI() != null){
+            cpp.GlobalScope += "* ";
+        } else {
+            cpp.GlobalScope += "/ ";
+        }
+
+        temp = visit(ctx.expression(1));
+        cpp.GlobalScope += temp.GlobalScope;
 
         return cpp;
     }
@@ -112,26 +131,61 @@ public class CodeGenVisitor extends arcv2BaseVisitor<CodeGenStringObject> {
         return cpp;
     }    
 
-    // Todo
+    // Need to fix spaces
     @Override
     public CodeGenStringObject visitRelational_equality_expression(arcv2Parser.Relational_equality_expressionContext ctx){
         CodeGenStringObject cpp = new CodeGenStringObject();
+        CodeGenStringObject temp = new CodeGenStringObject();
+
+        temp = visit(ctx.expression(0));
+        cpp.GlobalScope += temp.GlobalScope + " ";
+
+        if(ctx.RELATIONEQOPERATORS() == null){
+            return cpp;
+        } else if(ctx.RELATIONEQOPERATORS().toString() == "=="){
+            cpp.GlobalScope += "== ";
+        } else {cpp.GlobalScope += "!= ";}
+
+        temp = visit(ctx.expression(1));
+        cpp.GlobalScope += temp.GlobalScope;
 
         return cpp;
     }
 
-    // Todo
+    // Need to fix spaces
     @Override
     public CodeGenStringObject visitRelational_operator_expression(arcv2Parser.Relational_operator_expressionContext ctx){
         CodeGenStringObject cpp = new CodeGenStringObject();
+        CodeGenStringObject temp = new CodeGenStringObject();
+
+        temp = visit(ctx.expression(0));
+        cpp.GlobalScope += temp.GlobalScope + " ";
+
+        if(ctx.RELATIONOPERATORS() == null){
+            return cpp;
+        } else if(ctx.RELATIONOPERATORS().toString() == "<"){
+            cpp.GlobalScope += "< ";
+        } else if(ctx.RELATIONOPERATORS().toString() == ">"){
+            cpp.GlobalScope += "> ";
+        } else if(ctx.RELATIONOPERATORS().toString() == "<="){
+            cpp.GlobalScope += "<= ";
+        } else {cpp.GlobalScope += ">= ";}
+
+        temp = visit(ctx.expression(1));
+        cpp.GlobalScope += temp.GlobalScope;
 
         return cpp;
     }
 
-    // Todo
     @Override
     public CodeGenStringObject visitAnd_expression(arcv2Parser.And_expressionContext ctx){
         CodeGenStringObject cpp = new CodeGenStringObject();
+        CodeGenStringObject temp = new CodeGenStringObject();
+
+        temp = visit(ctx.expression(0));
+        cpp.GlobalScope += temp.GlobalScope + " and ";
+        temp = visit(ctx.expression(1));
+        cpp.GlobalScope += temp.GlobalScope;
 
         return cpp;
     }
@@ -140,6 +194,12 @@ public class CodeGenVisitor extends arcv2BaseVisitor<CodeGenStringObject> {
     @Override
     public CodeGenStringObject visitOr_expression(arcv2Parser.Or_expressionContext ctx){
         CodeGenStringObject cpp = new CodeGenStringObject();
+        CodeGenStringObject temp = new CodeGenStringObject();
+
+        temp = visit(ctx.expression(0));
+        cpp.GlobalScope += temp.GlobalScope + " or ";
+        temp = visit(ctx.expression(1));
+        cpp.GlobalScope += temp.GlobalScope;
 
         return cpp;
     }
