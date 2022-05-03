@@ -1,7 +1,8 @@
 
 
 import AstNodes.AST_node;
-import AstNodes.AST_node.Types;
+import Types.Types;
+
 
 public class Typecheck extends AST_node{
     public static Boolean Check(AST_node[] astnode_array, Types type){

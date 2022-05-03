@@ -11,7 +11,7 @@ declaration
      | 'task' ('(' (TYPE_TYPEOPERATOR IDENTIFIER ( ',' TYPE_TYPEOPERATOR IDENTIFIER)*)? ')')? (('every' NUMBER) | ('when' '(' expression ')'))? statement* # task_declaration;
      // Task needs parameters and not declarations as input.
 block: '{' statement* '}';
-
+//Maybe change statement in if, function/task declaration, for and while to block
 statement
      : block                                                                                                                                               # block_statement
      | 'return' expression ';'                                                                                                                             # return_statement
