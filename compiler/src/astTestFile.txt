@@ -13,3 +13,4 @@ num bov = (hello(10 >= 5, true));
 num bov = (hello(10 <= 5, false));
 num bov = (hello(10 and 5, true));
 num bov = (hello(10 or 5, true));
+mut num[] array = [1,2,3,4,5];
