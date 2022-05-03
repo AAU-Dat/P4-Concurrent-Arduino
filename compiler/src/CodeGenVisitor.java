@@ -1,7 +1,9 @@
 import antlr.arcv2BaseVisitor;
 import antlr.arcv2Parser;
 import antlr.arcv2Parser.ExpressionContext;
+import antlr.arcv2Parser.StatementContext;
 
+import java.beans.Expression;
 import java.util.List;
 
 import CodeGen.CodeGenStringObject;
@@ -22,6 +24,10 @@ public class CodeGenVisitor extends arcv2BaseVisitor<CodeGenStringObject> {
         
         return c_plus_plus_code;
     }
+
+    /*
+     * Expression CodeGen 
+     */
 
     @Override
     public CodeGenStringObject visitVariable_declaration(arcv2Parser.Variable_declarationContext ctx) {
@@ -84,6 +90,8 @@ public class CodeGenVisitor extends arcv2BaseVisitor<CodeGenStringObject> {
         CodeGenStringObject cpp = new CodeGenStringObject();
         CodeGenStringObject temp = new CodeGenStringObject();
         
+        cpp.GlobalScope += ctx.IDENTIFIER();
+        cpp.GlobalScope += "(";
         List<ExpressionContext> list = ctx.expression();
         for(int i = 0; i < list.size(); i++){
             temp = visit(ctx.expression(i));
@@ -93,6 +101,7 @@ public class CodeGenVisitor extends arcv2BaseVisitor<CodeGenStringObject> {
                 cpp.GlobalScope += ", ";
             }
         }
+        cpp.GlobalScope += ")";
 
         return cpp;
     }
@@ -236,4 +245,107 @@ public class CodeGenVisitor extends arcv2BaseVisitor<CodeGenStringObject> {
 
         return cpp;
     }
+
+    /*
+     * Block CodeGen 
+     */
+
+    @Override
+    public CodeGenStringObject visitBlock(arcv2Parser.BlockContext ctx){
+        CodeGenStringObject cpp = new CodeGenStringObject();
+        CodeGenStringObject temp = new CodeGenStringObject();
+
+        List<StatementContext> list = ctx.statement();
+        for(int i = 0; i < list.size(); i++){
+            temp = visit(ctx.getChild(i));
+            cpp.GlobalScope += temp.GlobalScope;
+        }
+
+        return cpp;
+    }
+    
+    /*
+     * Statement CodeGen 
+     */
+
+    @Override
+    public CodeGenStringObject visitBlock_statement(arcv2Parser.Block_statementContext ctx){
+        CodeGenStringObject cpp = new CodeGenStringObject();
+
+        cpp = visitChildren(ctx);
+
+        return cpp;    
+    }
+
+    @Override
+    public CodeGenStringObject visitReturn_statement(arcv2Parser.Return_statementContext ctx){
+        CodeGenStringObject cpp = new CodeGenStringObject();
+        CodeGenStringObject temp = new CodeGenStringObject();
+
+        if(ctx.RETURN() != null){
+            cpp.GlobalScope += "return ";
+            temp = visit(ctx.expression());
+            cpp.GlobalScope += temp.GlobalScope;
+        }
+
+        return cpp;
+    }
+
+    @Override
+    public CodeGenStringObject visitIf_else_statement(arcv2Parser.If_else_statementContext ctx){
+        CodeGenStringObject cpp = new CodeGenStringObject();
+
+
+
+        return cpp;
+    }
+
+    @Override
+    public CodeGenStringObject visitForloop_statement(arcv2Parser.Forloop_statementContext ctx){
+        CodeGenStringObject cpp = new CodeGenStringObject();
+
+        return cpp;
+    }
+
+    @Override
+    public CodeGenStringObject visitWhileloop_statement(arcv2Parser.Whileloop_statementContext ctx){
+        CodeGenStringObject cpp = new CodeGenStringObject();
+
+        return cpp;
+    }
+
+    @Override
+    public CodeGenStringObject visitVariable_declaration_statement(arcv2Parser.Variable_declaration_statementContext ctx){
+        CodeGenStringObject cpp = new CodeGenStringObject();
+
+        return cpp;
+    }
+
+    @Override
+    public CodeGenStringObject visitAssignment_statement(arcv2Parser.Assignment_statementContext ctx){
+        CodeGenStringObject cpp = new CodeGenStringObject();
+
+        return cpp;
+    }
+
+    @Override
+    public CodeGenStringObject visitFunction_call_statement(arcv2Parser.Function_call_statementContext ctx){
+        CodeGenStringObject cpp = new CodeGenStringObject();
+
+        return cpp;
+    }
+
+    /*
+     * Declaration CodeGen
+     */
+    @Override
+    public CodeGenStringObject visitDeclaration(arcv2Parser.DeclarationContext ctx){
+        CodeGenStringObject cpp = new CodeGenStringObject();
+
+
+
+        return cpp;
+    }
+
+    
 }
