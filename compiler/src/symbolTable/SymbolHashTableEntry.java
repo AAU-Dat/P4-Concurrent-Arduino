@@ -6,6 +6,7 @@ public class SymbolHashTableEntry {
     public String Identifier;
     public SymbolHashTableEntry Next_entry;
     public Types[] Function_parameter_types;
-    public Types function_return_Type;
+    public Types Function_return_Type;
+    public boolean Mutability;
     
 }
