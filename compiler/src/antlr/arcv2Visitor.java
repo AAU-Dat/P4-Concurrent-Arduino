@@ -45,6 +45,12 @@ public interface arcv2Visitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitTask_declaration(arcv2Parser.Task_declarationContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link arcv2Parser#typing}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitTyping(arcv2Parser.TypingContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link arcv2Parser#block}.
 	 * @param ctx the parse tree
 	 * @return the visitor result

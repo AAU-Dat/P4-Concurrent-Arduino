@@ -1,3 +1,1 @@
-num[] a = hello(10 < 5, true);
-
-num[] b = [1,2,3,4,5]
+num hello(num a, num[] b, num c){}

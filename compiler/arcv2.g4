@@ -5,20 +5,25 @@ import lexerRules;
 start: declaration*;
 
 declaration
-     : PREFIXOPERATOR? TYPE  TYPEOPERATOR? IDENTIFIER '=' ('[' (expression (',' expression)*)? ']' | expression) ';'                                                         # variable_declaration
-     | PREFIXOPERATOR? TYPE  TYPEOPERATOR? IDENTIFIER '(' (PREFIXOPERATOR? TYPE  TYPEOPERATOR? IDENTIFIER (',' PREFIXOPERATOR? TYPE  TYPEOPERATOR? IDENTIFIER)*)? ')' statement*                                 # function_declaration
-     | '#' 'pin' IDENTIFIER '(' (PINDIGIT | NUMBER) ',' ('INPUT' | 'OUTPUT') ')' ';'                                                                       # pin_declaration
-     | 'task' ('(' (PREFIXOPERATOR? TYPE  TYPEOPERATOR? IDENTIFIER ( ',' PREFIXOPERATOR? TYPE  TYPEOPERATOR? IDENTIFIER)*)? ')')? (('every' NUMBER) | ('when' '(' expression ')'))? statement* # task_declaration;
+     : typing IDENTIFIER '=' ('[' (expression (',' expression)*)? ']' | expression) ';'                                                                                   # variable_declaration
+     | typing IDENTIFIER '(' (typing IDENTIFIER (',' typing IDENTIFIER)*)? ')' '{' statement* '}'                    # function_declaration
+     | '#' 'pin' IDENTIFIER '(' (PINDIGIT | NUMBER) ',' ('INPUT' | 'OUTPUT') ')' ';'                                                                                                                   # pin_declaration
+     | 'task' ('(' (typing IDENTIFIER ( ',' typing IDENTIFIER)*)? ')')? (('every' NUMBER) | ('when' '(' expression ')'))? '{' statement* '}' # task_declaration;
      // Task needs parameters and not declarations as input.
-block: '{' statement* '}';
+typing
+     : PREFIXOPERATOR? TYPE  TYPEOPERATOR?;
+
+block
+     : '{' statement* '}';
+
 //Maybe change statement in if, function/task declaration, for and while to block
 statement
      : block                                                                                                                                               # block_statement
      | 'return' expression ';'                                                                                                                             # return_statement
      | 'if' '(' expression ')' block ('else' block)?                                                                                               # if_else_statement
-     | 'for' '(' PREFIXOPERATOR? TYPE  TYPEOPERATOR? IDENTIFIER 'in' IDENTIFIER ')' block                                                                                # forloop_statement
+     | 'for' '(' typing IDENTIFIER 'in' IDENTIFIER ')' block                                                                                # forloop_statement
      | 'while' '(' expression ')' block                                                                                                                # whileloop_statement
-     | (PREFIXOPERATOR? TYPE  TYPEOPERATOR? IDENTIFIER '=' ( '[' (expression (',' expression)*)? ']' | expression) ';')                                                      # variable_declaration_statement
+     | (typing IDENTIFIER '=' ( '[' (expression (',' expression)*)? ']' | expression) ';')                                                      # variable_declaration_statement
      | IDENTIFIER ('[' NUMBER ']')? '=' ( '[' (expression (',' expression)*)? ']' | expression) ';'                                                        # assignment_statement
      | (IDENTIFIER | ARDUINOFUNCTIONS) '(' (expression (',' expression)*)? ')' ';'                                                                         # function_call_statement;
 

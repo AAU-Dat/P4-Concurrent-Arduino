@@ -2,9 +2,12 @@ import antlr.arcv2BaseVisitor;
 import antlr.arcv2Parser;
 import antlr.arcv2Parser.ExpressionContext;
 import antlr.arcv2Parser.StatementContext;
+import antlr.arcv2Parser.TypingContext;
 
 import java.beans.Expression;
 import java.util.List;
+
+import org.antlr.v4.runtime.tree.TerminalNode;
 
 import CodeGen.CodeGenStringObject;
 
@@ -26,57 +29,8 @@ public class CodeGenVisitor extends arcv2BaseVisitor<CodeGenStringObject> {
     }
 
     /*
-     * Expression CodeGen 
+     * Expression CodeGen
      */
-
-    @Override
-    public CodeGenStringObject visitVariable_declaration(arcv2Parser.Variable_declarationContext ctx) {
-        CodeGenStringObject cpp = new CodeGenStringObject();
-        CodeGenStringObject temp = new CodeGenStringObject();
-        
-        // This can be use to make varibales mutable in c++
-        if(ctx.PREFIXOPERATOR() != null){
-            cpp.GlobalScope += "";
-        }
-        
-        if(ctx.TYPE() != null){
-            cpp.GlobalScope += cpp.Type_Coverter(ctx.TYPE().toString()) + " ";
-        }
-
-
-        cpp.GlobalScope += ctx.IDENTIFIER().toString();
-
-        if(ctx.TYPEOPERATOR() != null){
-            cpp.GlobalScope += "[]";
-        }
-
-        cpp.GlobalScope += " " + ctx.ASSIGNMENT().toString() + " ";
-
-        if(ctx.STARTSQUAREBRACKET() != null){
-            cpp.GlobalScope += "{";
-
-            //Make this a function
-            List<ExpressionContext> list = ctx.expression();
-            for(int i = 0; i < list.size(); i++){
-                temp = visit(ctx.expression(i));
-                cpp.GlobalScope += temp.GlobalScope;
-                if(i + 1 < list.size()){
-                    cpp.GlobalScope += ", ";
-                }
-            }
-            cpp.GlobalScope += "}";
-        } else {
-            temp = visit(ctx.expression(0));
-            cpp.GlobalScope += temp.GlobalScope;
-        }
-
-        cpp.GlobalScope += ";\n";
-
-
-        return cpp;
-    }
-    
-
     @Override
     public CodeGenStringObject visitTerminal_expression(arcv2Parser.Terminal_expressionContext ctx){
         CodeGenStringObject cpp = new CodeGenStringObject();
@@ -338,12 +292,108 @@ public class CodeGenVisitor extends arcv2BaseVisitor<CodeGenStringObject> {
     /*
      * Declaration CodeGen
      */
-    //@Override
-    //public CodeGenStringObject visitDeclaration(arcv2Parser.DeclarationContext ctx){
-    //    CodeGenStringObject cpp = new CodeGenStringObject();
+    @Override
+    public CodeGenStringObject visitVariable_declaration(arcv2Parser.Variable_declarationContext ctx) {
+        CodeGenStringObject cpp = new CodeGenStringObject();
+        CodeGenStringObject temp = new CodeGenStringObject();
+        
+        // This can be use to make varibales mutable in c++
+        if(ctx.typing().PREFIXOPERATOR() != null){
+            cpp.GlobalScope += "";
+        }
+        
+        if(ctx.typing().TYPE() != null){
+            cpp.GlobalScope += cpp.Type_Coverter(ctx.typing().TYPE().toString()) + " ";
+        }
 
-    //    return cpp;
-    //}
+
+        cpp.GlobalScope += ctx.IDENTIFIER().toString();
+
+        if(ctx.typing().TYPEOPERATOR() != null){
+            cpp.GlobalScope += "[]";
+        }
+
+        cpp.GlobalScope += " " + ctx.ASSIGNMENT().toString() + " ";
+
+        if(ctx.STARTSQUAREBRACKET() != null){
+            cpp.GlobalScope += "{";
+
+            //Make this a function
+            List<ExpressionContext> list = ctx.expression();
+            for(int i = 0; i < list.size(); i++){
+                temp = visit(ctx.expression(i));
+                cpp.GlobalScope += temp.GlobalScope;
+                if(i + 1 < list.size()){
+                    cpp.GlobalScope += ", ";
+                }
+            }
+            cpp.GlobalScope += "}";
+        } else {
+            temp = visit(ctx.expression(0));
+            cpp.GlobalScope += temp.GlobalScope;
+        }
+
+        cpp.GlobalScope += ";\n";
+
+
+        return cpp;
+    }
+
+    @Override
+    public CodeGenStringObject visitFunction_declaration(arcv2Parser.Function_declarationContext ctx){
+        CodeGenStringObject cpp = new CodeGenStringObject();
+        CodeGenStringObject temp = new CodeGenStringObject();
+
+        if(ctx.typing(0).PREFIXOPERATOR() != null){
+            cpp.GlobalScope += "";
+        }
+        
+        if(ctx.typing(0).TYPE() != null){
+            cpp.GlobalScope += cpp.Type_Coverter(ctx.typing(0).TYPE().toString()) + " ";
+        }
+
+        cpp.GlobalScope += ctx.IDENTIFIER(0).toString();
+
+        if(ctx.typing(0).TYPEOPERATOR() != null){
+            cpp.GlobalScope += ctx.typing(0).TYPEOPERATOR().toString();
+        }
+
+        cpp.GlobalScope += "(";
+        
+        cpp.GlobalScope += functionParameterSetup(ctx);
+        
+        List<TypingContext> list = ctx.typing();
+        // or but the function functionParameterSetup
+        if(list.size() > 1){
+            cpp.GlobalScope += ", ";
+            cpp.GlobalScope += functionParameterSetup(ctx);
+        }
+
+        cpp.GlobalScope += ")";
+
+        return cpp;
+    }
+
+    public CodeGenStringObject functionParameterSetup(arcv2Parser.Function_declarationContext ctx){
+        CodeGenStringObject temp = new CodeGenStringObject();
+        //Make this into a while loop
+        // so for now i have put 0 in so no error is generated
+        if(ctx.typing(0).PREFIXOPERATOR() != null){
+            temp.GlobalScope += "";
+        }
+
+        if(ctx.typing(0).TYPE() != null){
+            temp.GlobalScope += temp.Type_Coverter(ctx.typing(0).TYPE().toString()) + " ";
+        }
+
+        if(ctx.typing(0).TYPEOPERATOR() != null){
+            temp.GlobalScope += ctx.typing(0).TYPEOPERATOR().toString();
+        }
+
+        temp.GlobalScope += ctx.IDENTIFIER().toString();
+
+        return temp;
+    }
 
 
 }
