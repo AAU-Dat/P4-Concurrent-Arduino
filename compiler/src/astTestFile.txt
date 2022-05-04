@@ -1,15 +1,1 @@
-num a = (7 + 10);
-mut num b = 10;
-mut char c = "h";
-mut bool d = (hello(10, true));
-bool hej = not 5;
-char k = j[5];
-num a = 5 * 5;
-num k = (hej(5 == 5, true));
-num k = (hej(5 != 5, false));
-num bov = (hello(10 > 5, true));
-num bov = (hello(10 < 5, false));
-num bov = (hello(10 >= 5, true));
-num bov = (hello(10 <= 5, false));
-num bov = (hello(10 and 5, true));
-num bov = (hello(10 or 5, true));
+num a(num b, mut num c)
