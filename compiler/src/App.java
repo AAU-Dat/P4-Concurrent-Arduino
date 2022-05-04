@@ -17,8 +17,9 @@ public class App {
             System.out.println("Hello, World!");
             
         } catch (RuntimeException e) {
-            System.out.println(e.getMessage());
+            System.out.println(e.getMessage() + " bad");
         }
+
         CodeGenVisitor cgv = new CodeGenVisitor();
         CodeGenStringObject cppc = cgv.visit(tree);
         System.out.println(cppc.GlobalScope + "helkjlsjd"); 

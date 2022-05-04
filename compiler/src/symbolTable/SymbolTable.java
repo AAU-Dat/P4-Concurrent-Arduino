@@ -10,7 +10,9 @@ import java.util.*;
 public class SymbolTable {
     private Stack<HashMap<String,SymbolHashTableEntry>> stack = new Stack<HashMap<String,SymbolHashTableEntry>>();
     
-    public SymbolTable(){}
+    public SymbolTable(){
+        stack.push(new HashMap<String,SymbolHashTableEntry>());
+    }
 
 
     public HashMap active_scope () {
@@ -33,6 +35,10 @@ public class SymbolTable {
         //    entry.Next_entry = (SymbolHashTableEntry) this.active_scope().get(entry.Identifier);
             this.active_scope().put(entry.Identifier, entry);
         //}
+    }
+
+    public Boolean containsKey (String key){
+        return this.active_scope().containsKey(key);
     }
 
     public SymbolHashTableEntry get (String key){
