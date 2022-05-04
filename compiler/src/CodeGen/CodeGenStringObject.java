@@ -7,19 +7,16 @@ public class CodeGenStringObject {
 
     public String Type_Coverter (String input){
         
-        if(input.equals("mut num" )|| input.equals("num" )){
+        if(input.equals("mut num") || input.equals("num" )){
             input = "float";
-            System.out.println(input);
         }
 
         if(input.equals("mut char")){
             input = "char";
-            System.out.println(input);
         }
 
         if(input.equals("mut bool")){
             input = "bool";
-            System.out.println(input);
         }
 
         return input;

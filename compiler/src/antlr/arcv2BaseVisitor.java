@@ -1,4 +1,4 @@
-// Generated from /home/gustav/projects/P4-Concurrent-Arduino/compiler/arcv2.g4 by ANTLR 4.10
+// Generated from /Users/pimber/Desktop/P4-Concurrent-Arduino/compiler/arcv2.g4 by ANTLR 4.10
 package antlr;
 import org.antlr.v4.runtime.tree.AbstractParseTreeVisitor;
 
@@ -46,6 +46,13 @@ public class arcv2BaseVisitor<T> extends AbstractParseTreeVisitor<T> implements 
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
 	@Override public T visitTask_declaration(arcv2Parser.Task_declarationContext ctx) { return visitChildren(ctx); }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 */
+	@Override public T visitTyping(arcv2Parser.TypingContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *

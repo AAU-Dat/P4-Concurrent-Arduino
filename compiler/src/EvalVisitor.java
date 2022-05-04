@@ -236,9 +236,9 @@ public class EvalVisitor extends arcv2BaseVisitor<AST_node> {
 
         AST_node variable_declaration = new Variable_declaration_node("varDec");
 
-        Types var_dec_type = convert_string_to_Types(ctx.TYPE().getText());
+        Types var_dec_type = convert_string_to_Types(ctx.typing().TYPE().getText());
         String var_dec_identifier = ctx.IDENTIFIER().getText();
-        boolean var_dec_mutability = ctx.PREFIXOPERATOR() == null ? true : false;
+        boolean var_dec_mutability = ctx.typing().PREFIXOPERATOR() == null ? true : false;
 
 
         SymbolHashTableEntry entry = new SymbolHashTableEntry(var_dec_type, var_dec_identifier, var_dec_mutability);
@@ -282,39 +282,39 @@ public class EvalVisitor extends arcv2BaseVisitor<AST_node> {
         return block;
     }
 
-    @Override
-    public AST_node visitFunction_declaration(arcv2Parser.Function_declarationContext ctx){
-        AST_node func = new Variable_declaration_node("function");
-        //here we need to do a block without a block, to simulate intering into a scope but we also need to remember the parameters so a regular block is not a good fit
-        // because there isnt a good way to pass the parameters which should exist in the scope to it.
-        List<TerminalNode> types = ctx.TYPE();
-        List<TerminalNode> identifiers = ctx.IDENTIFIER();
-        List<TerminalNode> typeOp = ctx.TYPEOPERATOR();
-        List<TerminalNode> prefix = ctx.PREFIXOPERATOR();
+    // @Override
+    // public AST_node visitFunction_declaration(arcv2Parser.Function_declarationContext ctx){
+    //     AST_node func = new Variable_declaration_node("function");
+    //     //here we need to do a block without a block, to simulate intering into a scope but we also need to remember the parameters so a regular block is not a good fit
+    //     // because there isnt a good way to pass the parameters which should exist in the scope to it.
+    //     List<TerminalNode> types = ctx.typing(0).TYPE();
+    //     List<TerminalNode> identifiers = ctx.typing(0).IDENTIFIER();
+    //     List<TerminalNode> typeOp = ctx.typing(0).TYPEOPERATOR();
+    //     List<TerminalNode> prefix = ctx.typing(0).PREFIXOPERATOR();
 
         
-        SymbolHashTableEntry entry = 
-        new SymbolHashTableEntry(convert_string_to_Types(types.get(0).getText()), identifiers.get(0).getText(), prefix.get(0) == null ? true : false);
-        System.out.println("hello");
-        symbolTable.insert(entry);
-        types.remove(0);
-        identifiers.remove(0);
-        typeOp.remove(0);
-        prefix.remove(0);
+    //     SymbolHashTableEntry entry = 
+    //     new SymbolHashTableEntry(convert_string_to_Types(types.get(0).getText()), identifiers.get(0).getText(), prefix.get(0) == null ? true : false);
+    //     System.out.println("hello");
+    //     symbolTable.insert(entry);
+    //     types.remove(0);
+    //     identifiers.remove(0);
+    //     typeOp.remove(0);
+    //     prefix.remove(0);
 
 
-        symbolTable.push();
-        for (int i = 0; i < types.size(); i++) {
-            entry = new SymbolHashTableEntry(convert_string_to_Types(types.get(i).getText()), identifiers.get(i).getText(), prefix.get(i) == null ? true : false);
-            symbolTable.insert(entry);
+    //     symbolTable.push();
+    //     for (int i = 0; i < types.size(); i++) {
+    //         entry = new SymbolHashTableEntry(convert_string_to_Types(types.get(i).getText()), identifiers.get(i).getText(), prefix.get(i) == null ? true : false);
+    //         symbolTable.insert(entry);
 
-        }
+    //     }
 
-        symbolTable.pop();
+    //     symbolTable.pop();
 
 
-        return func;
-    }
+    //     return func;
+    // }
 
 
     // @Override
