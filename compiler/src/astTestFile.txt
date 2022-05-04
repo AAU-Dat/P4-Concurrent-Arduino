@@ -6,3 +6,5 @@ mut num[] hello = [1,2,3,4,5];
 char k = "h";
 mut char car = "c";
 mut char[] car = ["c", "a", "r"];
+
+mut num hello(num[] a, num[] b, num c){}
