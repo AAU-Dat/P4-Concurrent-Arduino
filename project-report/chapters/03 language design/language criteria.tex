@@ -1,11 +1,11 @@
 \section{Language criteria}\label{sec:languageeval}
-There is no common consensus on objectively evaluating a language. The measurement of compilation speed, execution speed, and file size speak to the efficiency of the \textit{implementation} of the language, not the \textit{design} of the language. Popularity could be measured, but would vary greatly with time, and contain several skews from bias. Popularity also does not necessarily mean that a language is generally good, which would have to be considered as well.
+There is no common consensus on objectively evaluating a language. The measurement of compilation speed, execution speed, and file size address the efficiency of the \textit{implementation} of the language, not the \textit{design} of the language. Popularity could be measured, but would vary greatly with time, and contain several skews from bias. Popularity also does not necessarily mean that a language is generally good, which would have to be considered as well.
 
 As such, a set of prioritized language evaluation criteria has been determined based on the criteria presented in~\cite{Sebesta2016}. An objective evaluation of the language based on these criteria is not practically possible~\cite{Sebesta2016}, however, the criteria may work well when making decisions during language design, implementation, and evaluation. The most relevant concerns in regard to the choice of relevant criteria are presented in this section.
 
 The primary concern is with the users of the programming language; writers of Arduino programs, in this case, the Arduino hobbyist. The programming of an Arduino project may be secondary to hobbyists, who prioritize the hardware aspects of their project.
 
-The secondary concern is the concurrency issue that follows from the primary concern - making an Arduino behave concurrently is not a trivial programming task. There are several variations on the theme of simulating concurrency, but each with different issues, and none solve the issue in a general way~\cite{Restucia2022}.
+The secondary concern is the concurrency issue that follows from the primary concern - making an Arduino behave concurrently is not a trivial programming task. There are several avaliable options to implement concurrency, but each with different issues, and none solve the issue in a general way~\cite{Restucia2022}.
 
 The tertiary and last concern follows from the secondary issue - determining how to use concurrency to solve the problem in an Arduino. Concurrency problems can be subtle and complex, so understanding that you are even dealing with a concurrency issue may not be immediately apparent, and thus a simple solution may be hard to spot.
 
@@ -40,22 +40,22 @@ The tertiary and last concern follows from the secondary issue - determining how
 Readability is described as: how easy programs can be read and understood\cite{Sebesta2016}. The importance of readability can be seen in maintenance of programs. Where programs with low readability, would be difficult and overwhelming to programmars, to work with.
 
 \subsubsection{Writability}
-Writeability is describes as, how easy the program is to write~\cite{Sebesta2016}. A program with good writeability, will be able to be written easier and more expressive, compared to a program with low writeability.
+Writability is describes as, how easy the program is to write~\cite{Sebesta2016}. A program with good writability, will be able to be written easier and more expressive, compared to a program with low writability.
 
 \subsubsection{Reliability}
 Reliability is describes as, how reliable a program is~\cite{Sebesta2016}. Reliability is important, as a program with high reliability, will perform correctly under all conditions.
 
 \subsubsection{Cost}
-In~\citetitle*{Sebesta2016}, cost is described as many things combined, such as the cost of teaching new programmars to use the language, the cost of writing the language, and so on. These costs all add up, and many things can be done to reduce this cost. Such as better readability and writeability, faster compile times, better reliability, and more.
+In~\citetitle*{Sebesta2016}, cost is described a combination of several factors, such as the cost of teaching new programmers to use the language, the cost of writing the language, and so on. These costs all add up, and many things can be done to reduce this cost. Such as better readability and writability, faster compile times, better reliability, and more.
 
 \subsection{Priority of characteristics by importance}
 With these considerations in mind, we have prioritized and selected the characteristics for each criterion as we expect them to matter in this context.
 
-The primary concern deals with a subset of considerations related to the cost criterion. Specifically, the cost associated with time spent learning and understanding the programming language is important. This suggests that general simplicity, in the form of few but expressive language constructs as well as clear, consistent combination and application of the constructs is \textbf{very important}. It may also be difficult, because concurrency is a complex topic.
+The primary concern deals with considerations related to the cost criterion. Specifically, the cost associated with time spent learning and understanding the programming language is important. This suggests that general simplicity, in the form of few but expressive language constructs as well as clear, consistent combination and application of the constructs is \textbf{very important}. It may also be difficult, because concurrency is a complex topic.
 
 Syntax design is also a \textbf{very important} characteristic, as seen from the secondary and tertiary concerns. The language should express new constructs that are not available in the Arduino language in a concise manner. An aim of the syntax could be to describe concurrent programs simply. 
 
-Data types is probably also an \textbf{important} characteristic. As long as the expressivity of the language is not greatly affected, the number of data types is reduced by generalizing them. An example of this would be datatypes such as integers, doubles, and floats all being generalized to a single data type. This reduction of datatypes, compared to the Arduino language, is likely to have a positive effect on overall simplicity and writability, and therefore cost, which is important to hobbyists. This is also related to orthogonality - having fewer constructs, and a consistent rule set for combining them, is often better than having a lot of primitives. Orthogonality is therefore also an \textbf{important} characteristic.
+Data types is probably also an \textbf{important} characteristic. As long as the expressivity of the language is not greatly affected, the number of data types is reduced by generalizing them. An example of this would be datatypes such as integers, doubles, and floats all being generalized to a single data type.\question{"This feature may increase memory usage" I don't understand Giovannis feedback} This reduction of datatypes, compared to the Arduino language, is likely to have a positive effect on overall simplicity and writability, and therefore cost, which is important to hobbyists. This is also related to orthogonality - having fewer constructs, and a consistent rule set for combining them, is often better than having a lot of primitives. Orthogonality is therefore also an \textbf{important} characteristic.
 
 On the other hand, good support for abstraction, that is, user-defined types, may enable advanced users to have a larger degree of freedom. In fact, too few data types is likely to have a negative effect on the simplicity of the language, since some things would take more work to express. However, readability is more important to learning than writability, and as such support for abstraction is \textbf{not important}. Expressivity is only \textbf{somewhat important}, since concurrency language constructs is an aim of the language.
 
