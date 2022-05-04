@@ -3,12 +3,9 @@ import antlr.arcv2Parser;
 import antlr.arcv2Parser.ExpressionContext;
 import antlr.arcv2Parser.StatementContext;
 import antlr.arcv2Parser.TypingContext;
-
 import java.beans.Expression;
 import java.util.List;
-
 import org.antlr.v4.runtime.tree.TerminalNode;
-
 import CodeGen.CodeGenStringObject;
 
 public class CodeGenVisitor extends arcv2BaseVisitor<CodeGenStringObject> {
@@ -17,16 +14,16 @@ public class CodeGenVisitor extends arcv2BaseVisitor<CodeGenStringObject> {
         CodeGenStringObject c_plus_plus_code = new CodeGenStringObject();
         CodeGenStringObject temp = new CodeGenStringObject();
         
-        for(int i= 0; i<ctx.getChildCount(); i++){
-            temp =visit(ctx.getChild(i));
-            c_plus_plus_code.GlobalScope += temp.GlobalScope;
-            c_plus_plus_code.Setup += temp.Setup;
-            c_plus_plus_code.Loop += temp.Loop;
-        }
+//         for(int i= 0; i<ctx.getChildCount(); i++){
+//             temp =visit(ctx.getChild(i));
+//             c_plus_plus_code.GlobalScope += temp.GlobalScope;
+//             c_plus_plus_code.Setup += temp.Setup;
+//             c_plus_plus_code.Loop += temp.Loop;
+//         }
 
         
-        return c_plus_plus_code;
-    }
+//         return c_plus_plus_code;
+//     }
 
     /*
      * Expression CodeGen
@@ -36,8 +33,8 @@ public class CodeGenVisitor extends arcv2BaseVisitor<CodeGenStringObject> {
         CodeGenStringObject cpp = new CodeGenStringObject();
         cpp.GlobalScope = ctx.getText();
 
-        return cpp; 
-    }
+//         return cpp; 
+//     }
 
     @Override
     public CodeGenStringObject visitFunction_access_expression(arcv2Parser.Function_access_expressionContext ctx){
@@ -57,24 +54,24 @@ public class CodeGenVisitor extends arcv2BaseVisitor<CodeGenStringObject> {
         }
         cpp.GlobalScope += ")";
 
-        return cpp;
-    }
+//         return cpp;
+//     }
 
-    @Override
-    public CodeGenStringObject visitArray_access_expression(arcv2Parser.Array_access_expressionContext ctx){
-        CodeGenStringObject cpp = new CodeGenStringObject();
-        cpp.GlobalScope = ctx.getText();
+//     @Override
+//     public CodeGenStringObject visitArray_access_expression(arcv2Parser.Array_access_expressionContext ctx){
+//         CodeGenStringObject cpp = new CodeGenStringObject();
+//         cpp.GlobalScope = ctx.getText();
 
-        return cpp;
-    }
+//         return cpp;
+//     }
 
-    @Override
-    public CodeGenStringObject visitParentheses_expression(arcv2Parser.Parentheses_expressionContext ctx){
-        CodeGenStringObject cpp = new CodeGenStringObject();
-        CodeGenStringObject temp = new CodeGenStringObject();
+//     @Override
+//     public CodeGenStringObject visitParentheses_expression(arcv2Parser.Parentheses_expressionContext ctx){
+//         CodeGenStringObject cpp = new CodeGenStringObject();
+//         CodeGenStringObject temp = new CodeGenStringObject();
         
-        temp = visit(ctx.expression());
-        cpp.GlobalScope = "(" + temp.GlobalScope + ")";
+//         temp = visit(ctx.expression());
+//         cpp.GlobalScope = "(" + temp.GlobalScope + ")";
 
         return cpp;
     }
