@@ -363,10 +363,11 @@ public class CodeGenVisitor extends arcv2BaseVisitor<CodeGenStringObject> {
         cpp.GlobalScope += functionParameterSetup(ctx);
         
         List<TypingContext> list = ctx.typing();
-        // or but the function functionParameterSetup
-        if(list.size() > 1){
-            cpp.GlobalScope += ", ";
-            cpp.GlobalScope += functionParameterSetup(ctx);
+        for(int i = 0; i < list.size(); i++){
+            if(list.size() > 1){
+                cpp.GlobalScope += ", ";
+                cpp.GlobalScope += functionParameterSetup(ctx);
+            }
         }
 
         cpp.GlobalScope += ")";
