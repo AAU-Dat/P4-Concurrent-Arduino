@@ -21,6 +21,6 @@ public class App {
         }
         CodeGenVisitor cgv = new CodeGenVisitor();
         CodeGenStringObject cppc = cgv.visit(tree);
-        System.out.println(cppc.GlobalScope + "helkjlsjd");
+        System.out.println(cppc.GlobalScope + "helkjlsjd"); 
     }
 }

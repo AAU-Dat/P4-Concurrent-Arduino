@@ -338,14 +338,12 @@ public class CodeGenVisitor extends arcv2BaseVisitor<CodeGenStringObject> {
     /*
      * Declaration CodeGen
      */
-    @Override
-    public CodeGenStringObject visitDeclaration(arcv2Parser.DeclarationContext ctx){
-        CodeGenStringObject cpp = new CodeGenStringObject();
+    //@Override
+    //public CodeGenStringObject visitDeclaration(arcv2Parser.DeclarationContext ctx){
+    //    CodeGenStringObject cpp = new CodeGenStringObject();
+
+    //    return cpp;
+    //}
 
 
-
-        return cpp;
-    }
-
-    
 }
