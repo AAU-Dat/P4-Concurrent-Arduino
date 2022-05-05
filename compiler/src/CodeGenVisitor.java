@@ -347,26 +347,33 @@ public class CodeGenVisitor extends arcv2BaseVisitor<CodeGenStringObject> {
             cpp.GlobalScope += cpp.Type_Coverter(ctx.typing(0).TYPE().toString()) + " ";
         }
 
-        cpp.GlobalScope += ctx.IDENTIFIER(0);
-
         if(ctx.typing(0).TYPEOPERATOR() != null){
-            cpp.GlobalScope += ctx.typing(0).TYPEOPERATOR();
+            cpp.GlobalScope += "*";
         }
-
+        
+        cpp.GlobalScope += ctx.IDENTIFIER(0);
+        
         cpp.GlobalScope += "(";
         
-        List<TypingContext> list = ctx.typing();
-        for(int i = 1; i < list.size() - 1; i++){
+        List<TypingContext> typingList = ctx.typing();
+        for(int i = 1; i < typingList.size() - 1; i++){
             cpp.GlobalScope += functionParameterSetup(ctx, i).GlobalScope;
             cpp.GlobalScope += ", ";
         }
-        if(list.size() > 1){
-            cpp.GlobalScope += functionParameterSetup(ctx, list.size() - 1).GlobalScope;
+        if(typingList.size() > 1){
+            cpp.GlobalScope += functionParameterSetup(ctx, typingList.size() - 1).GlobalScope;
         }
 
         cpp.GlobalScope += ")";
 
-        cpp.GlobalScope += visitBlock(ctx.block()).GlobalScope;
+        List<StatementContext> statementList = ctx.statement();
+        for(int i = 1; i < statementList.size() - 1; i++){
+            cpp.GlobalScope += functionParameterSetup(ctx, i).GlobalScope;
+            cpp.GlobalScope += ", ";
+        }
+        if(statementList.size() > 1){
+            cpp.GlobalScope += functionParameterSetup(ctx, statementList.size() - 1).GlobalScope;
+        }
 
         return cpp;
     }

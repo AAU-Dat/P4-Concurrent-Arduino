@@ -7,4 +7,4 @@ char k = "h";
 mut char car = "c";
 mut char[] car = ["c", "a", "r"];
 
-mut num hello(num[] a, num[] b, num c){}
+mut num[] hello(num[] a, num[] b, num c){}
