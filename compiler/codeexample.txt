@@ -15,12 +15,12 @@ task(num switch) every 1000 {
 }
 
 num blinkLED(num buttonState){
-        if(buttonState == 1){
-            digitalWrite(LED_PIN, HIGH);
-        } else {
-            digitalWrite(LED_PIN, LOW);
-        }
+    if(buttonState == 1){
+        digitalWrite(LED_PIN, HIGH);
+    } else {
+        digitalWrite(LED_PIN, LOW);
     }
+}
 
 task() {
     buttonState = digitalRead(BUTTON_PIN);
