@@ -1,4 +1,4 @@
-// Generated from /home/gustav/projects/P4-Concurrent-Arduino/compiler/arcv2.g4 by ANTLR 4.10
+// Generated from /mnt/c/Users/chris/Desktop/P4-Concurrent-Arduino/compiler/arcv2.g4 by ANTLR 4.10
 package antlr;
 import org.antlr.v4.runtime.tree.ParseTreeVisitor;
 
@@ -44,6 +44,12 @@ public interface arcv2Visitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitTask_declaration(arcv2Parser.Task_declarationContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link arcv2Parser#typing}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitTyping(arcv2Parser.TypingContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link arcv2Parser#block}.
 	 * @param ctx the parse tree

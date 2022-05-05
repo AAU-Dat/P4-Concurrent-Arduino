@@ -14,13 +14,12 @@ public class App {
         EvalVisitor eval = new EvalVisitor();
         try {
             AST_node AST = eval.visit(tree);
-            System.out.println("Hello, World!");
             
         } catch (RuntimeException e) {
-            System.out.println(e.getMessage());
+            System.out.println(e.getMessage() + " bad, bad declaration");
         }
         CodeGenVisitor cgv = new CodeGenVisitor();
         CodeGenStringObject cppc = cgv.visit(tree);
-        System.out.println(cppc.GlobalScope + "helkjlsjd");
+        System.out.println(cppc.GlobalScope);
     }
 }
