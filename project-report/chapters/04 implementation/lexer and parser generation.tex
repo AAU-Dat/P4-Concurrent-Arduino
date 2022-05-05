@@ -1,0 +1,17 @@
+\section{Lexer and parser generation}
+
+%what the lexer and parser is
+%differences
+%how it is used
+%why it is used
+%how we generate them
+%alternatives
+
+For Arc, \gls{antlr} has been used, for creating the grammer and also to generate both the lexer and parser. From writing the grammar, is was possible for \gls{antlr} to generate the lexer, parser and more.\cite{Parr2014} This made \gls{antlr} highly effective for designing Arc, as small changes to the grammar could easily be made, without having to re-create the lexer and parser everytime. Instead only the grammar had to be re-written, and \gls{antlr} would generate a new lexer and parser, based on the new grammar.
+
+The lexer, also called a lexical analyzer or scanner, takes a character stream and turns it into tokens. Tokens are a representation of something in a language, such as a num in Arc would be a token, that represents numbers. The lexer recognizes and can discard tokens of the character stream, so that the parser can ignore them. This includes tokens such as comments and whitespaces, that the parser does not need to concern itself with. If the lexer did not discard these tokens, that parser would constantly have to check for them. These tokens are then passed to the parser, that makes syntatic sense of them. It compares the tokens and their structure to the grammar of the specific language.\cite{Parr2014}
+
+
+
+\gls{antlr} automaticly generates files for the lexer and parser, from the grammar. These files contain the parser class definition, and the lexer class definition, the definitions are made by \gls{antlr} that analyzes the lexical rules and the grammatic rules of the language.\cite{Parr2014}
+
