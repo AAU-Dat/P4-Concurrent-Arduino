@@ -20,37 +20,65 @@ Example semantics:
     \\
     [VAR-DECL]     \quad &
     \frac
-    {\langle env_v\prime \prime, sto[loc \to v] \to (env_v\prime, sto\prime)\rangle}
-    {\text{Var x := expr; }env_v,sto \to (env_v\prime, sto\prime)}
-    \text{Where } env_v, sto \vdash expr \to v                                                \\
+    {env_v\prime \prime \vdash\langle expr, sto\rangle\to (v, sto\prime \prime)}
+    {\langle\text{Var x := expr; }env_v,sto\rangle \to (env_v\prime, sto\prime)} \\
+                         & \text{Where } env_v\prime = env_v[x \to (expr, mut), next \to new Loc]                                               \\
                          & \text{And } loc = env_v \text{ next}                               \\
-                         & \text{And } env_v\prime \prime = env_v[x\to loc][next \to new loc]
+                         & \text{And } sto\prime = sto[Loc \to v]
     \\
     \\
     [PIN-DECL] \quad     &
     \frac
-    {\langle env_v\prime \prime, stop[loc\to v]\to (env_v\prime, sto\prime) \rangle}
-    {\text{pin x := }pinexpr; env_v, sto \to (env_v\prime, stop\prime)}
-    \text{Where } env_v,sto\vdash pinexpr \to v                                               \\
-                         & \text{And }loc = env_v \text{ next}   \\
-                         & \text{And }env_v\prime \prime = env_v[x\to loc][next\to \text{new }loc]
+    {env_{v(pin)}\prime \prime \vdash\langle expr_{pin}, sto\rangle\to (v, sto\prime \prime)}
+    {\langle\text{pin x := }expr_{pin}; env_{v(pin)}, sto \rangle \to (env_{v(pin)}\prime, sto\prime)} \\
+                         & \text{Where } env_{v(pin)}\prime = env_{v(pin)}[x \to expr_{pin}, next \to new Loc]   \\
+                         & \text{And }loc = env_{v(pin)} \text{ next}   \\
+                         & \text{And }sto\prime = sto[Loc \to v]
     \\
     \\
     [FUNC-DECL] \quad &
     \frac
-    {env_v\vdash\langle env_f[f \to (stmt, env_v, env_f)]\rangle \to env_f}
-    {env_v \vdash \langle \text{func f is stmt; } env_f \rangle \to env_f}
+    {env_v\vdash\langle env_f[f \to (stmt, env_v, env_f)]\rangle \to env_f \prime}
+    {env_v \vdash \langle \text{func f is stmt; } env_f \rangle \to env_f\prime} 
+    \\
+    \\
+    [FUNC-DECL-PAR] \quad &
+    \frac
+    {env_v\vdash\langle env_f[f \to (stmt, x, env_v, env_f)]\rangle \to env_f \prime}
+    {env_v \vdash \langle \text{func f(var x) is stmt; } env_f \rangle \to env_f \prime}
     \\
     \\
     [FUNC-CALL] \quad &
     \frac
     {env_v\prime [next \to loc], env_f\prime \vdash \langle stmt, sto \rangle \to sto\prime}
     {env_v, env_f \vdash \langle \text{call }f, sto\rangle \to sto\prime}
-    \text{Where }env_{ff} = (stmt, env_v\prime env_f\prime)
+    \\ & \text{Where }env_{f(f)} = (stmt, env_v\prime, env_f\prime) \\
+                    & \text{And }loc = env_v \text{ next}  
+    \\
+    \\
+    [FUNC-CALL-PAR] \quad &
+    \frac
+    {env_v \vdash \langle env_f[f \to (stmt, x, env_v, env_f)]\rangle\to env_f \prime}
+    {env_v \vdash \langle \text{call }f(var x), sto\rangle \to env_f\prime}
+    \\ & \text{Where }env_{f(f)} = (stmt, env_v\prime, env_f\prime) \\
+                    & \text{And }loc = env_v \text{ next}   
     \\
     \\
     [WHILE-LOOP] \quad &
-    env_{vf} \langle \text{While expr do stmt}, s \rangle \Rightarrow env_{vf} \langle \text{if expr then (stmt; While expr do s) else skip,} s \rangle
+    env_{vf} \langle \text{While expr do stmt}, s \rangle \\ &  \Rightarrow env_{vf} \langle \text{if expr then (stmt; While expr do s) else skip,} s \rangle
+    \\
+    \\
+    [TASK-DECL] \quad &
+    \frac
+    {env_v\vdash\langle env_{f(t)}[t \to (stmt, action, env_v, env_f)]\rangle \to env_{f(t)}\prime}
+    {env_v \vdash \langle \text{task t(action) is stmt; } env_{f(t)} \rangle \to env_{f(t)}\prime}
+    \\
+    \\
+    [TASK-DECL-PAR] \quad &
+    \frac
+    {env_v\vdash\langle env_{f(t)}[t \to (stmt, x, action, env_v, env_f)]\rangle \to env_{f(t)}\prime}
+    {env_v \vdash \langle \text{task t(var x)(action) is stmt; } env_{f(t)} \rangle \to env_{f(t)}\prime}
+    \\
     \\
 \end{align*}
 
