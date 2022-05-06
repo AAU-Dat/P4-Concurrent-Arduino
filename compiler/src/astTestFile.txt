@@ -1,4 +1,13 @@
-mut num hello(num a, num b, num c){
-    digitalWrite(2+2);
-    hej(2+2);
+#pin BUTTON_PIN(12, INPUT);
+#pin LED_PIN(11, OUTPUT);
+mut num switch = 0;
+
+task(num switch) every 1000 {
+    if(switch == 0){
+        digitalWrite(led_builtin, HIGH);
+        switch = 1;
+    } else {
+        digitalWrite(led_builtin, LOW);
+        switch = 0;
+    }
 }

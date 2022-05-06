@@ -5,6 +5,9 @@ import antlr.arcv2Parser.ExpressionContext;
 import antlr.arcv2Parser.StatementContext;
 import antlr.arcv2Parser.TypingContext;
 import java.util.List;
+
+import org.antlr.v4.runtime.tree.TerminalNode;
+
 import CodeGen.CodeGenStringObject;
 
 public class CodeGenVisitor extends arcv2BaseVisitor<CodeGenStringObject> {
@@ -13,12 +16,20 @@ public class CodeGenVisitor extends arcv2BaseVisitor<CodeGenStringObject> {
         CodeGenStringObject c_plus_plus_code = new CodeGenStringObject();
         CodeGenStringObject temp = new CodeGenStringObject();
 
+        c_plus_plus_code.GlobalScope += "#include \"protothreads.h\"\n";
+        c_plus_plus_code.Setup += "void setup(){\n" +
+                "Serial.begin(9600);\n";
+        c_plus_plus_code.Loop += "void loop(){\n";
+
         for (int i = 0; i < ctx.getChildCount(); i++) {
             temp = visit(ctx.getChild(i));
             c_plus_plus_code.GlobalScope += temp.GlobalScope;
             c_plus_plus_code.Setup += temp.Setup;
             c_plus_plus_code.Loop += temp.Loop;
         }
+
+        c_plus_plus_code.Setup += "}";
+        c_plus_plus_code.Loop += "}";
 
         return c_plus_plus_code;
     }
@@ -211,6 +222,8 @@ public class CodeGenVisitor extends arcv2BaseVisitor<CodeGenStringObject> {
         CodeGenStringObject cpp = new CodeGenStringObject();
         CodeGenStringObject temp = new CodeGenStringObject();
 
+        System.out.println(ctx);
+
         List<StatementContext> list = ctx.statement();
         cpp.GlobalScope += "{";
         for (int i = 0; i < list.size(); i++) {
@@ -261,12 +274,13 @@ public class CodeGenVisitor extends arcv2BaseVisitor<CodeGenStringObject> {
         cpp.GlobalScope += temp.GlobalScope + " ";
 
         cpp.GlobalScope += ")";
+        System.out.println(ctx.block(0).getText() + "asdfds");
+        cpp.GlobalScope += visit(ctx.block(0)).GlobalScope;
 
-        cpp.GlobalScope += visitBlock(ctx.block(0)).GlobalScope;
-
-        cpp.GlobalScope += " else ";
-
-        cpp.GlobalScope += visitBlock(ctx.block(1)).GlobalScope;
+        if (ctx.block(1) != null) {
+            cpp.GlobalScope += " else ";
+            cpp.GlobalScope += visit(ctx.block(1)).GlobalScope;
+        }
 
         return cpp;
     }
@@ -535,19 +549,29 @@ public class CodeGenVisitor extends arcv2BaseVisitor<CodeGenStringObject> {
     public CodeGenStringObject visitPin_declaration(arcv2Parser.Pin_declarationContext ctx) {
         CodeGenStringObject cpp = new CodeGenStringObject();
 
-        /*
-         * => Pre
-         * 
-         * Define pin(s)
-         * 
-         * Generate protothread struct(s)
-         * 
-         * => Setup
-         * 
-         * PT_INIT struct(s)
-         * 
-         * PinMode
-         */
+        String name = ctx.IDENTIFIER().toString().toLowerCase();
+        int nameLength = name.length() - 4;
+        name = name.substring(0, nameLength);
+
+        // region Global Scope
+
+        cpp.GlobalScope += "#define ";
+        cpp.GlobalScope += ctx.IDENTIFIER() + " ";
+        cpp.GlobalScope += ctx.NUMBER() + "\n";
+
+        if (ctx.INPUT() != null) {
+            cpp.GlobalScope += "int " + name + "State = 0;\n";
+        }
+
+        // endregion
+
+        // region Setup
+
+        cpp.Setup += "pinMode(" + ctx.IDENTIFIER() + ", ";
+        cpp.Setup += ctx.INPUT() != null ? ctx.INPUT() : ctx.OUTPUT();
+        cpp.Setup += ");\n";
+
+        // endregion
 
         return cpp;
     }
@@ -556,17 +580,66 @@ public class CodeGenVisitor extends arcv2BaseVisitor<CodeGenStringObject> {
     public CodeGenStringObject visitTask_declaration(arcv2Parser.Task_declarationContext ctx) {
         CodeGenStringObject cpp = new CodeGenStringObject();
 
-        /*
-         * Generate integer(s) which takes in a protothread as its parameter
-         * 
-         * => Loop
-         * 
-         * PT_SCHEDULE task(s)
-         * 
-         * if
-         */
+        String ptName = "pt" + Integer.toString(get_task_number());
+        String ptNameThread = ptName + "thread";
+
+        System.out.println(get_task_number());
+
+        cpp.GlobalScope += "pt " + ptName;
+        cpp.GlobalScope += ";\n";
+        cpp.GlobalScope += "Int " + ptNameThread + "(struct pt *pt) { \n PT_BEGIN(pt);\n for(;;){ \n";
+
+        // region Every
+
+        if (ctx.EVERY() != null) {
+            List<StatementContext> list = ctx.statement();
+            for (StatementContext statement : list) {
+                cpp.GlobalScope += visit(statement).GlobalScope;
+            }
+            cpp.GlobalScope += "\nPT_SLEEP(pt, " + ctx.NUMBER().getText() + ");\n";
+        }
+
+        // endregion
+
+        // region When
+
+        else if (ctx.WHEN() != null) {
+            cpp.GlobalScope += "if (" + visit(ctx.expression()).GlobalScope + ") { \n";
+
+            List<StatementContext> list = ctx.statement();
+            for (StatementContext statement : list) {
+                cpp.GlobalScope += visit(statement).GlobalScope;
+            }
+            cpp.GlobalScope += "\n }";
+        }
+
+        // endregion
+
+        // region Default
+
+        else {
+            List<StatementContext> list = ctx.statement();
+            for (StatementContext statement : list) {
+                cpp.GlobalScope += visit(statement).GlobalScope;
+            }
+        }
+
+        // endregion
+
+        cpp.GlobalScope += "PT_END(pt);\n}";
+
+        cpp.Setup += "PT_INIT(&" + ptName + ");";
+        cpp.Loop += "PT_SCHEDULE(" + ptNameThread + "(&" + ptName + "))";
 
         return cpp;
+    }
+
+    private int count = 0;
+
+    public int get_task_number() {
+        int temp = count;
+        count += 1;
+        return temp;
     }
 
 }

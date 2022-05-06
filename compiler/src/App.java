@@ -20,6 +20,9 @@ public class App {
         }
         CodeGenVisitor cgv = new CodeGenVisitor();
         CodeGenStringObject cppc = cgv.visit(tree);
-        System.out.println(cppc.GlobalScope);
+        System.out.println(cppc.GlobalScope + "\n\n");
+        System.out.println(cppc.Setup + "\n\n");
+        System.out.println(cppc.Loop + "\n\n");
+        
     }
 }
