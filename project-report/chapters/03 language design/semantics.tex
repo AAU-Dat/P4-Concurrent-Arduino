@@ -20,7 +20,7 @@ Example semantics:
     \\
     [VAR-DECL]     \quad &
     \frac
-    {env_v\prime \prime \vdash\langle expr, sto\rangle\to (v, sto\prime \prime)}
+    {env_v \vdash\langle expr, sto\rangle\to (v, sto\prime \prime)}
     {\langle\text{Var x := expr; }env_v,sto\rangle \to (env_v\prime, sto\prime)} \\
                          & \text{Where } env_v\prime = env_v[x \to (expr, mut), next \to new Loc]                                               \\
                          & \text{And } loc = env_v \text{ next}                               \\
@@ -29,7 +29,7 @@ Example semantics:
     \\
     [PIN-DECL] \quad     &
     \frac
-    {env_{v(pin)}\prime \prime \vdash\langle expr_{pin}, sto\rangle\to (v, sto\prime \prime)}
+    {env_{v(pin)} \vdash\langle expr_{pin}, sto\rangle\to (v, sto\prime \prime)}
     {\langle\text{pin x := }expr_{pin}; env_{v(pin)}, sto \rangle \to (env_{v(pin)}\prime, sto\prime)} \\
                          & \text{Where } env_{v(pin)}\prime = env_{v(pin)}[x \to expr_{pin}, next \to new Loc]   \\
                          & \text{And }loc = env_{v(pin)} \text{ next}   \\
@@ -85,6 +85,22 @@ Example semantics:
 \todo[inline]{Most of these need to be checked and updated for correct semantics}
 
 \begin{align*}
+    [ARRAY-DECL] \quad &
+    \frac
+    {env_v \vdash\langle expr, sto\rangle\to (v, sto\prime \prime)}
+    {\langle\text{Var[expr] x := } \text{[expr}_1, \dots, \text{expr}_k\text{]}; env_v,sto\rangle \to (env_v\prime, sto\prime)} \\
+                         & \text{Where } env_v\prime = env_v[x \to (expr, mut), next \to new Loc]                                               \\
+                         & \text{And } loc = env_v \text{ next}                               \\
+                         & \text{And } sto\prime = sto(env(Array)) = [0 \mapsto v, \dots, k \mapsto v] 
+    \\
+    \\
+    [ARRAY-INDEX] \quad &
+    \frac
+    {expr_1 \rightarrow v_1 \quad expr_2 \rightarrow v_2}
+    {expr_1[expr_2] \rightarrow v_1[v_2]}
+    \\
+    \\
+    \\
     [RULE]     \quad &
     \frac
     {Premises}
