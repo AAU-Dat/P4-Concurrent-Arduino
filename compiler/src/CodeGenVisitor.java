@@ -580,22 +580,66 @@ public class CodeGenVisitor extends arcv2BaseVisitor<CodeGenStringObject> {
     public CodeGenStringObject visitTask_declaration(arcv2Parser.Task_declarationContext ctx) {
         CodeGenStringObject cpp = new CodeGenStringObject();
 
-        // String ptName = "pt" + name.substring(0, 1).toUpperCase() +
-        // name.substring(1);
-        // cpp.GlobalScope += "pt " + ptName;
-        // cpp.GlobalScope += ";\n";
+        String ptName = "pt" + Integer.toString(get_task_number());
+        String ptNameThread = ptName + "thread";
 
-        /*
-         * Generate integer(s) which takes in a protothread as its parameter
-         * 
-         * => Loop
-         * 
-         * PT_SCHEDULE task(s)
-         * 
-         * if
-         */
+        System.out.println(get_task_number());
+
+        cpp.GlobalScope += "pt " + ptName;
+        cpp.GlobalScope += ";\n";
+        cpp.GlobalScope += "Int " + ptNameThread + "(struct pt *pt) { \n PT_BEGIN(pt);\n for(;;){ \n";
+
+        // region Every
+
+        if (ctx.EVERY() != null) {
+            List<StatementContext> list = ctx.statement();
+            for (StatementContext statement : list) {
+                cpp.GlobalScope += visit(statement).GlobalScope;
+            }
+            cpp.GlobalScope += "\nPT_SLEEP(pt, " + ctx.NUMBER().getText() + ");\n";
+        }
+
+        // endregion
+
+        // region When
+
+        else if (ctx.WHEN() != null) {
+            cpp.GlobalScope += "if (" + visit(ctx.expression()).GlobalScope + ") { \n";
+
+            List<StatementContext> list = ctx.statement();
+            for (StatementContext statement : list) {
+                cpp.GlobalScope += visit(statement).GlobalScope;
+            }
+            cpp.GlobalScope += "\n }";
+        }
+
+        // endregion
+
+        // region Default
+
+        else {
+            List<StatementContext> list = ctx.statement();
+            for (StatementContext statement : list) {
+                cpp.GlobalScope += visit(statement).GlobalScope;
+            }
+        }
+
+        // endregion
+
+        cpp.GlobalScope += "PT_END(pt);\n}";
+
+        cpp.Setup += "PT_INIT(&" + ptName + ");";
+        cpp.Loop += "PT_SCHEDULE(" + ptNameThread + "(&" + ptName + "))";
 
         return cpp;
+    }
+
+    private int count = 0;
+
+    public int get_task_number() {
+        int temp = count;
+        count += 1;
+        return temp;
     }
 
 }

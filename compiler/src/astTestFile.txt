@@ -1,9 +1,13 @@
 #pin BUTTON_PIN(12, INPUT);
 #pin LED_PIN(11, OUTPUT);
-num i = 0;
+mut num switch = 0;
 
-num function(){
-    if(1 < 2){
-        num hej = 10;
+task(num switch) every 1000 {
+    if(switch == 0){
+        digitalWrite(led_builtin, HIGH);
+        switch = 1;
+    } else {
+        digitalWrite(led_builtin, LOW);
+        switch = 0;
     }
 }
