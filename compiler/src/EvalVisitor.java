@@ -1,5 +1,8 @@
 import antlr.arcv2BaseVisitor;
 import antlr.arcv2Parser;
+import antlr.arcv2Parser.ExpressionContext;
+import antlr.arcv2Parser.StatementContext;
+import antlr.arcv2Parser.TypingContext;
 
 import java.util.List;
 
@@ -214,11 +217,22 @@ public class EvalVisitor extends arcv2BaseVisitor<AST_node> {
         return unary_node;
     }
 
-    // /* TODO gewg*/
     @Override
     public AST_node visitArray_access_expression(arcv2Parser.Array_access_expressionContext ctx) {
+        Integer index = Integer.parseInt(ctx.children.get(2).toString());
         Array_access_node array_node = new Array_access_node("array_access",
                 Integer.parseInt(ctx.children.get(2).toString()));
+        
+        SymbolHashTableEntry entry = symbolTable.get(ctx.IDENTIFIER().getText());
+        if (entry == null) {
+            throw new RuntimeErrorException(null, "this identifier '" + ctx.IDENTIFIER().getText() + "' does not exist" );
+            
+        }
+
+        array_node.type = entry.Type;
+        
+        
+        
         return array_node;
     }
 
@@ -228,8 +242,36 @@ public class EvalVisitor extends arcv2BaseVisitor<AST_node> {
         AST_node function_call = new AST_node("function");
         if (ctx.ARDUINOFUNCTIONS() != null)
             System.out.println("arduinofunction");
+
+
+
+        SymbolHashTableEntry entry = symbolTable.get(ctx.IDENTIFIER().getText());
+        if(entry == null){
+            throw new RuntimeException("This function has not been declared '" + ctx.IDENTIFIER().getText() + "'");
+        }
+
+
+        List<ExpressionContext>  expression_list = ctx.expression();
+        if (entry.Function_parameter_length == expression_list.size()) {
+            for (int i = 0; i < expression_list.size(); i++) {
+                function_call.child = visit(expression_list.get(i));
+                if (function_call.child.type != entry.Function_parameter_types[i]) {
+                    throw new Expression_type_exception("non matching types between parameter "  + "and asigned value '" + ctx.expression(i).getText() + "' inside function" + entry.Identifier);
+                } 
+            }
+            
+        }
+        else{
+            throw new Expression_type_exception("not correct amount of parameters in function call to " + entry.Identifier);
+        }
+
+
+        function_call.type = entry.Function_return_Type;
+        
         return function_call;
     }
+
+
 
     @Override
     public AST_node visitVariable_declaration(arcv2Parser.Variable_declarationContext ctx) {
@@ -243,23 +285,23 @@ public class EvalVisitor extends arcv2BaseVisitor<AST_node> {
 
         SymbolHashTableEntry entry = new SymbolHashTableEntry(var_dec_type, var_dec_identifier, var_dec_mutability);
         
-        
-        variable_declaration.child = visit(ctx.expression(0));
+        List<ExpressionContext>  expression_list = ctx.expression();
+        entry.Array_length = expression_list.size()-1;
+        for (ExpressionContext expressionContext : expression_list) {
+            variable_declaration.child = visit(expressionContext);
 
-        if (var_dec_type != variable_declaration.child.type) {
-            throw new Expression_type_exception("non matching types between variable '" + var_dec_identifier + "'and asigned value '" + ctx.expression(0).getText() + "'");
+            if (var_dec_type != variable_declaration.child.type) {
+                throw new Expression_type_exception("non matching types between variable '" + var_dec_identifier + "'and asigned value '" + ctx.expression(0).getText() + "'");
+            }    
         }
-
         //todo have to handle double creation of the same variable
-        if (symbolTable.containsKey(entry.Identifier)) {
+        if (!symbolTable.containsKey(entry.Identifier)) {
             symbolTable.insert(entry);
         }
-
-
-        if (ctx.STARTSQUAREBRACKET() != null) {
-
-            System.out.println(ctx.STARTSQUAREBRACKET().getText());
+        else{
+            throw new Expression_type_exception("cannot declare 2 varibles with the same identifier in the same scope" + entry.Identifier);
         }
+        
 
 
 
@@ -282,39 +324,177 @@ public class EvalVisitor extends arcv2BaseVisitor<AST_node> {
         return block;
     }
 
-    // @Override
-    // public AST_node visitFunction_declaration(arcv2Parser.Function_declarationContext ctx){
-    //     AST_node func = new Variable_declaration_node("function");
-    //     //here we need to do a block without a block, to simulate intering into a scope but we also need to remember the parameters so a regular block is not a good fit
-    //     // because there isnt a good way to pass the parameters which should exist in the scope to it.
-    //     List<TerminalNode> types = ctx.typing(0).TYPE();
-    //     List<TerminalNode> identifiers = ctx.typing(0).IDENTIFIER();
-    //     List<TerminalNode> typeOp = ctx.typing(0).TYPEOPERATOR();
-    //     List<TerminalNode> prefix = ctx.typing(0).PREFIXOPERATOR();
+    @Override
+    public AST_node visitFunction_declaration(arcv2Parser.Function_declarationContext ctx){
+        AST_node func = new Variable_declaration_node("function");
+        //here we need to do a block without a block, to simulate intering into a scope but we also need to remember the parameters so a regular block is not a good fit
+        // because there isnt a good way to pass the parameters which should exist in the scope to it.
+        List<TypingContext> typing = ctx.typing();
+        List<TerminalNode> identifier_list = ctx.IDENTIFIER();
 
+        //here we create the symboltable entry from the functions typing and parameters the 0 element in the typing list is always the return type
+        SymbolHashTableEntry entry = new SymbolHashTableEntry(Types.FUNCTION, identifier_list.get(0).getText(), typing.get(0).PREFIXOPERATOR() != null ? true : false);
+        Types[] parameter_list = new Types[typing.size()];
+        for (int i = 0; i < typing.size(); i++) {
+            parameter_list[i] = convert_string_to_Types(typing.get(i).TYPE().getText());
+        }
+        entry.Function_return_Type = convert_string_to_Types(typing.get(0).TYPE().getText());
+        entry.Function_parameter_types = parameter_list;
+        entry.Function_parameter_length = typing.size()-1;
         
-    //     SymbolHashTableEntry entry = 
-    //     new SymbolHashTableEntry(convert_string_to_Types(types.get(0).getText()), identifiers.get(0).getText(), prefix.get(0) == null ? true : false);
-    //     System.out.println("hello");
-    //     symbolTable.insert(entry);
-    //     types.remove(0);
-    //     identifiers.remove(0);
-    //     typeOp.remove(0);
-    //     prefix.remove(0);
+        symbolTable.insert(entry);
+        
+
+        //here we start the function declarations scope and ad the parameters as local variables
+        symbolTable.push();
+        for (int i = 1; i < typing.size(); i++) {
+            entry = new SymbolHashTableEntry(convert_string_to_Types(typing.get(i).TYPE().getText()), identifier_list.get(i).getText(), typing.get(i).PREFIXOPERATOR() == null ? true : false);
+            symbolTable.insert(entry);
+
+        }
+
+        //here we visit the statements inside of the scope to check for type error etc.
+        List<StatementContext> statement_list = ctx.statement();
+        for (StatementContext statementContext : statement_list) {
+            visit(statementContext);
+        }
+
+        symbolTable.pop();
 
 
-    //     symbolTable.push();
-    //     for (int i = 0; i < types.size(); i++) {
-    //         entry = new SymbolHashTableEntry(convert_string_to_Types(types.get(i).getText()), identifiers.get(i).getText(), prefix.get(i) == null ? true : false);
-    //         symbolTable.insert(entry);
+        return func;
+    }
 
-    //     }
+    @Override
+    public AST_node visitVariable_declaration_statement(arcv2Parser.Variable_declaration_statementContext ctx){
+        AST_node variable_declaration = new Variable_declaration_node("varDec");
+        Types var_dec_type = convert_string_to_Types(ctx.typing().TYPE().getText());
+        String var_dec_identifier = ctx.IDENTIFIER().getText();
+        boolean var_dec_mutability = ctx.typing().PREFIXOPERATOR() == null ? true : false;
 
-    //     symbolTable.pop();
+
+        SymbolHashTableEntry entry = new SymbolHashTableEntry(var_dec_type, var_dec_identifier, var_dec_mutability);
+        
+        List<ExpressionContext>  expression_list = ctx.expression();
+        entry.Array_length = expression_list.size()-1;
+
+        for (ExpressionContext expressionContext : expression_list) {
+            variable_declaration.child = visit(expressionContext);
+
+            if (var_dec_type != variable_declaration.child.type) {
+                throw new Expression_type_exception("non matching types between variable '" + var_dec_identifier + "'and asigned value '" + ctx.expression(0).getText() + "'");
+            }    
+        }
+        //todo have to handle double creation of the same variable
+        if (!symbolTable.containsKey(entry.Identifier)) {
+            symbolTable.insert(entry);
+        }
+        else{
+            throw new Expression_type_exception("cannot declare 2 varibles with the same identifier in the same scope '" + entry.Identifier + "' ");
+        }
+        
+        return variable_declaration;
+    }
+
+    @Override public AST_node visitBlock_statement(arcv2Parser.Block_statementContext ctx) { return visitChildren(ctx); }
+    
+
+    //TODO insure these only happen inside of function declarations
+    @Override public AST_node visitReturn_statement(arcv2Parser.Return_statementContext ctx) { return visitChildren(ctx); }
 
 
-    //     return func;
-    // }
+    @Override public AST_node visitIf_else_statement(arcv2Parser.If_else_statementContext ctx) { 
+        
+        AST_node if_else_node = new AST_node("if_else");
+        if_else_node.child = visit(ctx.expression());
+        if (if_else_node.child.type != Types.BOOL) {
+            throw new Expression_type_exception("the if_else expression has bad typing");
+        } 
+        return if_else_node;
+    
+    }
+
+
+    @Override public AST_node visitForloop_statement(arcv2Parser.Forloop_statementContext ctx) { 
+        
+        AST_node for_loop_node = new AST_node("for_loop");
+        if (!symbolTable.containsKey(ctx.IDENTIFIER(1).getText())) {
+            throw new RuntimeErrorException(null, "this identifier '" + ctx.IDENTIFIER(1).getText() + "' does not exist" );
+        }
+
+        SymbolHashTableEntry entry = symbolTable.get(ctx.IDENTIFIER(1).getText());
+
+        if (convert_string_to_Types(ctx.typing().TYPE().getText()) != entry.Type ) {
+            throw new Expression_type_exception("the for_loop expression has bad typing");
+        } 
+        return for_loop_node;
+    }
+
+
+
+
+    @Override public AST_node visitWhileloop_statement(arcv2Parser.Whileloop_statementContext ctx) { 
+        
+        AST_node while_loop_node = new AST_node("while_loop");
+        while_loop_node.child = visit(ctx.expression());
+        if (while_loop_node.child.type != Types.BOOL) {
+            throw new Expression_type_exception("the while_loop expression has bad typing");
+        } 
+        return while_loop_node;
+
+    }
+
+
+
+    @Override public AST_node visitAssignment_statement(arcv2Parser.Assignment_statementContext ctx) { 
+        AST_node assingment_node = new AST_node("assingment");
+        if (!symbolTable.containsKey(ctx.IDENTIFIER().getText())) {
+            throw new RuntimeErrorException(null, "this identifier '" + ctx.IDENTIFIER().getText() + "' does not exist" );
+        }
+
+        SymbolHashTableEntry entry = symbolTable.get(ctx.IDENTIFIER().getText());
+        //TODO  this needs to handle arrays
+        AST_node expression = visit(ctx.expression(0));
+
+        if (entry.Type !=  expression.type) {
+            throw new Expression_type_exception("the assingment expression has bad typing");
+        } 
+        return assingment_node;
+     }
+
+    @Override public AST_node visitFunction_call_statement(arcv2Parser.Function_call_statementContext ctx) { 
+        AST_node function_call = new AST_node("function");
+        if (ctx.ARDUINOFUNCTIONS() != null)
+            System.out.println("arduinofunction");
+
+
+
+        SymbolHashTableEntry entry = symbolTable.get(ctx.IDENTIFIER().getText());
+        if(entry == null){
+            throw new RuntimeException("This function has not been declared '" + ctx.IDENTIFIER().getText() + "'");
+        }
+
+
+        List<ExpressionContext>  expression_list = ctx.expression();
+        if (entry.Function_parameter_length == expression_list.size()) {
+            for (int i = 0; i < expression_list.size(); i++) {
+                function_call.child = visit(expression_list.get(i));
+                if (function_call.child.type != entry.Function_parameter_types[i]) {
+                    throw new Expression_type_exception("non matching types between parameter "  + "and asigned value '" + ctx.expression(i).getText() + "' inside function" + entry.Identifier);
+                } 
+            }
+            
+        }
+        else{
+            throw new Expression_type_exception("not correct amount of parameters in function call to " + entry.Identifier);
+        }
+
+
+        function_call.type = entry.Function_return_Type;
+        
+        return function_call;
+     }
+
 
 
     // @Override

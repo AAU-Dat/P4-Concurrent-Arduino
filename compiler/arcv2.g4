@@ -6,7 +6,7 @@ start: declaration*;
 
 declaration
      : typing IDENTIFIER '=' ('[' (expression (',' expression)*)? ']' | expression) ';'                                                      # variable_declaration
-     | typing IDENTIFIER '(' (typing IDENTIFIER (',' typing IDENTIFIER)*)? ')' '{' statement* '}'                                           # function_declaration
+     | typing IDENTIFIER '(' (typing IDENTIFIER (',' typing IDENTIFIER)*)? ')' '{' statement* '}'                                            # function_declaration
      | '#' 'pin' IDENTIFIER '(' (PINDIGIT | NUMBER) ',' ('INPUT' | 'OUTPUT') ')' ';'                                                         # pin_declaration
      | 'task' ('(' (typing IDENTIFIER ( ',' typing IDENTIFIER)*)? ')')? (('every' NUMBER) | ('when' '(' expression ')'))? '{' statement* '}' # task_declaration;
      // Task needs parameters and not declarations as input.
