@@ -2,8 +2,8 @@ package CodeGen;
 
 public class CodeGenStringObject {
     public String GlobalScope = "";
-    public String Setup = "void setup(){";
-    public String Loop = "void loop(){";
+    public String Setup = "";
+    public String Loop = "";
 
     public String Type_Coverter (String input){
         

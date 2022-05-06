@@ -5,6 +5,9 @@ import antlr.arcv2Parser.ExpressionContext;
 import antlr.arcv2Parser.StatementContext;
 import antlr.arcv2Parser.TypingContext;
 import java.util.List;
+
+import org.antlr.v4.runtime.tree.TerminalNode;
+
 import CodeGen.CodeGenStringObject;
 
 public class CodeGenVisitor extends arcv2BaseVisitor<CodeGenStringObject> {
@@ -13,12 +16,20 @@ public class CodeGenVisitor extends arcv2BaseVisitor<CodeGenStringObject> {
         CodeGenStringObject c_plus_plus_code = new CodeGenStringObject();
         CodeGenStringObject temp = new CodeGenStringObject();
 
+        c_plus_plus_code.GlobalScope += "#include \"protothreads.h\"\n";
+        c_plus_plus_code.Setup += "void setup(){\n" +
+                "Serial.begin(9600);\n";
+        c_plus_plus_code.Loop += "void loop(){\n";
+
         for (int i = 0; i < ctx.getChildCount(); i++) {
             temp = visit(ctx.getChild(i));
             c_plus_plus_code.GlobalScope += temp.GlobalScope;
             c_plus_plus_code.Setup += temp.Setup;
             c_plus_plus_code.Loop += temp.Loop;
         }
+
+        c_plus_plus_code.Setup += "}";
+        c_plus_plus_code.Loop += "}";
 
         return c_plus_plus_code;
     }
@@ -211,6 +222,8 @@ public class CodeGenVisitor extends arcv2BaseVisitor<CodeGenStringObject> {
         CodeGenStringObject cpp = new CodeGenStringObject();
         CodeGenStringObject temp = new CodeGenStringObject();
 
+        System.out.println(ctx);
+
         List<StatementContext> list = ctx.statement();
         cpp.GlobalScope += "{";
         for (int i = 0; i < list.size(); i++) {
@@ -261,12 +274,13 @@ public class CodeGenVisitor extends arcv2BaseVisitor<CodeGenStringObject> {
         cpp.GlobalScope += temp.GlobalScope + " ";
 
         cpp.GlobalScope += ")";
+        System.out.println(ctx.block(0).getText() + "asdfds");
+        cpp.GlobalScope += visit(ctx.block(0)).GlobalScope;
 
-        cpp.GlobalScope += visitBlock(ctx.block(0)).GlobalScope;
-
-        cpp.GlobalScope += " else ";
-
-        cpp.GlobalScope += visitBlock(ctx.block(1)).GlobalScope;
+        if (ctx.block(1) != null) {
+            cpp.GlobalScope += " else ";
+            cpp.GlobalScope += visit(ctx.block(1)).GlobalScope;
+        }
 
         return cpp;
     }
@@ -535,19 +549,29 @@ public class CodeGenVisitor extends arcv2BaseVisitor<CodeGenStringObject> {
     public CodeGenStringObject visitPin_declaration(arcv2Parser.Pin_declarationContext ctx) {
         CodeGenStringObject cpp = new CodeGenStringObject();
 
-        /*
-         * => Pre
-         * 
-         * Define pin(s)
-         * 
-         * Generate protothread struct(s)
-         * 
-         * => Setup
-         * 
-         * PT_INIT struct(s)
-         * 
-         * PinMode
-         */
+        String name = ctx.IDENTIFIER().toString().toLowerCase();
+        int nameLength = name.length() - 4;
+        name = name.substring(0, nameLength);
+
+        // region Global Scope
+
+        cpp.GlobalScope += "#define ";
+        cpp.GlobalScope += ctx.IDENTIFIER() + " ";
+        cpp.GlobalScope += ctx.NUMBER() + "\n";
+
+        if (ctx.INPUT() != null) {
+            cpp.GlobalScope += "int " + name + "State = 0;\n";
+        }
+
+        // endregion
+
+        // region Setup
+
+        cpp.Setup += "pinMode(" + ctx.IDENTIFIER() + ", ";
+        cpp.Setup += ctx.INPUT() != null ? ctx.INPUT() : ctx.OUTPUT();
+        cpp.Setup += ");\n";
+
+        // endregion
 
         return cpp;
     }
@@ -555,6 +579,11 @@ public class CodeGenVisitor extends arcv2BaseVisitor<CodeGenStringObject> {
     @Override
     public CodeGenStringObject visitTask_declaration(arcv2Parser.Task_declarationContext ctx) {
         CodeGenStringObject cpp = new CodeGenStringObject();
+
+        // String ptName = "pt" + name.substring(0, 1).toUpperCase() +
+        // name.substring(1);
+        // cpp.GlobalScope += "pt " + ptName;
+        // cpp.GlobalScope += ";\n";
 
         /*
          * Generate integer(s) which takes in a protothread as its parameter

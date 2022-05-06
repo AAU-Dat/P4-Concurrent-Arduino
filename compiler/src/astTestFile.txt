@@ -1,4 +1,9 @@
-mut num hello(num a, num b, num c){
-    digitalWrite(2+2);
-    hej(2+2);
+#pin BUTTON_PIN(12, INPUT);
+#pin LED_PIN(11, OUTPUT);
+num i = 0;
+
+num function(){
+    if(1 < 2){
+        num hej = 10;
+    }
 }
