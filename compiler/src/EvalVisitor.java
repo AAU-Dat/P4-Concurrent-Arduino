@@ -219,7 +219,7 @@ public class EvalVisitor extends arcv2BaseVisitor<AST_node> {
 
     @Override
     public AST_node visitArray_access_expression(arcv2Parser.Array_access_expressionContext ctx) {
-        Integer index = Integer.parseInt(ctx.children.get(2).toString());
+        //Integer index = Integer.parseInt(ctx.children.get(2).toString());
         Array_access_node array_node = new Array_access_node("array_access",
                 Integer.parseInt(ctx.children.get(2).toString()));
         
@@ -236,7 +236,6 @@ public class EvalVisitor extends arcv2BaseVisitor<AST_node> {
         return array_node;
     }
 
-    // // TODO
     @Override
     public AST_node visitFunction_access_expression(arcv2Parser.Function_access_expressionContext ctx) {
         AST_node function_call = new AST_node("function");
@@ -280,7 +279,7 @@ public class EvalVisitor extends arcv2BaseVisitor<AST_node> {
 
         Types var_dec_type = convert_string_to_Types(ctx.typing().TYPE().getText());
         String var_dec_identifier = ctx.IDENTIFIER().getText();
-        boolean var_dec_mutability = ctx.typing().PREFIXOPERATOR() == null ? true : false;
+        boolean var_dec_mutability = ctx.typing().PREFIXOPERATOR() == null ? false : true;
 
 
         SymbolHashTableEntry entry = new SymbolHashTableEntry(var_dec_type, var_dec_identifier, var_dec_mutability);
@@ -447,18 +446,28 @@ public class EvalVisitor extends arcv2BaseVisitor<AST_node> {
 
 
     @Override public AST_node visitAssignment_statement(arcv2Parser.Assignment_statementContext ctx) { 
-        AST_node assingment_node = new AST_node("assingment");
-        if (!symbolTable.containsKey(ctx.IDENTIFIER().getText())) {
-            throw new RuntimeErrorException(null, "this identifier '" + ctx.IDENTIFIER().getText() + "' does not exist" );
-        }
+        AST_node assingment_node = new AST_node("assingnment");
 
         SymbolHashTableEntry entry = symbolTable.get(ctx.IDENTIFIER().getText());
-        //TODO  this needs to handle arrays
+        
+
+        //TODO  this needs to handle arrays (should we even allow array assignment)
         AST_node expression = visit(ctx.expression(0));
 
-        if (entry.Type !=  expression.type) {
+        if (entry == null) {
+            throw new RuntimeException(" this varible '" + ctx.IDENTIFIER().getText() + "' does not exist");
+        }
+        else if (entry.Mutability != true) {
+            throw new RuntimeException(" this varible '" + ctx.IDENTIFIER().getText() + "' is not mutable and therefore cannot be assigned to");
+        }
+        else if (entry.Type !=  expression.type) {
             throw new Expression_type_exception("the assingment expression has bad typing");
-        } 
+        }
+        else{
+            symbolTable.insert(entry);
+        }
+
+
         return assingment_node;
      }
 
@@ -494,6 +503,68 @@ public class EvalVisitor extends arcv2BaseVisitor<AST_node> {
         
         return function_call;
      }
+
+
+     //TODO
+
+     @Override public AST_node visitTask_declaration(arcv2Parser.Task_declarationContext ctx) { 
+         //TODO we need to remove typing from task declaration since it its not declarations of parameters but actual parameters
+
+         AST_node task = new Variable_declaration_node("task");
+
+
+         //we create a list of the identifiers that we need to check if they exist in the current scope and if they are mutable
+         List<TerminalNode> identifier_list = ctx.IDENTIFIER();
+         
+         for (TerminalNode identifier: identifier_list) {
+            SymbolHashTableEntry entry = symbolTable.get(identifier.getText());
+            if (entry == null) {
+                throw new RuntimeException("the parameter '" + identifier.getText() + "' does not exist in symboltable" );
+            }
+        }
+
+ 
+         //here we start the task declarations scope 
+         symbolTable.push();
+
+ 
+         //here we visit the statements inside of the scope to check for type error etc.
+         List<StatementContext> statement_list = ctx.statement();
+         for (StatementContext statementContext : statement_list) {
+             visit(statementContext);
+         }
+ 
+         symbolTable.pop();
+ 
+ 
+         return task;
+    
+    }
+
+     @Override public AST_node visitPin_declaration(arcv2Parser.Pin_declarationContext ctx) { 
+         //TODO need to make alot of pin specific code in assignment 
+        
+        AST_node pin_declaration = new AST_node("pinDec");
+        Types var_dec_type = Types.PIN;
+        String var_dec_identifier = ctx.IDENTIFIER().getText();
+        boolean var_dec_mutability = ctx.INPUT() == null ? true : false;
+
+
+        SymbolHashTableEntry entry = new SymbolHashTableEntry(var_dec_type, var_dec_identifier, var_dec_mutability);
+        
+
+        //todo have to handle double creation of the same variable
+        if (!symbolTable.containsKey(entry.Identifier)) {
+            symbolTable.insert(entry);
+        }
+        else{
+            throw new Expression_type_exception("cannot declare 2 varibles with the same identifier in the same scope '" + entry.Identifier + "' ");
+        }
+        
+        return pin_declaration;
+    
+    }
+
 
 
 
