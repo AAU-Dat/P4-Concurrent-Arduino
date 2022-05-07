@@ -28,7 +28,7 @@ statement
      | (IDENTIFIER | ARDUINOFUNCTIONS) '(' (expression (',' expression)*)? ')' ';'                                                           # function_call_statement;
 
 expression
-     : (NUMBER | IDENTIFIER | BOOL | CHAR)                                                                                                   # terminal_expression
+     : (NUMBER | IDENTIFIER | BOOL | CHAR | ARDUINOEXPRESSIONS)                                                                                                   # terminal_expression
      | (IDENTIFIER | ARDUINOFUNCTIONS) '(' (expression (',' expression)*)? ')'                                                               # function_access_expression
      | IDENTIFIER '[' NUMBER ']'                                                                                                             # array_access_expression
      | '(' expression ')'                                                                                                                    # parentheses_expression
