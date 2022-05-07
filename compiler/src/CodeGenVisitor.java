@@ -40,8 +40,13 @@ public class CodeGenVisitor extends arcv2BaseVisitor<CodeGenStringObject> {
     @Override
     public CodeGenStringObject visitTerminal_expression(arcv2Parser.Terminal_expressionContext ctx) {
         CodeGenStringObject cpp = new CodeGenStringObject();
-        cpp.GlobalScope = ctx.getText();
-
+        
+        if(ctx.IDENTIFIER() != null){
+            cpp.GlobalScope = "_" + ctx.IDENTIFIER();
+        } else {
+            cpp.GlobalScope = ctx.getText();
+        }
+        
         return cpp;
     }
 
@@ -50,15 +55,22 @@ public class CodeGenVisitor extends arcv2BaseVisitor<CodeGenStringObject> {
         CodeGenStringObject cpp = new CodeGenStringObject();
         CodeGenStringObject temp = new CodeGenStringObject();
 
-        cpp.GlobalScope += "_" + ctx.IDENTIFIER();
+        System.out.println(ctx.IDENTIFIER() + "123");
+        if(ctx.IDENTIFIER() != null){
+            System.out.println(ctx.IDENTIFIER() + "456");
+            cpp.GlobalScope += "_" + ctx.IDENTIFIER();
+        } else {
+            cpp.GlobalScope += ctx.ARDUINOFUNCTIONS().getText();
+        }
         cpp.GlobalScope += "(";
         List<ExpressionContext> list = ctx.expression();
         for (int i = 0; i < list.size(); i++) {
             temp = visit(ctx.expression(i));
             cpp.GlobalScope += temp.GlobalScope;
             if (i + 2 == list.size()) {
-                temp = visit(ctx.expression(i));
                 cpp.GlobalScope += ", ";
+                temp = visit(ctx.expression(i + 1));
+                cpp.GlobalScope = temp.GlobalScope;
             }
         }
         cpp.GlobalScope += ")";
@@ -417,10 +429,10 @@ public class CodeGenVisitor extends arcv2BaseVisitor<CodeGenStringObject> {
         CodeGenStringObject cpp = new CodeGenStringObject();
         CodeGenStringObject temp = new CodeGenStringObject();
 
-        if(ctx.ARDUINOFUNCTIONS() != null){
-            cpp.GlobalScope += ctx.IDENTIFIER();
-        } else {
+        if(ctx.IDENTIFIER() != null){
             cpp.GlobalScope += "_" + ctx.IDENTIFIER();
+        } else {
+            cpp.GlobalScope += ctx.ARDUINOFUNCTIONS().getText();
         }
         cpp.GlobalScope += "(";
         List<ExpressionContext> list = ctx.expression();
@@ -500,7 +512,7 @@ public class CodeGenVisitor extends arcv2BaseVisitor<CodeGenStringObject> {
             cpp.GlobalScope += "*";
         }
 
-        cpp.GlobalScope += ctx.IDENTIFIER(0);
+        cpp.GlobalScope += "_" + ctx.IDENTIFIER(0);
 
         cpp.GlobalScope += "(";
 
@@ -550,19 +562,19 @@ public class CodeGenVisitor extends arcv2BaseVisitor<CodeGenStringObject> {
     public CodeGenStringObject visitPin_declaration(arcv2Parser.Pin_declarationContext ctx) {
         CodeGenStringObject cpp = new CodeGenStringObject();
 
-        String name = "_" + ctx.IDENTIFIER().toString().toLowerCase();
-        int nameLength = name.length() - 4;
-        name = name.substring(0, nameLength);
+        // String name = "_" + ctx.IDENTIFIER().toString().toLowerCase();
+        // int nameLength = name.length() - 4;
+        // name = name.substring(0, nameLength);
 
-        // region Global Scope
+        // region Global Scope¸
 
         cpp.GlobalScope += "#define ";
         cpp.GlobalScope += "_" + ctx.IDENTIFIER() + " ";
         cpp.GlobalScope += ctx.NUMBER() + "\n";
 
-        if (ctx.INPUT() != null) {
-            cpp.GlobalScope += "int " + name + "State = 0;\n";
-        }
+        // if (ctx.INPUT() != null) {
+        //     cpp.GlobalScope += "int " + name + "State = 0;\n";
+        // }
 
         // endregion
 
@@ -586,7 +598,7 @@ public class CodeGenVisitor extends arcv2BaseVisitor<CodeGenStringObject> {
 
         cpp.GlobalScope += "pt " + ptName;
         cpp.GlobalScope += ";\n";
-        cpp.GlobalScope += "Int " + ptNameThread + "(struct pt *pt) { \n PT_BEGIN(pt);\n for(;;){ \n";
+        cpp.GlobalScope += "int " + ptNameThread + "(struct pt *pt) { \n PT_BEGIN(pt);\n for(;;){ \n";
 
         // region Every
 

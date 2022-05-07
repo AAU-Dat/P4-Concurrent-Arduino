@@ -38,23 +38,27 @@ INPUT:                   'INPUT';
 OUTPUT:                  'OUTPUT';
 YIELD:                   'yield';
 
+ARDUINOEXPRESSIONS: HIGH | LOW | LED_BUILTIN; 
+fragment HIGH:                    'HIGH';
+fragment LOW:                     'LOW';
+fragment LED_BUILTIN:             'LED_BUILTIN';
+
 // Digital I/O
 
 ARDUINOFUNCTIONS:        DIGITALWRITE | DIGITALREAD | ANALOGREAD | ANALOGWRITE;
-fragment DIGITALREAD:    'DigitalRead';
-fragment DIGITALWRITE:   'DigitalWrite';
+fragment DIGITALREAD:    'digitalRead';
+fragment DIGITALWRITE:   'digitalWrite';
 
 fragment SLEEP:          'sleep';
 
 // Analog I/O
 
-fragment ANALOGREAD:     'AnalogRead';
-fragment ANALOGWRITE:    'AnalogWrite';
+fragment ANALOGREAD:     'analogRead';
+fragment ANALOGWRITE:    'analogWrite';
 
 // Constants
 
 INPUT_PULLUP:            'INPUT_PULLUP';
-LED_BUILTIN:             'LED_BUILTIN';
 
 MULTI:                   '*';
 DIVI:                    '/';

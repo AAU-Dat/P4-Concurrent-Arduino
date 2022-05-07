@@ -44,6 +44,6 @@ task(num switch) every 1000 {
 }
 
 task() {
-    buttonState = digitalRead(BUTTON_PIN);
+    buttonState = DigitalRead(BUTTON_PIN);
     Serial.println(buttonState);
 }

@@ -21,8 +21,8 @@ public class arcv2Parser extends Parser {
 		TYPEOPERATOR=10, PREFIXOPERATOR=11, TYPE=12, COMMENTS=13, LINECOMMENTS=14, 
 		RETURN=15, WHILE=16, IT=17, FOR=18, IN=19, WHEN=20, VOID=21, SETUP=22, 
 		ELSE=23, DEFINE=24, EVERY=25, TASK=26, PINMODE=27, INPUT=28, OUTPUT=29, 
-		YIELD=30, ARDUINOFUNCTIONS=31, INPUT_PULLUP=32, LED_BUILTIN=33, MULTI=34, 
-		DIVI=35, PLUS=36, MINUS=37, RELATIONEQOPERATORS=38, RELATIONOPERATORS=39, 
+		YIELD=30, ARDUINOEXPRESSIONS=31, ARDUINOFUNCTIONS=32, INPUT_PULLUP=33, 
+		MULTI=34, DIVI=35, PLUS=36, MINUS=37, RELATIONEQOPERATORS=38, RELATIONOPERATORS=39, 
 		AND=40, OR=41, NOT=42, XOR=43, IDENTIFIER=44, ASSIGNMENT=45, SEPERATOR=46, 
 		STARTPARANTHESES=47, ENDPARANTHESES=48, STARTSQUAREBRACKET=49, ENDSQUAREBRACKET=50, 
 		STARTCURLYBRACKET=51, ENDCURLYBRACKET=52, WS=53;
@@ -41,10 +41,9 @@ public class arcv2Parser extends Parser {
 			null, "';'", "'#'", "'pin'", "'if'", null, null, null, null, null, "'[]'", 
 			"'mut '", null, null, null, "'return'", "'while'", "'it'", "'for'", "'in'", 
 			"'when'", "'void'", "'setup'", "'else'", "'define'", "'every'", "'task'", 
-			"'pinmode'", "'INPUT'", "'OUTPUT'", "'yield'", null, "'INPUT_PULLUP'", 
-			"'LED_BUILTIN'", "'*'", "'/'", "'+'", "'-'", null, null, "'and'", "'or'", 
-			"'not'", "'xor'", null, "'='", "','", "'('", "')'", "'['", "']'", "'{'", 
-			"'}'"
+			"'pinmode'", "'INPUT'", "'OUTPUT'", "'yield'", null, null, "'INPUT_PULLUP'", 
+			"'*'", "'/'", "'+'", "'-'", null, null, "'and'", "'or'", "'not'", "'xor'", 
+			null, "'='", "','", "'('", "')'", "'['", "']'", "'{'", "'}'"
 		};
 	}
 	private static final String[] _LITERAL_NAMES = makeLiteralNames();
@@ -53,11 +52,12 @@ public class arcv2Parser extends Parser {
 			null, null, null, null, null, "NUMBER", "PINDIGIT", "INT", "BOOL", "CHAR", 
 			"TYPEOPERATOR", "PREFIXOPERATOR", "TYPE", "COMMENTS", "LINECOMMENTS", 
 			"RETURN", "WHILE", "IT", "FOR", "IN", "WHEN", "VOID", "SETUP", "ELSE", 
-			"DEFINE", "EVERY", "TASK", "PINMODE", "INPUT", "OUTPUT", "YIELD", "ARDUINOFUNCTIONS", 
-			"INPUT_PULLUP", "LED_BUILTIN", "MULTI", "DIVI", "PLUS", "MINUS", "RELATIONEQOPERATORS", 
-			"RELATIONOPERATORS", "AND", "OR", "NOT", "XOR", "IDENTIFIER", "ASSIGNMENT", 
-			"SEPERATOR", "STARTPARANTHESES", "ENDPARANTHESES", "STARTSQUAREBRACKET", 
-			"ENDSQUAREBRACKET", "STARTCURLYBRACKET", "ENDCURLYBRACKET", "WS"
+			"DEFINE", "EVERY", "TASK", "PINMODE", "INPUT", "OUTPUT", "YIELD", "ARDUINOEXPRESSIONS", 
+			"ARDUINOFUNCTIONS", "INPUT_PULLUP", "MULTI", "DIVI", "PLUS", "MINUS", 
+			"RELATIONEQOPERATORS", "RELATIONOPERATORS", "AND", "OR", "NOT", "XOR", 
+			"IDENTIFIER", "ASSIGNMENT", "SEPERATOR", "STARTPARANTHESES", "ENDPARANTHESES", 
+			"STARTSQUAREBRACKET", "ENDSQUAREBRACKET", "STARTCURLYBRACKET", "ENDCURLYBRACKET", 
+			"WS"
 		};
 	}
 	private static final String[] _SYMBOLIC_NAMES = makeSymbolicNames();
@@ -321,7 +321,7 @@ public class arcv2Parser extends Parser {
 					setState(30);
 					_errHandler.sync(this);
 					_la = _input.LA(1);
-					if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << NUMBER) | (1L << BOOL) | (1L << CHAR) | (1L << ARDUINOFUNCTIONS) | (1L << NOT) | (1L << IDENTIFIER) | (1L << STARTPARANTHESES))) != 0)) {
+					if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << NUMBER) | (1L << BOOL) | (1L << CHAR) | (1L << ARDUINOEXPRESSIONS) | (1L << ARDUINOFUNCTIONS) | (1L << NOT) | (1L << IDENTIFIER) | (1L << STARTPARANTHESES))) != 0)) {
 						{
 						setState(22);
 						expression(0);
@@ -351,6 +351,7 @@ public class arcv2Parser extends Parser {
 				case NUMBER:
 				case BOOL:
 				case CHAR:
+				case ARDUINOEXPRESSIONS:
 				case ARDUINOFUNCTIONS:
 				case NOT:
 				case IDENTIFIER:
@@ -982,7 +983,7 @@ public class arcv2Parser extends Parser {
 					setState(167);
 					_errHandler.sync(this);
 					_la = _input.LA(1);
-					if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << NUMBER) | (1L << BOOL) | (1L << CHAR) | (1L << ARDUINOFUNCTIONS) | (1L << NOT) | (1L << IDENTIFIER) | (1L << STARTPARANTHESES))) != 0)) {
+					if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << NUMBER) | (1L << BOOL) | (1L << CHAR) | (1L << ARDUINOEXPRESSIONS) | (1L << ARDUINOFUNCTIONS) | (1L << NOT) | (1L << IDENTIFIER) | (1L << STARTPARANTHESES))) != 0)) {
 						{
 						setState(159);
 						expression(0);
@@ -1012,6 +1013,7 @@ public class arcv2Parser extends Parser {
 				case NUMBER:
 				case BOOL:
 				case CHAR:
+				case ARDUINOEXPRESSIONS:
 				case ARDUINOFUNCTIONS:
 				case NOT:
 				case IDENTIFIER:
@@ -1061,7 +1063,7 @@ public class arcv2Parser extends Parser {
 					setState(191);
 					_errHandler.sync(this);
 					_la = _input.LA(1);
-					if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << NUMBER) | (1L << BOOL) | (1L << CHAR) | (1L << ARDUINOFUNCTIONS) | (1L << NOT) | (1L << IDENTIFIER) | (1L << STARTPARANTHESES))) != 0)) {
+					if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << NUMBER) | (1L << BOOL) | (1L << CHAR) | (1L << ARDUINOEXPRESSIONS) | (1L << ARDUINOFUNCTIONS) | (1L << NOT) | (1L << IDENTIFIER) | (1L << STARTPARANTHESES))) != 0)) {
 						{
 						setState(183);
 						expression(0);
@@ -1091,6 +1093,7 @@ public class arcv2Parser extends Parser {
 				case NUMBER:
 				case BOOL:
 				case CHAR:
+				case ARDUINOEXPRESSIONS:
 				case ARDUINOFUNCTIONS:
 				case NOT:
 				case IDENTIFIER:
@@ -1126,7 +1129,7 @@ public class arcv2Parser extends Parser {
 				setState(208);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
-				if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << NUMBER) | (1L << BOOL) | (1L << CHAR) | (1L << ARDUINOFUNCTIONS) | (1L << NOT) | (1L << IDENTIFIER) | (1L << STARTPARANTHESES))) != 0)) {
+				if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << NUMBER) | (1L << BOOL) | (1L << CHAR) | (1L << ARDUINOEXPRESSIONS) | (1L << ARDUINOFUNCTIONS) | (1L << NOT) | (1L << IDENTIFIER) | (1L << STARTPARANTHESES))) != 0)) {
 					{
 					setState(200);
 					expression(0);
@@ -1230,6 +1233,7 @@ public class arcv2Parser extends Parser {
 		public TerminalNode IDENTIFIER() { return getToken(arcv2Parser.IDENTIFIER, 0); }
 		public TerminalNode BOOL() { return getToken(arcv2Parser.BOOL, 0); }
 		public TerminalNode CHAR() { return getToken(arcv2Parser.CHAR, 0); }
+		public TerminalNode ARDUINOEXPRESSIONS() { return getToken(arcv2Parser.ARDUINOEXPRESSIONS, 0); }
 		public Terminal_expressionContext(ExpressionContext ctx) { copyFrom(ctx); }
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
@@ -1370,7 +1374,7 @@ public class arcv2Parser extends Parser {
 
 				setState(215);
 				_la = _input.LA(1);
-				if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << NUMBER) | (1L << BOOL) | (1L << CHAR) | (1L << IDENTIFIER))) != 0)) ) {
+				if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << NUMBER) | (1L << BOOL) | (1L << CHAR) | (1L << ARDUINOEXPRESSIONS) | (1L << IDENTIFIER))) != 0)) ) {
 				_errHandler.recoverInline(this);
 				}
 				else {
@@ -1400,7 +1404,7 @@ public class arcv2Parser extends Parser {
 				setState(226);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
-				if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << NUMBER) | (1L << BOOL) | (1L << CHAR) | (1L << ARDUINOFUNCTIONS) | (1L << NOT) | (1L << IDENTIFIER) | (1L << STARTPARANTHESES))) != 0)) {
+				if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << NUMBER) | (1L << BOOL) | (1L << CHAR) | (1L << ARDUINOEXPRESSIONS) | (1L << ARDUINOFUNCTIONS) | (1L << NOT) | (1L << IDENTIFIER) | (1L << STARTPARANTHESES))) != 0)) {
 					{
 					setState(218);
 					expression(0);
@@ -1657,17 +1661,17 @@ public class arcv2Parser extends Parser {
 		"\u0005\u0001\u0005\u0001\u0005\u0001\u0005\u0001\u0005\u0001\u0005\u0001"+
 		"\u0005\u0001\u0005\u0005\u0005\u0104\b\u0005\n\u0005\f\u0005\u0107\t\u0005"+
 		"\u0001\u0005\u0000\u0001\n\u0006\u0000\u0002\u0004\u0006\b\n\u0000\u0006"+
-		"\u0001\u0000\u0005\u0006\u0001\u0000\u001c\u001d\u0002\u0000\u001f\u001f"+
-		",,\u0003\u0000\u0005\u0005\b\t,,\u0001\u0000\"#\u0001\u0000$%\u0132\u0000"+
-		"\u000f\u0001\u0000\u0000\u0000\u0002l\u0001\u0000\u0000\u0000\u0004o\u0001"+
-		"\u0000\u0000\u0000\u0006u\u0001\u0000\u0000\u0000\b\u00d4\u0001\u0000"+
-		"\u0000\u0000\n\u00ef\u0001\u0000\u0000\u0000\f\u000e\u0003\u0002\u0001"+
-		"\u0000\r\f\u0001\u0000\u0000\u0000\u000e\u0011\u0001\u0000\u0000\u0000"+
-		"\u000f\r\u0001\u0000\u0000\u0000\u000f\u0010\u0001\u0000\u0000\u0000\u0010"+
-		"\u0001\u0001\u0000\u0000\u0000\u0011\u000f\u0001\u0000\u0000\u0000\u0012"+
-		"\u0013\u0003\u0004\u0002\u0000\u0013\u0014\u0005,\u0000\u0000\u0014\""+
-		"\u0005-\u0000\u0000\u0015\u001e\u00051\u0000\u0000\u0016\u001b\u0003\n"+
-		"\u0005\u0000\u0017\u0018\u0005.\u0000\u0000\u0018\u001a\u0003\n\u0005"+
+		"\u0001\u0000\u0005\u0006\u0001\u0000\u001c\u001d\u0002\u0000  ,,\u0004"+
+		"\u0000\u0005\u0005\b\t\u001f\u001f,,\u0001\u0000\"#\u0001\u0000$%\u0132"+
+		"\u0000\u000f\u0001\u0000\u0000\u0000\u0002l\u0001\u0000\u0000\u0000\u0004"+
+		"o\u0001\u0000\u0000\u0000\u0006u\u0001\u0000\u0000\u0000\b\u00d4\u0001"+
+		"\u0000\u0000\u0000\n\u00ef\u0001\u0000\u0000\u0000\f\u000e\u0003\u0002"+
+		"\u0001\u0000\r\f\u0001\u0000\u0000\u0000\u000e\u0011\u0001\u0000\u0000"+
+		"\u0000\u000f\r\u0001\u0000\u0000\u0000\u000f\u0010\u0001\u0000\u0000\u0000"+
+		"\u0010\u0001\u0001\u0000\u0000\u0000\u0011\u000f\u0001\u0000\u0000\u0000"+
+		"\u0012\u0013\u0003\u0004\u0002\u0000\u0013\u0014\u0005,\u0000\u0000\u0014"+
+		"\"\u0005-\u0000\u0000\u0015\u001e\u00051\u0000\u0000\u0016\u001b\u0003"+
+		"\n\u0005\u0000\u0017\u0018\u0005.\u0000\u0000\u0018\u001a\u0003\n\u0005"+
 		"\u0000\u0019\u0017\u0001\u0000\u0000\u0000\u001a\u001d\u0001\u0000\u0000"+
 		"\u0000\u001b\u0019\u0001\u0000\u0000\u0000\u001b\u001c\u0001\u0000\u0000"+
 		"\u0000\u001c\u001f\u0001\u0000\u0000\u0000\u001d\u001b\u0001\u0000\u0000"+
