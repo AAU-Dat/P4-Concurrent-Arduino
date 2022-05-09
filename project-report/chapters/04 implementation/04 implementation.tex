@@ -24,7 +24,7 @@ The sample project implemented in Arc.
         mut bool ledState = HIGH;
 
         task(bool ledState) every 1000 {
-            ledState = !ledState;
+            ledState = not ledState;
             digitalWrite(LED_BUILTIN, ledState)
         }
 
