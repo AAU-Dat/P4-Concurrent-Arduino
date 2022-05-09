@@ -13,53 +13,179 @@ This section describes the semantics of the Arc language. If a sentence is writt
 Example semantics:
 
 \begin{align*}
-    [COMPOSITION] \quad  &
+    [COMPOSITION] \quad   &
     \frac
     {S_1, \sigma \rightarrow \sigma \prime \quad S_2, \sigma \prime \rightarrow \sigma \prime \prime}
     {S_1;S_2, \sigma \rightarrow \sigma \prime \prime}
     \\
-    [VAR-DECL]     \quad &
+    \\
+    [VAR-DECL]     \quad  &
     \frac
-    {\langle env_v\prime \prime, sto[loc \to v] \to (env_v\prime, sto\prime)\rangle}
-    {\text{Var x := expr; }env_v,sto \to (env_v\prime, sto\prime)}
-    \text{Where } env_v, sto \vdash expr \to v                                                \\
-                         & \text{And } loc = env_v \text{ next}                               \\
-                         & \text{And } env_v\prime \prime = env_v[x\to loc][next \to new loc]
+    {env_v \vdash\langle expr, sto\rangle\to (v, sto\prime \prime)}
+    {\langle\text{Var x := expr; }env_v,sto\rangle \to (env_v\prime, sto\prime)}                                \\
+                          & \text{Where } env_v\prime = env_v[x \to (expr, mut), next \to new Loc]              \\
+                          & \text{And } loc = env_v \text{ next}                                                \\
+                          & \text{And } sto\prime = sto [Loc \to v]
     \\
     \\
-    [PIN-DECL] \quad     &
+    [PIN-DECL] \quad      &
     \frac
-    {\langle env_v\prime \prime, stop[loc\to v]\to (env_v\prime, sto\prime) \rangle}
-    {\text{pin x := }pinexpr; env_v, sto \to (env_v\prime, stop\prime)}
-    \text{Where } env_v,sto\vdash pinexpr \to v                                               \\
-                         & \text{And }loc = env_v \text{ next}   \\
-                         & \text{And }env_v\prime \prime = env_v[x\to loc][next\to \text{new }loc]
+    {env_{v(pin)} \vdash\langle expr_{pin}, sto\rangle\to (v, sto\prime \prime)}
+    {\langle\text{pin x := }expr_{pin}; env_{v(pin)}, sto \rangle \to (env_{v(pin)}\prime, sto\prime)}          \\
+                          & \text{Where } env_{v(pin)}\prime = env_{v(pin)}[x \to expr_{pin}, next \to new Loc] \\
+                          & \text{And }loc = env_{v(pin)} \text{ next}                                          \\
+                          & \text{And }sto\prime = sto[Loc \to v]
     \\
     \\
-    [FUNC-DECL] \quad &
+    [FUNC-DECL] \quad     &
     \frac
-    {env_v\vdash\langle env_f[f \to (stmt, env_v, env_f)]\rangle \to env_f}
-    {env_v \vdash \langle \text{func f is stmt; } env_f \rangle \to env_f}
+    {env_v\vdash\langle env_f[f \to (stmt, env_v, env_f)]\rangle \to env_f \prime}
+    {env_v \vdash \langle \text{func f is stmt; } env_f \rangle \to env_f\prime}
     \\
     \\
-    [FUNC-CALL] \quad &
+    [FUNC-DECL-PAR] \quad &
+    \frac
+    {env_v\vdash\langle env_f[f \to (stmt, x, env_v, env_f)]\rangle \to env_f \prime}
+    {env_v \vdash \langle \text{func f(var x) is stmt; } env_f \rangle \to env_f \prime}
+    \\
+    \\
+    [FUNC-CALL] \quad     &
     \frac
     {env_v\prime [next \to loc], env_f\prime \vdash \langle stmt, sto \rangle \to sto\prime}
     {env_v, env_f \vdash \langle \text{call }f, sto\rangle \to sto\prime}
-    \text{Where }env_{ff} = (stmt, env_v\prime env_f\prime)
+    \\ & \text{Where }env_{f(f)} = (stmt, env_v\prime, env_f\prime) \\
+                          & \text{And }loc = env_v \text{ next}
     \\
     \\
-    [WHILE-LOOP] \quad &
-    env_{vf} \langle \text{While expr do stmt}, s \rangle \Rightarrow env_{vf} \langle \text{if expr then (stmt; While expr do s) else skip,} s \rangle
+    [FUNC-CALL-PAR] \quad &
+    \frac
+    {env_v \vdash \langle env_f[f \to (stmt, x, env_v, env_f)]\rangle\to env_f \prime}
+    {env_v \vdash \langle \text{call }f(var x), sto\rangle \to env_f\prime}
+    \\ & \text{Where }env_{f(f)} = (stmt, env_v\prime, env_f\prime) \\
+                          & \text{And }loc = env_v \text{ next}
+    \\
+    \\
+    [WHILE-LOOP] \quad    &
+    env_{vf} \langle \text{While expr do stmt}, s \rangle                                                       \\ &  \Rightarrow env_{vf} \langle \text{if expr then (stmt; While expr do s) else skip,} s \rangle
+    \\
+    \\
+    [TASK-DECL] \quad     &
+    \frac
+    {env_v\vdash\langle env_{f(t)}[t \to (stmt, action, env_v, env_f)]\rangle \to env_{f(t)}\prime}
+    {env_v \vdash \langle \text{task t(action) is stmt; } env_{f(t)} \rangle \to env_{f(t)}\prime}
+    \\
+    \\
+    [TASK-DECL-PAR] \quad &
+    \frac
+    {env_v\vdash\langle env_{f(t)}[t \to (stmt, x, action, env_v, env_f)]\rangle \to env_{f(t)}\prime}
+    {env_v \vdash \langle \text{task t(var x)(action) is stmt; } env_{f(t)} \rangle \to env_{f(t)}\prime}
+    \\
     \\
 \end{align*}
 
 \todo[inline]{Most of these need to be checked and updated for correct semantics}
 
 \begin{align*}
-    [RULE]     \quad &
+    [ARRAY-DECL] \quad  &
+    \frac
+    {env_v \vdash\langle expr, sto\rangle\to (v, sto\prime \prime)}
+    {\langle\text{Var[expr] x := } \text{[expr}_1, \dots, \text{expr}_k\text{]}; env_v,sto\rangle \to (env_v\prime, sto\prime)} \\
+                        & \text{Where } env_v\prime = env_v[x \to (expr, mut), next \to new Loc]                                \\
+                        & \text{And } loc = env_v \text{ next}                                                                  \\
+                        & \text{And } sto\prime = sto(env(Array)) = [0 \mapsto v, \dots, k \mapsto v]
+    \\
+    \\
+    [ARRAY-INDEX] \quad &
+    \frac
+    {expr_1 \rightarrow v_1 \quad expr_2 \rightarrow v_2}
+    {expr_1[expr_2] \rightarrow v_1[v_2]}
+    \\
+    \\
+    \\
+    [RULE]     \quad    &
     \frac
     {Premises}
     {Conclusion}
     Side condition
 \end{align*}
+%test
+\begin{table}[htb!]
+    \centering
+    \begin{tabular}{lr>{\raggedright\arraybackslash}p{6cm}}
+        $[VAR_{DECL}] \frac
+            {env_v \vdash\langle expr, sto\rangle\to (v, sto\prime \prime)}
+            {\langle\text{Var x := expr; }env_v,sto\rangle \to (env_v\prime, sto\prime)}$
+         & Where & $env_v\prime = env_v[x \to (expr, mut) next \to new Loc]$               \\
+         & And   & $loc = env_v \text{ next}$                                              \\
+         & And   & $sto\prime = sto \prime \prime[Loc \to v]$                              \\
+        \\
+        $[PIN_{DECL}] \frac
+            {env_{v(pin)} \vdash\langle expr_{pin}, sto\rangle\to (v, sto\prime \prime)}
+            {\langle\text{pin x := }expr_{pin}; env_{v(pin)}, sto \rangle \to (env_{v(pin)}\prime, sto\prime)}$
+         & Where & $env_{v(pin)}\prime = env_{v(pin)}[x \to expr_{pin}, next \to new Loc]$ \\
+         & And   & $loc = env_{v(pin)} \text{ next}$                                       \\
+         & And   & $sto\prime = sto\prime \prime[Loc \to v]$                               \\
+        \\
+        $[ARR_{DECL}] \frac
+            {env_v \vdash\langle expr, sto\rangle\to (v, sto\prime \prime)}
+            {\langle\text{Var[] x := } \text{[expr}_1, \dots, \text{expr}_k\text{]}; env_v,sto\rangle \to (env_v\prime, sto\prime)}$
+         & Where & $env_v\prime = env_v[x \to (expr, mut), next \to new Loc]$              \\
+         & And   & $loc = env_v \text{ next}$                                              \\
+         & And   & $sto\prime = sto(env(Array)) = [0 \mapsto v, \dots, k \mapsto v]$       \\
+        \\
+        $[FUNC_{DECL}] \frac
+            {env_v\vdash\langle env_f[f \to (stmt, env_v, env_f)]\rangle \to env_f \prime}
+            {env_v \vdash \langle \text{func f is stmt; } env_f \rangle \to env_f\prime}$
+        \\
+        \\
+        $[FUNC_{DECL_{PAR}}] \frac
+            {env_v\vdash\langle env_f[f \to (stmt, x, env_v, env_f)]\rangle \to env_f \prime}
+            {env_v \vdash \langle \text{func f(var x) is stmt; } env_f \rangle \to env_f \prime}$
+        \\
+        \\
+        $[TASK_{DECL}] \frac
+            {env_v\vdash\langle env_T[t \to (D_T, stmt, env_T)]\rangle \to (env_T \prime, sto \prime)}
+            {env_{TF} \vdash \langle \text{task  stmt; } \rangle \to (env_{T}\prime, sto \prime)}$
+         & Where & $env_T \prime \prime =env_T[new] $
+        \\
+        \\
+        $[TASK_{DECL_{PAR}}]\frac
+            {env_v\vdash\langle env_{f(t)}[t \to (stmt, x, action, env_v, env_f)]\rangle \to env_{f(t)}\prime}
+            {env_v \vdash \langle \text{task t(var x)(action) is stmt; } env_{f(t)} \rangle \to env_{f(t)}\prime}$
+        \\
+        \\
+        $[ARRAY_{INDEX}]\frac
+            {expr_1 \rightarrow v_1 \quad expr_2 \rightarrow v_2}
+            {expr_1[expr_2] \rightarrow v_1[v_2]}$
+        \\
+        \\
+        $[FUNC_{CALL}]\frac
+            {env_v\prime [next \to loc], env_f\prime \vdash \langle stmt, sto \rangle \to sto\prime}
+            {env_v, env_f \vdash \langle \text{call }f, sto\rangle \to sto\prime}$
+         & Where & $env_{f(f)} = (stmt, env_v\prime, env_f\prime)$                         \\
+         & And   & $loc = env_v \text{ next}$
+        \\
+        \\
+        $[FUNC_{CALL_{PAR}}]\frac
+            {env_v \vdash \langle env_f[f \to (stmt, x, env_v, env_f)]\rangle\to env_f \prime}
+            {env_v \vdash \langle \text{call }f(var x), sto\rangle \to env_f\prime}$
+         & Where & $env_{f(f)} = (stmt, env_v\prime, env_f\prime)$                         \\
+         & And   & $loc = env_v \text{ next}$
+        \\
+        \\
+        $[if_{true}]
+            env_{vf}\langle \text{if expr then stmt}_1 \text{else stmt}_2,sto \rangle \rightarrow env_{vf} \langle stmt_1,sto\rangle$
+         & Where & $env_{vf},sto \vdash expr \to true$
+        \\
+        \\
+        $[if_{false}]
+            env_{vf}\langle \text{if expr then stmt}_1 \text{else stmt}_2,sto \rangle \rightarrow env_{vf} \langle stmt_2,sto\rangle$
+         & Where & $env_{vf},sto \vdash expr \to false$
+        \\
+        \\
+        %$[WHILE_{LOOP}]
+        %   env_{vf} \langle \text{While expr do stmt}, sto \rangle \Rightarrow env_{vf} \langle \text{if expr then (stmt; While expr do sto) else skip,} sto \rangle$
+    \end{tabular}
+    \caption{An example of the ANTLR syntax}
+    \label{tab:SEBAexample}
+\end{table}
