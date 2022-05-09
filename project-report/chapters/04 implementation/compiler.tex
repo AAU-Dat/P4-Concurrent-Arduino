@@ -1,5 +1,7 @@
 \section{Compiler}\label{sec:compiler}
-The purpose of a compiler is to convert source code into target code. In the case of the Arc compiler, the source code is text written in the Arc language, and the target code is Arduino language. A generalized model of the compilation process can be see in Figure~\ref{fig:generalcompilermodel}.
+The purpose of a compiler is to convert source code into target code. In the case of the Arc compiler, the source code is text written in the Arc language. A generalized model of the compilation process can be seen in Figure~\ref{fig:generalcompilermodel}.
+
+The target code is often low level code for a particular system or runtime, but not always. When the target code is another high level languange, the process is also called transpilation. The Arc languange is used for programming Arduinos, and so the compiler has to either generate Arduino specific machine code, or transpile to the high level Arduino language. Because the Arc language leverages the Protothreads library for the Arduino for its concurrency model, the Arc compiler is a transpiler.
 
 
 \begin{figure}[htb!]
@@ -10,7 +12,9 @@ The purpose of a compiler is to convert source code into target code. In the cas
 \end{figure}
 
 
-The Arc compiler is a bit simpler than the generalized model, and its stages can be seen in Figure~\ref{fig:arccompilermodel}.
+The Arc compiler follows many of the steps of the general model. Figure~\ref{fig:arccompilermodel} models the Arc compiler, with some noteworthy details.
+
+\todo[inline]{Fill in the details of the model after image is added.}
 
 
 \begin{figure}[htb!]
