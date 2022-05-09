@@ -40,7 +40,7 @@ fragment LOW:                     'LOW';
 fragment LED_BUILTIN:             'LED_BUILTIN';
 
 
-ARDUINOFUNCTIONS:        DIGITALWRITE | DIGITALREAD | ANALOGREAD | ANALOGWRITE | SLEEP;
+ARDUINOFUNCTIONS:        DIGITALWRITE | DIGITALREAD | ANALOGREAD | ANALOGWRITE;
 // Digital I/O
 fragment DIGITALREAD:    'digitalRead';
 fragment DIGITALWRITE:   'digitalWrite';
