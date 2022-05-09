@@ -1,1 +1,33 @@
 \section{Scoping}
+Scoping describes where variables are visible, meaning when a variable can be referenced or assigned. This is an important part of a programming language, since identifiers often are reused, such as i for an iteration. Because of this, scoping is used to differ variables from eachother and also to either allow references to variables or to inhibit reference. For this there are two general types of scoping, dynamic and static.
+
+Static scoping, means that the scope of variabels is determined staticly, meaning it is done before execution of the program. Static scope is used in many languages, including C and C\#. Static scoping is said to be more readable, since the code often shows directly the value of the variable. When a reference to a variable is found, following previous references and finally the assignment to that variable, the value of that variable can be determined. An example of static typing, can be seen at \ref{lst:scopeexample}.
+
+Dynamic scoping, means that the scope of variabels is determined during run time of the program. Dynamic scope is used in languages including Perl and Common Lips. Dynamic scoping works by using the calling sequence of subprograms to determine the value of eks. a varible. Because of this it cannot be determined staticly as static scoping, and mus tbe done during run time. Dynamic scoping decreases readability of the code, since it can be difficult to know the exact calling sequence of subprograms that contain references to a variable\cite{Sebesta2016}. An example of how dynamic scoping works, can be seen at \ref{lst:scopeexample}. 
+
+\begin{listing}[htb!]
+    \begin{minted}{C}
+        int a = 5;
+
+        int fun1(x){
+            return x + a
+        }
+        int fun2(){
+            a = 10;
+            return fun1(10);
+        }
+        print(fun2());
+    \end{minted}
+    \caption{An example of how static and dynamic scope differs}
+    \label{lst:scopeexample}
+\end{listing}
+
+When using static scoping, \ref{lst:scopeexample} will print '15', because of the variable a assigned in the beginning being a global variable, and fun1 using that with the x given as it's parameter. Compared to dynamic scoping where there would be printed '20', this is because of the previously mentioned calling sequence. The variable 'a' is assigned to '5', but then in fun2() it is updated to '10' and this value is then used in fun1().
+
+Arc uses static scoping, as it more simple to read and understand for users, and C++ uses a variant of static scoping. Because of this it makes sense for Arc to also a simillar scoping.
+
+%What is scoping
+%Blocks
+%Types of scoping
+%Pros and cons of the two
+%What does Arc use
