@@ -78,6 +78,7 @@ public class EvalVisitor extends arcv2BaseVisitor<AST_node> {
         }
         return terminal;
     }
+    
 
     @Override
     public AST_node visitPlus_minus_expression(arcv2Parser.Plus_minus_expressionContext ctx) {
@@ -239,6 +240,8 @@ public class EvalVisitor extends arcv2BaseVisitor<AST_node> {
     @Override
     public AST_node visitFunction_access_expression(arcv2Parser.Function_access_expressionContext ctx) {
         AST_node function_call = new AST_node("function");
+
+        //TODO HANDLE ARDUINO FUNCTIONS!!
         if (ctx.ARDUINOFUNCTIONS() != null)
             System.out.println("arduinofunction");
 
@@ -293,7 +296,7 @@ public class EvalVisitor extends arcv2BaseVisitor<AST_node> {
                 throw new Expression_type_exception("non matching types between variable '" + var_dec_identifier + "'and asigned value '" + ctx.expression(0).getText() + "'");
             }    
         }
-        //todo have to handle double creation of the same variable
+        //todo have to handle double creation of the same variable and also make this into a function
         if (!symbolTable.containsKey(entry.Identifier)) {
             symbolTable.insert(entry);
         }
@@ -381,7 +384,7 @@ public class EvalVisitor extends arcv2BaseVisitor<AST_node> {
             variable_declaration.child = visit(expressionContext);
 
             if (var_dec_type != variable_declaration.child.type) {
-                throw new Expression_type_exception("non matching types between variable '" + var_dec_identifier + "'and asigned value '" + ctx.expression(0).getText() + "'");
+                throw new Expression_type_exception("non matching types between variable '" + var_dec_identifier + "'and asigned value '" + ctx.expression(0).getText() + "'" + ctx.IDENTIFIER().getSymbol().getLine());
             }    
         }
         //todo have to handle double creation of the same variable
@@ -450,7 +453,7 @@ public class EvalVisitor extends arcv2BaseVisitor<AST_node> {
 
         SymbolHashTableEntry entry = symbolTable.get(ctx.IDENTIFIER().getText());
         
-
+        //TODO we should think about assignmet to pin array even should be possible, and if so how? are they even mutable by default?
         //TODO  this needs to handle arrays (should we even allow array assignment)
         AST_node expression = visit(ctx.expression(0));
 
@@ -505,29 +508,32 @@ public class EvalVisitor extends arcv2BaseVisitor<AST_node> {
      }
 
 
-     //TODO
 
      @Override public AST_node visitTask_declaration(arcv2Parser.Task_declarationContext ctx) { 
          //TODO we need to remove typing from task declaration since it its not declarations of parameters but actual parameters
 
          AST_node task = new Variable_declaration_node("task");
 
-
-         //we create a list of the identifiers that we need to check if they exist in the current scope and if they are mutable
+         //here we start the task declarations scope 
+         symbolTable.push();
+         
          List<TerminalNode> identifier_list = ctx.IDENTIFIER();
          
+         //we create a list of the identifiers that we need to check if they exist in the symbol table and if they are mutable and if they do 
+         //we insert them into the task scope to prevent other varibles having the same name.
          for (TerminalNode identifier: identifier_list) {
             SymbolHashTableEntry entry = symbolTable.get(identifier.getText());
             if (entry == null) {
                 throw new RuntimeException("the parameter '" + identifier.getText() + "' does not exist in symboltable" );
             }
+            else if ( entry.Mutability == false){
+                throw new RuntimeException(" this varible '" + entry.Identifier + "' is not mutable and therefore cannot be assigned to");
+            }
+            else{
+                symbolTable.insert(entry);
+            }
         }
-
- 
-         //here we start the task declarations scope 
-         symbolTable.push();
-
- 
+         
          //here we visit the statements inside of the scope to check for type error etc.
          List<StatementContext> statement_list = ctx.statement();
          for (StatementContext statementContext : statement_list) {
@@ -553,7 +559,6 @@ public class EvalVisitor extends arcv2BaseVisitor<AST_node> {
         SymbolHashTableEntry entry = new SymbolHashTableEntry(var_dec_type, var_dec_identifier, var_dec_mutability);
         
 
-        //todo have to handle double creation of the same variable
         if (!symbolTable.containsKey(entry.Identifier)) {
             symbolTable.insert(entry);
         }
