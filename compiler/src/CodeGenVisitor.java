@@ -55,9 +55,7 @@ public class CodeGenVisitor extends arcv2BaseVisitor<CodeGenStringObject> {
         CodeGenStringObject cpp = new CodeGenStringObject();
         CodeGenStringObject temp = new CodeGenStringObject();
 
-        System.out.println(ctx.IDENTIFIER() + "123");
         if(ctx.IDENTIFIER() != null){
-            System.out.println(ctx.IDENTIFIER() + "456");
             cpp.GlobalScope += "_" + ctx.IDENTIFIER();
         } else {
             cpp.GlobalScope += ctx.ARDUINOFUNCTIONS().getText();
@@ -160,7 +158,7 @@ public class CodeGenVisitor extends arcv2BaseVisitor<CodeGenStringObject> {
 
         if (ctx.RELATIONEQOPERATORS() == null) {
             return cpp;
-        } else if (ctx.RELATIONEQOPERATORS().toString() == "==") {
+        } else if (ctx.RELATIONEQOPERATORS().toString().equals("==")) {
             cpp.GlobalScope += "== ";
         } else {
             cpp.GlobalScope += "!= ";
@@ -622,6 +620,7 @@ public class CodeGenVisitor extends arcv2BaseVisitor<CodeGenStringObject> {
             for (StatementContext statement : list) {
                 cpp.GlobalScope += visit(statement).GlobalScope;
             }
+            cpp.GlobalScope += "PT_YIELD(pt);";
             cpp.GlobalScope += "\n}\n";
         }
 
@@ -634,6 +633,7 @@ public class CodeGenVisitor extends arcv2BaseVisitor<CodeGenStringObject> {
             for (StatementContext statement : list) {
                 cpp.GlobalScope += visit(statement).GlobalScope;
             }
+            cpp.GlobalScope += "PT_YIELD(pt);";
             cpp.GlobalScope += "\n}\n";
         }
 

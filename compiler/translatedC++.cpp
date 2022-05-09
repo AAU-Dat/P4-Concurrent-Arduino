@@ -25,13 +25,13 @@ int pt0thread(struct pt *pt)
 }
 float _blinkLED(float buttonState)
 {
-    if (_buttonState != 1)
+    if (_buttonState == 1)
     {
-        digitalWrite(_LED_PIN, LOW);
+        digitalWrite(_LED_PIN, HIGH);
     }
     else
     {
-        digitalWrite(_LED_PIN, HIGH);
+        digitalWrite(_LED_PIN, LOW);
     }
 }
 pt pt1;
@@ -42,6 +42,7 @@ int pt1thread(struct pt *pt)
     {
         _buttonState = digitalRead(_BUTTON_PIN);
         _blinkLED(_buttonState);
+        PT_YIELD(pt);
     }
     PT_END(pt);
 }

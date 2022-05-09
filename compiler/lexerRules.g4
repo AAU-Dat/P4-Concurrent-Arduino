@@ -11,12 +11,10 @@ CHAR:                    '"' . '"'; //Is this ascii or unicode?
 TYPEOPERATOR:   '[]';
 PREFIXOPERATOR: 'mut ';
 TYPE:           'num' | 'bool' | 'char';
-
 COMMENTS:                '//' .*? '\n' -> skip;
 LINECOMMENTS:            '/*' .*? '*/' -> skip;
 
 // Keywords
-
 RETURN:                  'return';
 WHILE:                   'while';
 IT:                      'it';
@@ -24,7 +22,6 @@ FOR:                     'for';
 IN:                      'in';
 WHEN:                    'when';
 VOID:                    'void';
-
 SETUP:                   'setup';
 ELSE:                    'else';
 DEFINE:                  'define';
@@ -32,7 +29,6 @@ EVERY:                   'every';
 TASK:                    'task';
 
 // Arduino
-
 PINMODE:                 'pinmode';
 INPUT:                   'INPUT';
 OUTPUT:                  'OUTPUT';
@@ -43,38 +39,32 @@ fragment HIGH:                    'HIGH';
 fragment LOW:                     'LOW';
 fragment LED_BUILTIN:             'LED_BUILTIN';
 
-// Digital I/O
 
-ARDUINOFUNCTIONS:        DIGITALWRITE | DIGITALREAD | ANALOGREAD | ANALOGWRITE;
+ARDUINOFUNCTIONS:        DIGITALWRITE | DIGITALREAD | ANALOGREAD | ANALOGWRITE | SLEEP;
+// Digital I/O
 fragment DIGITALREAD:    'digitalRead';
 fragment DIGITALWRITE:   'digitalWrite';
 
-fragment SLEEP:          'sleep';
-
 // Analog I/O
-
 fragment ANALOGREAD:     'analogRead';
 fragment ANALOGWRITE:    'analogWrite';
 
+// SLEEP
+// fragment SLEEP:          'sleep';
+
 // Constants
-
 INPUT_PULLUP:            'INPUT_PULLUP';
-
 MULTI:                   '*';
 DIVI:                    '/';
 PLUS:                    '+';
 MINUS:                   '-';
-
 RELATIONEQOPERATORS:     '==' | '!=';
 RELATIONOPERATORS:       '<' | '>' | '<=' | '>=';
-
 AND:                     'and';
 OR:                      'or';
 NOT:                     'not';
 XOR:                     'xor';
-
 IDENTIFIER:              ALPHA (DIGIT | ALPHA)*;
-
 ASSIGNMENT:              '=';
 SEPERATOR:               ',';
 STARTPARANTHESES:        '(';
@@ -83,7 +73,5 @@ STARTSQUAREBRACKET:      '[';
 ENDSQUAREBRACKET:        ']';
 STARTCURLYBRACKET:       '{';
 ENDCURLYBRACKET:         '}';
-
 fragment ALPHA:          [a-z] | [A-Z] | '_';
-
 WS:                      [ \t\n\r]+    -> skip;
