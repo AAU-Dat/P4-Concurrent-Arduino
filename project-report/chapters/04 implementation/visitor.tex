@@ -1,8 +1,19 @@
-\section{Visitor pattern}\label{sec:visitorpattern}
+\section{Visitor pattern}\label{sec:visitorpattern}\feedback{We still working on this section, and unsure what }
+This section will briefly discuss what the visitor pattern is, how it is used in Arc, and why it is used. ANTLR provides two methods of traversing a \gls{cst}, listeners and visitors. 
+
+The listener pattern, is not responsible for calling methods to traverse the tree. ANTLR generates enter and exit methods for each rule, these methods are then called when the walker encounters a node. The benefits of using the listener pattern, is that it is automatic, and the methods created do not have to explicitly visit all their child nodes\cite{Parr2014}. \feedback{We are unsure of how correct this actually is, taken from: Page 18}
+
+The visitor pattern, is a method used to traverse the \gls{cst} in a specific manner, where methods are used to visit each child node. By using the visitor pattern, there is more control of how the traversal of the \gls{cst} is done, and how much of the \gls{cst} is visited. ANTLR can generate a visitor interface, this interface is created from Arcs grammar, and creates all the needed visitor methods. These act as boilerplate for Arcs needed visitor methods, that can then be written out to do excatly as needed\cite{Parr2014}. 
+
+For Arc there is made use of the visitor pattern, because it is not neccecary, for Arc, to visit all nodes, since for some of them it is know what will follow. It is also the more secure option, as it gives the option to be more specific about what happens for each node. This is especially good for futureproofing, as there might be certain things that had not been prdicted, and can therefore be specifically fixed.
 
 
-
-%What is a visitor pattern
+%Options
+%pros and cons of both
+%How is it used
 %How do we use it
-%Why do we use it
-%Other options
+
+
+%Vi vil ikke altid ind i alle noder, fordi det ikke er nødvændigt
+%Det er sikre valg, da vi kan være specifikke for hver node, hvis der er noget vi ikke har forudset
+%Future proof

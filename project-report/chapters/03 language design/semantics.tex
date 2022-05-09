@@ -5,24 +5,56 @@ For a complete definition of a programming language, both syntax and semantics d
 
 
 
-A sentence might 
+A sentence might
 
 
-This section describes the semantics of the Arc language. If a sentence is written syntactically correct, it must be checked if the sentence is meaningful. 
+This section describes the semantics of the Arc language. If a sentence is written syntactically correct, it must be checked if the sentence is meaningful.
 
 Example semantics:
 
 \begin{align*}
-    [COMPOSITION] \quad &
+    [COMPOSITION] \quad  &
     \frac
     {S_1, \sigma \rightarrow \sigma \prime \quad S_2, \sigma \prime \rightarrow \sigma \prime \prime}
     {S_1;S_2, \sigma \rightarrow \sigma \prime \prime}
     \\
-    [RULE]     \quad    &
+    [VAR-DECL]     \quad &
     \frac
-    {Premises}
-    {Conclusion}
+    {\langle env_v\prime \prime, sto[loc \to v] \to (env_v\prime, sto\prime)\rangle}
+    {\text{Var x := expr; }env_v,sto \to (env_v\prime, sto\prime)}
+    \text{Where } env_v, sto \vdash expr \to v                                                \\
+                         & \text{And } loc = env_v \text{ next}                               \\
+                         & \text{And } env_v\prime \prime = env_v[x\to loc][next \to new loc]
+    \\
+    \\
+    [PIN-DECL] \quad     &
+    \frac
+    {\langle env_v\prime \prime, stop[loc\to v]\to (env_v\prime, sto\prime) \rangle}
+    {\text{pin x := }pinexpr; env_v, sto \to (env_v\prime, stop\prime)}
+    \text{Where } env_v,sto\vdash pinexpr \to v                                               \\
+                         & \text{And }loc = env_v \text{ next}   \\
+                         & \text{And }env_v\prime \prime = env_v[x\to loc][next\to \text{new }loc]
+    \\
+    \\
+    [FUNC-DECL] \quad &
+    \frac
+    {env_v\vdash\langle env_f[f \to (stmt, env_v, env_f)]\rangle \to env_f}
+    {env_v \vdash \langle \text{func f is stmt; } env_f \rangle \to env_f}
+    \\
+    \\
+    [FUNC-CALL] \quad &
+    \frac
+    {env_v\prime [next \to loc], env_f\prime \vdash \langle stmt, sto \rangle \to sto\prime}
+    {env_v, env_f \vdash \langle \text{call }f, sto\rangle \to sto\prime}
+    \text{Where }env_{ff} = (stmt, env_v\prime env_f\prime)
+    \\
+    \\
+    [WHILE-LOOP] \quad &
+    env_{vf} \langle \text{While expr do stmt}, s \rangle \Rightarrow env_{vf} \langle \text{if expr then (stmt; While expr do s) else skip,} s \rangle
+    \\
 \end{align*}
+
+\todo[inline]{Most of these need to be checked and updated for correct semantics}
 
 \begin{align*}
     [RULE]     \quad &
