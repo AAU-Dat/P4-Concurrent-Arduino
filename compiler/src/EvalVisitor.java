@@ -296,7 +296,6 @@ public class EvalVisitor extends arcv2BaseVisitor<AST_node> {
                 throw new Expression_type_exception("non matching types between variable '" + var_dec_identifier + "'and asigned value '" + ctx.expression(0).getText() + "'");
             }    
         }
-        //todo have to handle double creation of the same variable and also make this into a function
         if (!symbolTable.containsKey(entry.Identifier)) {
             symbolTable.insert(entry);
         }
@@ -373,7 +372,7 @@ public class EvalVisitor extends arcv2BaseVisitor<AST_node> {
         Types var_dec_type = convert_string_to_Types(ctx.typing().TYPE().getText());
         String var_dec_identifier = ctx.IDENTIFIER().getText();
         boolean var_dec_mutability = ctx.typing().PREFIXOPERATOR() == null ? true : false;
-
+        //needs to handle arrays
 
         SymbolHashTableEntry entry = new SymbolHashTableEntry(var_dec_type, var_dec_identifier, var_dec_mutability);
         
