@@ -52,6 +52,8 @@ Protothreads is a library for the C language, which has been implemented as a li
       Serial.begin(9600);
       PT_INIT(&ptBlink);
       PT_INIT(&ptButton);
+
+      pinMode(buttonPin, INPUT);
     }
     void loop() {
       PT_SCHEDULE(blinkThread(&ptBlink));
