@@ -36,6 +36,7 @@ main.pdf
 *-blx.aux
 *-blx.bib
 *.run.xml
+*.cpp
 
 ## Build tool auxiliary files:
 *.fdb_latexmk
