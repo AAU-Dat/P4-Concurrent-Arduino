@@ -1,0 +1,64 @@
+\section{Contextual constraints}
+The grammar of Arc is a \gls{cfg}, and only expresses the structure of the language. To fully specify if a program is well formed and meaningfully correct, further \textit{contextual} constraints are required.
+
+In this section, the contextual constraints of Arc, the scope- and type rules, are described.
+
+\subsection{Scope rules}\label{subsec:scoperules}
+The scope rules are the rules governing visibility, meaning some parts of a program are hidden from others. It is also rules for where some things can be written, while others cannot.
+
+The Arduino language has static scope, with both nested and flat block structure~\cite{cppref}. Blocks may be declared within other blocks (nested), except for functions which may not be declared within other functions (flat). Arc will have similar scope rules, which will make compilation simpler because source and target code will resemble each other in regards to scope.
+
+Arc statements and blocks therefore have nested scoping, while function declarations have a flat scope, and may not be declared inside a scope. However one main feature of Arc is its \textit{task} construct, which is not present in Arduino and requires particular focus.
+
+A task declaration is like a function declaration and cannot be inside another scope. Additionally, local variables cannot be declared inside the scope of a task declaration. This is because the Protothreads implementation does not preserve local variables when a thread blocks, which makes it hard to know if using local variables in a thread will work as the programmer intended.
+
+Another solution to this problem could be to hoist local variable declarations within a task declaration out into the global scope. However this could make the static scopechecking more difficult. Listing~\ref{lst:hoistclash} shows how the hoisting of a locally declared variable may clash with globally declared variables. While the hoisting issue is not unsolvable, it is clearer to simply disallow variable declarations within a task declaration.
+
+
+\begin{listing}[htb!]
+    \begin{minted}[label=Scope clash]{text}
+        num a = 1;
+        task() {
+            num a = 2; // hoist causes a clash here
+        }
+    \end{minted}
+    \caption{Example of hoisting that causes a clash.}
+    \label{lst:hoistclash}
+\end{listing}
+
+
+\subsubsection{The environment store model}
+
+
+
+
+
+
+
+
+
+
+
+
+\begin{figure}[htbp]
+    \centering
+    \missingfigure{Insert image of the environment store model}
+    \caption{Diagram of the environment store model.}
+    \label{fig:envstomodel}
+\end{figure}
+
+
+\begin{figure}[htbp]
+    \centering
+    \missingfigure{Insert image of scope rules in Arc}
+    \caption{Diagram of the scope structure of Arc.}
+    \label{fig:arcscoperules}
+\end{figure}
+
+
+@misc{cppref,
+    oraganization       = {cppreference},
+    url = {https://en.cppreference.com/w/cpp/language/scope},
+    title        = {Scope in C++},
+    urldate = {2022-02-10}
+}
