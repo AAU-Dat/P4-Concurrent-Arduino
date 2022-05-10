@@ -1,0 +1,125 @@
+\section{Code Generation}
+
+how is it done? through visitor pattern and antlr generated ast
+
+
+visitor pattern
+
+benefits of using antlr ast
+
+code gen object
+
+
+\begin{listing}[htb!]
+    \begin{minted}{java}
+public class CodeGenStringObject {
+    public String GlobalScope = "";
+    public String Setup = "";
+    public String Loop = "";
+
+    public String Type_Coverter (String input){
+        
+        if(input.equals("mut num") || input.equals("num" )){
+            input = "float";
+        }
+
+        if(input.equals("mut char")){
+            input = "char";
+        }
+
+        if(input.equals("mut bool")){
+            input = "bool";
+        }
+
+        return input;
+    }
+
+}
+    \end{minted}
+    \caption{code gen object used in code gen}
+    \label{lst:code gen object}
+\end{listing}
+
+
+improtance of keeping the same order as the written program
+
+how it works with example
+    -tasks
+    \begin{listing}[htb!]
+        \begin{minted}{java}
+    @Override
+    public CodeGenStringObject visitTask_declaration(arcv2Parser.Task_declarationContext ctx) {
+        CodeGenStringObject cpp = new CodeGenStringObject();
+
+        String ptName = "pt" + Integer.toString(get_task_number());
+        String ptNameThread = ptName + "thread";
+
+        cpp.GlobalScope += "pt " + ptName;
+        cpp.GlobalScope += ";\n";
+        cpp.GlobalScope += "int " + ptNameThread + "(struct pt *pt) { \n PT_BEGIN(pt);\n for(;;){ \n";
+
+        // region Every
+
+        if (ctx.EVERY() != null) {
+            List<StatementContext> list = ctx.statement();
+            for (StatementContext statement : list) {
+                cpp.GlobalScope += visit(statement).GlobalScope;
+            }
+            cpp.GlobalScope += "\nPT_SLEEP(pt, " + ctx.NUMBER().getText() + ");\n";
+            cpp.GlobalScope += "\n}\n";
+        }
+
+        // endregion
+
+        // region When
+
+        else if (ctx.WHEN() != null) {
+            cpp.GlobalScope += "if (" + visit(ctx.expression()).GlobalScope + ") { \n";
+
+            List<StatementContext> list = ctx.statement();
+            for (StatementContext statement : list) {
+                cpp.GlobalScope += visit(statement).GlobalScope;
+            }
+            cpp.GlobalScope += "\n}\n";
+        }
+
+        // endregion
+
+        // region Default
+
+        else {
+            List<StatementContext> list = ctx.statement();
+            for (StatementContext statement : list) {
+                cpp.GlobalScope += visit(statement).GlobalScope;
+            }
+            cpp.GlobalScope += "\n}\n";
+        }
+
+        // endregion
+
+        cpp.GlobalScope += "PT_END(pt);\n}";
+
+        cpp.Setup += "PT_INIT(&" + ptName + ");";
+        cpp.Loop += "PT_SCHEDULE(" + ptNameThread + "(&" + ptName + "));";
+
+        return cpp;
+    }
+
+    private int count = 0;
+
+    public int get_task_number() {
+        int temp = count;
+        count += 1;
+        return temp;
+    }
+
+    }
+        \end{minted}
+        \caption{code showing how task are generated}
+        \label{lst:code gen task}
+    \end{listing}
+
+
+
+    -for look
+    -pin declaration
