@@ -513,6 +513,7 @@ public class EvalVisitor extends arcv2BaseVisitor<AST_node> {
      }
 
 
+        //TODO make it ilegal to decalre varibles inside of tasks!!!!!!!!!!!!!!!!!!!!
 
      @Override public AST_node visitTask_declaration(arcv2Parser.Task_declarationContext ctx) { 
          //TODO we need to remove typing from task declaration since it its not declarations of parameters but actual parameters

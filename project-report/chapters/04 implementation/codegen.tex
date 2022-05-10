@@ -3,17 +3,13 @@
 how is it done? through visitor pattern and antlr generated ast
 
 
-visitor pattern
-
-benefits of using antlr ast
-
-code gen object
-
+This section will explain the code gen part of the compiler. In this part the target
+code is generated. The target code is in this case the arduino languege is essentially c++ with some arduino constructs. The Code is generated using another visitor pattern quite simelar to the one we use for semantic analysis. It follows the divide and conquer principle and uses the antlr genrerated ast. It then genrates the code going through the ast and passing the generated code between the nodes using our CodeGenStringObject.
 
 \begin{listing}[htb!]
     \begin{minted}{java}
-public class CodeGenStringObject {
-    public String GlobalScope = "";
+        public class CodeGenStringObject {
+            public String GlobalScope = "";
     public String Setup = "";
     public String Loop = "";
 
@@ -22,7 +18,7 @@ public class CodeGenStringObject {
         if(input.equals("mut num") || input.equals("num" )){
             input = "float";
         }
-
+        
         if(input.equals("mut char")){
             input = "char";
         }
@@ -30,15 +26,27 @@ public class CodeGenStringObject {
         if(input.equals("mut bool")){
             input = "bool";
         }
-
+        
         return input;
     }
-
+    
 }
-    \end{minted}
-    \caption{code gen object used in code gen}
-    \label{lst:code gen object}
+\end{minted}
+\caption{code gen object used in code gen}
+\label{lst:code gen object}
 \end{listing}
+
+we use the CodeGenStringObject because a node sometimes will generate code in 3 different places of the final code at once. Hence we have a made a object containing 3 different strings and a method. The 3 string each corespond one of the 3 areas that can be generated to, GlobalScope, the Setup structure and the loop structure. This makes it possible to do all code gen simply in a single visit of the 3 beacuse its not necessary to keep track of 3 different placements in the file and switch between writing in them. The final code gen is done by using the final CodeGenStringObject and simply inserting the 3 strings into the file in order. \todo{this needs to be more clear and use an example to show it} The method in CodeGenStringObject is simply used in code gen to rewrite the types that we have in the input to the corresponding types in c++.
+
+
+
+
+
+
+
+benefits of using antlr ast
+
+
 
 
 improtance of keeping the same order as the written program
