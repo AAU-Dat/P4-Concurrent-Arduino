@@ -1,14 +1,14 @@
 \section{Syntax}\label{sec:syntax}
-In this section, the syntax of Arc will be described and decisions behind it, will be discussed. The grammar of Arc, including control structures and more imporantly concurrency structures, where an effort has been made to ensure, that they are simple and intuitive to use, will be described. 
+In this section, the syntax of Arc will be described and decisions behind it, will be discussed. The grammar of Arc, including control structures and more imporantly concurrency structures, where an effort has been made to ensure, that they are simple and intuitive to use, will be described.
 
 \subsection{Language inspiration}\label{sec:inspiration}
-When designing a programming language it is a good idea to look at other programming languages for inspiration. We began by discussing the languages we knew: C, JavaScript, and C\#. It was also important to check C++, as it was the language, that would be used as the target language of our transpiler. During group discussion what was liked in each language and the reason why it was liked, in relation to the language criteria from~\ref{sec:languageeval}, was discussed. From the discussion was made decisions about what was to be implemented in Arc. More modern languages were also looked at for inspiration: Dart, Kotlin, Rust, Python, and Zyg. 
+When designing a programming language it is a good idea to look at other programming languages for inspiration. We began by discussing the languages we knew: C, JavaScript, and C\#. It was also important to check C++, as it was the language, that would be used as the target language of our transpiler. During group discussion what was liked in each language and the reason why it was liked, in relation to the language criteria from~\ref{sec:languageeval}, was discussed. From the discussion was made decisions about what was to be implemented in Arc. More modern languages were also looked at for inspiration: Dart, Kotlin, Rust, Python, and Zyg.
 
 \subsubsection{Types}
 
 When designing a language the amount of types and what types to be implemented is an important decision. To guide this decision we refer to the discussion in section~\ref{sec:languageeval}. The language must be a simple language, able to work concurrently on the Arduino, be simple to use for hobbyists, and also the language has a time limit for completion, which is also to be taken into consideration. Fewer types in a language, to a certain degree, increases the simplicity of the language~\cite{Sebesta2016}. According to \citetitle*{Sebesta2016}, simplicity in a language increases readability, writeability and reliability. Since fewer types give users less types to consider when coding, the choice should become more clear, of what to use. Having a lot of types has the benefit of giving users more options and being able to work on more specific tasks easier.
 
-According to our priorities, many types will not be necessary. For a small and simple language that can give hobbyists the opportunity to work with concurrency, a handful of types will be sufficient. Therefore, in Arc there will only be three scalar types: \textit{Num}, \textit{Bool}, and \textit{Char}. Num for numbers that can work with arithmetic, Bool for boolean to evaluate expressions and give either true or false values, and Char for some text characters. These types should be sufficient enough for hobbyists to create concurrent code in this language, thereby living up the criteria we set for the language. For needs above what is in Arc, we assume that the users are not hobbyists as we have described them. 
+According to our priorities, many types will not be necessary. For a small and simple language that can give hobbyists the opportunity to work with concurrency, a handful of types will be sufficient. Therefore, in Arc there will only be three scalar types: \textit{Num}, \textit{Bool}, and \textit{Char}. Num for numbers that can work with arithmetic, Bool for boolean to evaluate expressions and give either true or false values, and Char for some text characters. These types should be sufficient enough for hobbyists to create concurrent code in this language, thereby living up the criteria we set for the language. For needs above what is in Arc, we assume that the users are not hobbyists as we have described them.
 
 \paragraph{Num} is for all numbers in Arc. Languages such as C, have many different types for different categories of numbers, integers, floats, doubles, and so on. Other languages such as JavaScript only have two types to represent numbers, Number and BigInt, where number can store both integers and floats.
 The choice of including many different and specified types for numbers, as in languages such as C, gives users more specified control over the code that they write.
@@ -16,7 +16,7 @@ Compared to this, the option of using few or a single type to represent numbers 
 
 For Arc, a basic ability to manipulate numbers simply, will be sufficient. For this, a direction in a similar manner to how JavaScript handles numbers, will be used, all numbers in Arc will be floats. Since the goal of Arc, is simple concurrency, in-depth control of arithmetic will not be a concern, and focus will be on giving users an easy way to begin work with concurrency.
 
-\paragraph{Bool} is included in Arc, as in many other languages, and simply evaluates to either true for false. The value of a bool is written as true and false. We assume this makes it more readable and easy to understand for hobbyists. Boolean is an important type to implement, not only for some of Arcs concurrency structures, but for code in general, as it is used to evaluate expressions. 
+\paragraph{Bool} is included in Arc, as in many other languages, and simply evaluates to either true for false. The value of a bool is written as true and false. We assume this makes it more readable and easy to understand for hobbyists. Boolean is an important type to implement, not only for some of Arcs concurrency structures, but for code in general, as it is used to evaluate expressions.
 
 \paragraph{Char} is for all characters in Arc. There are a few different ways of giving users the ability to manipulate text. C does not have built-in strings, but instead uses character arrays. Other languages such as Python, have built-in strings. Arc will use char in a similar way to C. Since for simple concurrency, basic string manipulation will be sufficient and not having it would limit users, it was decided to be included.
 
@@ -49,13 +49,8 @@ Tasks are simillar to functions, but they simply have a set condition that has t
 When creating a time based task, the keyword 'every' is used, followed by a number to determine how often that task is to be executed. This number is represented in milliseconds, since that is how Arduino handles it. A number system was considered, so that a user could write 1s for one second.
 An example of a timed task can be seen in listing \ref*{List: Timed task example}. This task executes every 1000 milliseconds, and simply turns a LED on or off, depending on it's current state.
 
-When creating a task that is based on a condition that has to be met, the keyword 'when' is used, followed by an expression, when the expression evaluates to true, the task is executed. An example of a conditional task, can be seen in listing \ref*{List: conditional task example}. This task executes when a button reads a value of HIGH, which means when it is pressed. When this happends, a LED is turned on, then waits for half a second, and then turns off.
 
-If there is no keyword, the task is an unconditional, meaning that it will execute the body whenever it can. An example of an unconditional task, can be seen in listing \ref*{List: unconditional task example}. After defining the type of task, the body is made by declarations, theses are the body of the task that will be executed. This task inititalizes a sensorValue, and sets it to be the value read from a button, this value will either be 1 or 0. The value is then printed to Arduinos serial.
-
-These methods of creating concurrent code, seemed to be intuitive, as the tasks are made in a similar way to how they would be spoken about. We believe that, this makes learning Arcs concurrency structures, fast and intuituve for users.
-
-\begin{listing}
+\begin{listing}[htb!]
     \begin{minted}{arduino}
         task(LED_Green) every 1000{
             if(digitalRead(LED_Green) == HIGH){
@@ -70,7 +65,11 @@ These methods of creating concurrent code, seemed to be intuitive, as the tasks 
     \label{List: Timed task example}
 \end{listing}
 
-\begin{listing}
+
+When creating a task that is based on a condition that has to be met, the keyword 'when' is used, followed by an expression, when the expression evaluates to true, the task is executed. An example of a conditional task, can be seen in listing \ref*{List: conditional task example}. This task executes when a button reads a value of HIGH, which means when it is pressed. When this happends, a LED is turned on, then waits for half a second, and then turns off.
+
+
+\begin{listing}[htb!]
     \begin{minted}{arduino}
         task(LED_Red) when digitalRead(button) == HIGH{
             digitalWrite(LED_Red, HIGH);
@@ -82,7 +81,10 @@ These methods of creating concurrent code, seemed to be intuitive, as the tasks 
     \label{List: conditional task example}
 \end{listing}
 
-\begin{listing}
+
+If there is no keyword, the task is an unconditional, meaning that it will execute the body whenever it can. An example of an unconditional task, can be seen in listing \ref*{List: unconditional task example}. After defining the type of task, the body is made by declarations, theses are the body of the task that will be executed. This task inititalizes a sensorValue, and sets it to be the value read from a button, this value will either be 1 or 0. The value is then printed to Arduinos serial.
+
+\begin{listing}[htb!]
     \begin{minted}{arduino}
         task(sensorValue){
             sensorValue = digitalRead(button);
@@ -92,6 +94,14 @@ These methods of creating concurrent code, seemed to be intuitive, as the tasks 
     \caption{How an unconditional task is created}
     \label{List: unconditional task example}
 \end{listing}
+
+These methods of creating concurrent code, seemed to be intuitive, as the tasks are made in a similar way to how they would be spoken about. We believe that, this makes learning Arcs concurrency structures, fast and intuituve for users.
+
+
+
+
+
+
 
 
 %\subsection{Syntax summary}
