@@ -1,5 +1,5 @@
 \section{Type checker}
-This section will discuss the type checker for Arc, how it is structured and also show examples of how it works.
+This section will discuss the type checker for Arc, how it is structured and an example of how it is implemented.
 
 The type checker verifies that operands of an operator are of compatible types, and if not, throws an error, with an error message for the user to use to fix the issue \cite{Sebesta2016}. It does this by walking through the \gls{cst} from the bottom-up, with a visitor pattern \cite{Parr2014}. An example of the type checker throwing an error would be the case where a user tries to use the plus operand on a num and a char, this will throw an error to the user telling them, that this operation is not valid in Arc.
 
@@ -33,8 +33,15 @@ In Arc there will be made use of a static type checker, this is because the lang
 \end{listing}
 \todo[inline]{Feel like it is missing a function name}
 \todo{this is actually a bad example as it shows too much you talk about alot of checks that arent type check like scope cheks}
-\ref{lst:typecheckerexample} shows am example of Arcs typechecker. This example shows the part of the typechecker, handles assignments. It does this by creating 'entry' of the class SymbolHashTableEntry and assigns it to the contents of a ctx file\tode{yeah, naw. thats not whats happening were creating an entry and assigning to it the result of a lookup in the symbolTable based on the IDENTIFIER that were assigning to.}. Then it creates 'expression' of the AST\_node class, and uses a visitor method to assign it to the first expression of the \gls{cst}\tode{this is closer. here were creating a ast nodes and assingning it the result of a visit to a expression. and in our visitor a visit always returns a ast node}. It is then evaluated in a sequence of if statements, to ensure that the assignment is a legal action in Arc. First checking if the entry even exists, then if the entry is mutable and finally checking if the types of the entry and expression are equvilant. If the entry passes all the checks, it is then inserted into the sybol table. If it does not pass one of the checks, an exeption is thrown and a relevant error message is given.
-\todo[inline]{Entire paragraph has to be checked to ensure it is correct}
+%\ref{lst:typecheckerexample} shows am example of Arcs typechecker. This example shows the part of the typechecker, handles assignments. It does this by creating 'entry' of the class SymbolHashTableEntry and assigns it to the contents of a ctx file\todo{yeah, naw. thats not whats happening were creating an entry and assigning to it the result of a lookup in the symbolTable based on the IDENTIFIER that were assigning to.}. Then it creates 'expression' of the AST\_node class, and uses a visitor method to assign it to the first expression of the \gls{cst}\todo{this is closer. here were creating a ast nodes and assingning it the result of a visit to a expression. and in our visitor a visit always returns a ast node}. It is then evaluated in a sequence of if statements, to ensure that the assignment is a legal action in Arc. First checking if the entry even exists, then if the entry is mutable and finally checking if the types of the entry and expression are equvilant. If the entry passes all the checks, it is then inserted into the sybol table. If it does not pass one of the checks, an exeption is thrown and a relevant error message is given.
+%\todo[inline]{Entire paragraph has to be checked to ensure it is correct - It was not}
+
+\ref{lst:typecheckerexample} shows an example of Arcs typechecker. This example shows the part of the typechecker, handles assignments. First an 'entry' of the class SymbolHashTableEntry is made, this 'entry' is assigned to the result of a lookup in the symbolTable based on the IDENTIFIER. Then the expression of that node is made, we call this variable 'expression' and is the class AST\_node. 'Expression' is made by visiting the expression of the ctx node, and with Arcs visitor, it always returns an AST node.
+
+After creating these variables, some typechecking can be done, this is specifically type checking for assignemnts of variables. The first check, that ensure that the entry actually exists, is not actually type checking, but rather a part of scope handling. The next check, ensure that the entry that is being assigned to, is actually mutable, meaning that it can be modified, if not an error is thrown, that informs the user that they are trying to assing to an immutable variable. After this a check is made to ensure that the entry that is being assigned to, and the expressions typing actually match and are compatible for assignment. If this check fails, an error message informing users that the assignment has bad typing is made.
+
+After these checks have all passed, typechecking for the assignment is complete, and the 'entry' is added to the symbol table.
+
 
 
 %dynamic vs static typechecking
