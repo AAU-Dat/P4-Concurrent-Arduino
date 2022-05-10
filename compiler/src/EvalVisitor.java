@@ -296,7 +296,6 @@ public class EvalVisitor extends arcv2BaseVisitor<AST_node> {
                 throw new Expression_type_exception("non matching types between variable '" + var_dec_identifier + "'and asigned value '" + ctx.expression(0).getText() + "'");
             }    
         }
-        //todo have to handle double creation of the same variable and also make this into a function
         if (!symbolTable.containsKey(entry.Identifier)) {
             symbolTable.insert(entry);
         }
@@ -373,7 +372,7 @@ public class EvalVisitor extends arcv2BaseVisitor<AST_node> {
         Types var_dec_type = convert_string_to_Types(ctx.typing().TYPE().getText());
         String var_dec_identifier = ctx.IDENTIFIER().getText();
         boolean var_dec_mutability = ctx.typing().PREFIXOPERATOR() == null ? true : false;
-
+        //needs to handle arrays
 
         SymbolHashTableEntry entry = new SymbolHashTableEntry(var_dec_type, var_dec_identifier, var_dec_mutability);
         
@@ -420,15 +419,21 @@ public class EvalVisitor extends arcv2BaseVisitor<AST_node> {
     @Override public AST_node visitForloop_statement(arcv2Parser.Forloop_statementContext ctx) { 
         
         AST_node for_loop_node = new AST_node("for_loop");
-        if (!symbolTable.containsKey(ctx.IDENTIFIER(1).getText())) {
+        
+        
+        
+        SymbolHashTableEntry entry = symbolTable.get(ctx.IDENTIFIER(1).getText());
+        
+        if (entry == null) {
             throw new RuntimeErrorException(null, "this identifier '" + ctx.IDENTIFIER(1).getText() + "' does not exist" );
         }
-
-        SymbolHashTableEntry entry = symbolTable.get(ctx.IDENTIFIER(1).getText());
-
         if (convert_string_to_Types(ctx.typing().TYPE().getText()) != entry.Type ) {
             throw new Expression_type_exception("the for_loop expression has bad typing");
         } 
+
+
+
+
         return for_loop_node;
     }
 
@@ -454,7 +459,7 @@ public class EvalVisitor extends arcv2BaseVisitor<AST_node> {
         SymbolHashTableEntry entry = symbolTable.get(ctx.IDENTIFIER().getText());
         
         //TODO we should think about assignmet to pin array even should be possible, and if so how? are they even mutable by default?
-        //TODO  this needs to handle arrays (should we even allow array assignment)
+        //TODO  this needs to handle arrays (should we even allow array assignment) we will
         AST_node expression = visit(ctx.expression(0));
 
         if (entry == null) {
