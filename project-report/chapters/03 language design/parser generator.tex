@@ -113,8 +113,8 @@ One of the major advantages of \gls{antlr} is their high level of support in alm
     $val$    & $\to$  & ID                     \\
              & $\mid$ & INUM                   \\
              & $\mid$ & FNUM;                  \\
-\\
-\\
+    \\
+    \\
     WS       & $\to$  & [/t/n/r]+ -> $skip;$   \\
     FLOATDLC & $\to$  & 'f';                   \\
     INTDCL   & $\to$  & 'i';                   \\
@@ -133,7 +133,7 @@ One of the major advantages of \gls{antlr} is their high level of support in alm
 
 
 \subsection{CUP}
-"CUP stands for Construction of Useful Parsers and is a Look-Ahead Left-to-right, Rightmost derivation (LALR) parser generator for Java"~\cite{cupParserGenerator}. CUP implements a standard LALR(1) parser generation. Documentation for CUP recommends using the scanner generator JFlex, as a Lexical Analyzer Generator. Figure~\ref{fig:cup_example} is an example of how CUP was used.
+"CUP stands for Construction of Useful Parsers and is a Look-Ahead Left-to-right, Rightmost derivation (LALR) parser generator for Java"~\cite{cupParserGenerator}. CUP implements a standard LALR(1) parser generation. Documentation for CUP recommends using the scanner generator JFlex, as a Lexical Analyzer Generator. Figure~\ref{list:cup} is an example of how CUP was used.
 
 
 \begin{listing}[htb!]
@@ -160,7 +160,7 @@ One of the major advantages of \gls{antlr} is their high level of support in alm
 
   \end{minted}
   \caption{An example of the CUP syntax}
-  \label{List:cup}
+  \label{list:cup}
 \end{listing}
 
 In this we created a simple grammar that could add two integers together; this was done to try using CUP and to understand how everything worked.
@@ -169,7 +169,7 @@ In this we created a simple grammar that could add two integers together; this w
 \subsubsection{JFlex}
 JFlex is an abbreviation for Java Flex. Flex is an abbreviation for Fast Lexical Analyzer Generator. As the name suggests, it is a tool for generating fast lexers. It makes adjustments to the size and speed of the generated lexer possible.
 
-In Figure~\ref{fig:JFlex_example} there is an example of how JFlex looked, in conjunction with our previously mentioned CUP file.
+Figure~\ref{list:jflex} is an example of how JFlex looks, in conjunction with our previously mentioned CUP file.
 
 
 \begin{listing}[htb!]
@@ -193,7 +193,7 @@ In Figure~\ref{fig:JFlex_example} there is an example of how JFlex looked, in co
     "+"                     {return symbol(sym.PLUS);}
   \end{minted}
   \caption{An example of the JFlex syntax}
-  \label{List:jflex}
+  \label{list:jflex}
 \end{listing}
 
 %\subsection{Experiences with CUP}
