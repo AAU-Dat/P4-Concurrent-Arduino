@@ -419,15 +419,21 @@ public class EvalVisitor extends arcv2BaseVisitor<AST_node> {
     @Override public AST_node visitForloop_statement(arcv2Parser.Forloop_statementContext ctx) { 
         
         AST_node for_loop_node = new AST_node("for_loop");
-        if (!symbolTable.containsKey(ctx.IDENTIFIER(1).getText())) {
+        
+        
+        
+        SymbolHashTableEntry entry = symbolTable.get(ctx.IDENTIFIER(1).getText());
+        
+        if (entry == null) {
             throw new RuntimeErrorException(null, "this identifier '" + ctx.IDENTIFIER(1).getText() + "' does not exist" );
         }
-
-        SymbolHashTableEntry entry = symbolTable.get(ctx.IDENTIFIER(1).getText());
-
         if (convert_string_to_Types(ctx.typing().TYPE().getText()) != entry.Type ) {
             throw new Expression_type_exception("the for_loop expression has bad typing");
         } 
+
+
+
+
         return for_loop_node;
     }
 
@@ -453,7 +459,7 @@ public class EvalVisitor extends arcv2BaseVisitor<AST_node> {
         SymbolHashTableEntry entry = symbolTable.get(ctx.IDENTIFIER().getText());
         
         //TODO we should think about assignmet to pin array even should be possible, and if so how? are they even mutable by default?
-        //TODO  this needs to handle arrays (should we even allow array assignment)
+        //TODO  this needs to handle arrays (should we even allow array assignment) we will
         AST_node expression = visit(ctx.expression(0));
 
         if (entry == null) {
