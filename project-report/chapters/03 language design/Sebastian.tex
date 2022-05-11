@@ -16,8 +16,8 @@ recursive calls and function calls within functions and tasks
 When designing a programming language, it is a good idea to have rules for specific types. It should not be possible to assign a num type to a Boolean. To avoid this, type checking and type rules. The types that are valid in Arc are num, char and bool.
 
 Type rules defines the valid operations the type can do, this can bed written in the format:
-$T \in \{num, char, bool\}$
-From now on semantics written mathmatticly will use T instead of type.
+$T \in \{num, char, bool, INT\}$
+From now on semantics written mathmatticly will use T instead of type. The type int is not a type in the language, it is used in access to an array, there can only be natural numbers, therefore the type num cannot be used.
 
 Now that the types has been clarified, it is important to look at operations a specific type can do.
 The first type that will be clarified is num.
@@ -26,29 +26,29 @@ In \ref{tab:num-rules} the expressions which the data type num only can do is sh
 \begin{table}[htb!]
     \centering
     \begin{tabular}{lr>{\raggedright\arraybackslash}p{6cm}}
-        $[ADD_{EXPR}] \frac
+        $[ADD_{EXPR}] \dfrac
             {env\vdash expr_1: num env\vdash expr_2: num}
             {env\vdash expr_1 +expr_2: num}$
         \\
         \\
-        $[SUB_{EXPR}] \frac
+        $[SUB_{EXPR}] \dfrac
             {env\vdash expr_1: num env\vdash expr_2: num}
             {env\vdash expr_1 -expr_2: num}$
         \\
         \\
-        $[MULT_{EXPR}] \frac
+        $[MULT_{EXPR}] \dfrac
             {env\vdash expr_1: num env\vdash expr_2: num}
             {env\vdash expr_1 *expr_2: num}$
         \\
         \\
-        $[DIVI_{EXPR}] \frac
+        $[DIVI_{EXPR}] \dfrac
             {env\vdash expr_1: num env\vdash expr_2: num}
-        {env\vdash expr_1 /expr_2: num}$ & Where $v_2 \neq 0$
+        {env\vdash expr_1 /expr_2: num}$    & Where $expr_2 \neq 0$
         \\
         \\
-        $[GREAT-THAN-QUAL_{EXPR}] \frac
+        $[GREAT-THAN-QUAL_{EXPR}] \dfrac
             {env\vdash expr_1: num env\vdash expr_2: num}
-            {env\vdash expr_1 \mu expr_2: Bool}$ & where $\mu \in \{<, >, \leq, \geq\}$
+        {env\vdash expr_1 OP expr_2: Bool}$ & where $OP \in \{<, >, \leq, \geq\}$
         \\
         \\
     \end{tabular}
@@ -82,8 +82,66 @@ However
         \\
         $[NOT_{EXPR}] \frac
             {env\vdash expr_1: Bool}
-            {env\vdash \neg expr_1 : Bool}$
+            {env\vdash not expr_1 : Bool}$
+        \\
+        \\
+        $[PARANTHESES_{EXPR}] \frac
+            {env\vdash expr_1: T}
+            {env\vdash (expr_1) : T}$
+        \\
+        \\
+        $[ARRAY_{EXPR}] \frac
+            {env\vdash expr_1: T env \vdash expr_2 : INT}
+            {env\vdash expr_1[expr_2] : T}$
         \\
         \\
     \end{tabular}
+\end{table}
+
+\begin{table}[htbp]
+    \centering
+    \begin{tabular}{ll}
+        $[IF_{STMT}] $ & $\dfrac
+            {env \vdash if (expr) : Bool env \vdash stmt_1 :ok env \vdash stmt_2 :ok}
+            {env \vdash if (expr) stmt_1 else stmt_2: ok}$
+        \\
+        \\
+        $[WHILE_{STMT}] $ & $\dfrac
+            {env \vdash  expr : Bool env \vdash stmt :ok}
+            {env \vdash while expr do stmt : ok}$
+        \\
+        \\
+        $[COMP_{STMT}] $ & $\dfrac
+            {env \vdash stmt_1 :ok env \vdash stmt_2 :ok}
+            {env \vdash stmt_1;stmt_2: ok}$
+        \\
+        \\
+        $[BLOCK_{STMT}] $ & $\dfrac
+            {env \vdash stmt :ok}
+            {env \vdash \{stmt\}: ok}$
+        \\
+        \\
+        $[CALL_{STMT}] $ & $\dfrac
+            {env \vdash f:(x:T \rightarrow ok) env \vdash expr:ok}
+            {env \vdash call f(expr): ok}$
+        \\
+        \\
+        $[ASSIGN_{STMT}] $ & $\dfrac
+            {env \vdash x : T env \vdash a : T}
+            {env \vdash x[expr] = a: ok}$
+        \\
+        \\
+        $[VAR-DECL_{STMT}] $ & $\dfrac
+            {env \vdash x : T env \vdash a : T}
+            {env \vdash x = a: ok}$
+        \\
+        \\
+        $[ASSIGN-ARRAY_{STMT}] \frac
+            {env\vdash expr: INT env \vdash a : T}
+            {env\vdash x[expr] = a: T}$
+        \\
+        \\
+    \end{tabular}
+    \caption{Arc type check statements}
+    \label{tab:StatementTypeCheck}
 \end{table}
