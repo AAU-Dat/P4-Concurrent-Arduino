@@ -1,0 +1,89 @@
+\subsection{Type rules}\label{subsec:typerules}
+In the Arc language there are 3 data types, Character, Number and Boolean, written as char, num and bool in Arc. These can be written as variables types when declaring a variable. As there are 3 data types all 3 can be modified in Arc. All data types in Arc is as standard always inmutable, which means once a variable is declared, it cannot be changed. For making a variable mutable, ´mut´ has to be written before the type in a variable declaration to change the value the variable points to. Another way the data types can be modified is as it can become an array containing the multiple values of the same data type. Making an array is done by writing ´[]´ after the data type, when assigning an array, the square brackets should also be used when as start and finish of the array, each element in an array is sperated by ´,´.
+
+The data type Character represent a single character that follows the ASCII characters. For assinging a character it has to be in "". The data type num in the Arc language discribes numbers, it can store all real values, as 1 and 3.14. ´.´ is used to seperate decimals. The data type bool is the boolean type, it has to values, true or false.
+
+
+There are 4 data types in C++, character types, integer types, floating types and boolean types. The character type in C++ is alot like the character type in Arc, the difference is when assinging, in Arc it is "", in C++ it is up to the user to use a bracket as ´´, '', ``, and "". The floating type is the data type the Arc data type num evaluates to. Therefore it shares many operations that can be made onto a data type float in Arc. The boolean data type works the same in Arc as in C++, there are therefore 2 values whitch the type can have. The integer data type in C++ does not correspond to anything in the Arc language, therefore it is not discussed further.
+
+
+type rules of c++
+general type rules of Arc
+mutability in Arc
+call by value, call by name, and call by reference
+recursive calls and function calls within functions and tasks
+
+When designing a programming language, it is a good idea to have rules for specific types. It should not be possible to assign a num type to a Boolean. To avoid this, type checking and type rules. The types that are valid in Arc are num, char and bool.
+
+Type rules defines the valid operations the type can do, this can bed written in the format:
+$T \in \{num, char, bool\}$
+From now on semantics written mathmatticly will use T instead of type.
+
+Now that the types has been clarified, it is important to look at operations a specific type can do.
+The first type that will be clarified is num.
+In \ref{tab:num-rules} the expressions which the data type num only can do is showed here.
+
+\begin{table}[htb!]
+    \centering
+    \begin{tabular}{lr>{\raggedright\arraybackslash}p{6cm}}
+        $[ADD_{EXPR}] \frac
+            {env\vdash expr_1: num env\vdash expr_2: num}
+            {env\vdash expr_1 +expr_2: num}$
+        \\
+        \\
+        $[SUB_{EXPR}] \frac
+            {env\vdash expr_1: num env\vdash expr_2: num}
+            {env\vdash expr_1 -expr_2: num}$
+        \\
+        \\
+        $[MULT_{EXPR}] \frac
+            {env\vdash expr_1: num env\vdash expr_2: num}
+            {env\vdash expr_1 *expr_2: num}$
+        \\
+        \\
+        $[DIVI_{EXPR}] \frac
+            {env\vdash expr_1: num env\vdash expr_2: num}
+        {env\vdash expr_1 /expr_2: num}$ & Where $v_2 \neq 0$
+        \\
+        \\
+        $[GREAT-THAN-QUAL_{EXPR}] \frac
+            {env\vdash expr_1: num env\vdash expr_2: num}
+            {env\vdash expr_1 \mu expr_2: Bool}$ & where $\mu \in \{<, >, \leq, \geq\}$
+        \\
+        \\
+    \end{tabular}
+    \caption{Type rules for num in Arc}
+    \label{tab:num-rules}
+\end{table}
+As it only is the expressions the type num can do, it is only the most standard expressions.
+However
+\begin{table}
+    \centering
+    \begin{tabular}{lr>{\raggedright\arraybackslash}p{6cm}}
+        $[EQUAL_{EXPR}] \frac
+            {env\vdash expr_1: T env\vdash expr_2: T}
+            {env\vdash expr_1 = expr_2: Bool}$
+        \\
+        \\
+        $[NOTEQUAL_{EXPR}] \frac
+            {env\vdash expr_1: T env\vdash expr_2: T}
+            {env\vdash expr_1 != expr_2: Bool}$
+        \\
+        \\
+        $[AND_{EXPR}] \frac
+            {env\vdash expr_1: Bool env\vdash expr_2: Bool}
+            {env\vdash expr_1 \land expr_2: Bool}$
+        \\
+        \\
+        $[OR_{EXPR}] \frac
+            {env\vdash expr_1: Bool env\vdash expr_2: Bool}
+            {env\vdash expr_1 \lor expr_2: Bool}$
+        \\
+        \\
+        $[NOT_{EXPR}] \frac
+            {env\vdash expr_1: Bool}
+            {env\vdash \neg expr_1 : Bool}$
+        \\
+        \\
+    \end{tabular}
+\end{table}
