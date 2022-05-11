@@ -103,7 +103,7 @@ public class CodeGenVisitor extends arcv2BaseVisitor<CodeGenStringObject> {
         CodeGenStringObject temp = new CodeGenStringObject();
 
         temp = visit(ctx.expression());
-        cpp.GlobalScope = "not " + temp.GlobalScope;
+        cpp.GlobalScope = "!" + temp.GlobalScope;
 
         return cpp;
     }
@@ -549,7 +549,7 @@ public class CodeGenVisitor extends arcv2BaseVisitor<CodeGenStringObject> {
             temp.GlobalScope += temp.Type_Coverter(ctx.typing(i).TYPE().toString()) + " ";
         }
 
-        temp.GlobalScope += ctx.IDENTIFIER(i).toString();
+        temp.GlobalScope += "_" + ctx.IDENTIFIER(i).toString();
 
         if (ctx.typing(i).TYPEOPERATOR() != null) {
             temp.GlobalScope += ctx.typing(i).TYPEOPERATOR().toString();
