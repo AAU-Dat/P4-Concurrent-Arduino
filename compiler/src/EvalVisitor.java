@@ -239,18 +239,20 @@ public class EvalVisitor extends arcv2BaseVisitor<AST_node> {
 
     @Override
     public AST_node visitFunction_access_expression(arcv2Parser.Function_access_expressionContext ctx) {
-        AST_node function_call = new AST_node("function");
-
+        AST_node function_call = new AST_node("functionCall");
+        String name;
         //TODO HANDLE ARDUINO FUNCTIONS!!
         if (ctx.ARDUINOFUNCTIONS() != null)
-            System.out.println("arduinofunction");
-
-
-
-        SymbolHashTableEntry entry = symbolTable.get(ctx.IDENTIFIER().getText());
+            name = ctx.ARDUINOFUNCTIONS().getText();
+        else{
+            name = ctx.IDENTIFIER().getText();
+        }
+        SymbolHashTableEntry entry = symbolTable.get(name);
         if(entry == null){
             throw new RuntimeException("This function has not been declared '" + ctx.IDENTIFIER().getText() + "'");
         }
+        
+
 
 
         List<ExpressionContext>  expression_list = ctx.expression();
