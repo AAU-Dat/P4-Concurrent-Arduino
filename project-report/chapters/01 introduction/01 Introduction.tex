@@ -1,8 +1,8 @@
 \chapter{Introduction}\label{cha:introduction}
-This report details the design, definition, and implementation of a programming language, as per \gls{aau}'s fourth-semester module description \cite{AAU_Modules_P4}. The programming language is named Arc for \textit{Arduino Concurrently}, and its purpose is to make it a little simpler to write concurrent programs for the arduino.
+This report details a programming language’s design, definition, and implementation, as per \gls{aau}'s fourth-semester module description. \cite{AAU_Modules_P4}. The programming language is named Arc for \textit{Arduino Concurrently}, and its purpose is to make it a little simpler to write concurrent programs for the arduino.
 
 \section{Initial problem}\label{sec:initialproblem}
-The problem analysis begins from the project proposal: "A Concurrent Programming Language for Arduino". The proposal outlines how microcontrollers, like the Arduino, are used in \gls{cps} to monitor and control the surroundings. However, although sensor input is sent asynchronously with regards to the \gls{cpu} the Arduino has no direct support for concurrency.
+The problem analysis begins from the project proposal: "A Concurrent Programming Language for Arduino." The proposal outlines how microcontrollers, like the Arduino, are used in \gls{cps} to monitor and control the surroundings. However, although sensor input is sent asynchronously to the \gls{cpu}, the Arduino has no direct support for concurrency.
 
 \subsection{Project outline}
 The project proposal presents the following tasks and challenges:
