@@ -31,7 +31,7 @@ The tertiary and last concern follows from the secondary issue - determining how
         Restricted Aliasing     &                              &                      & \textbullet          \\
         \bottomrule
     \end{tabular}
-    \caption{The three main criteria and the related characteristics~\cite{Sebesta2016}}
+    \caption{The three main criteria and the related characteristics~\cite{Sebesta2016}.}
     \label{tab:langevalcrit}
 \end{table}
 
@@ -53,7 +53,7 @@ With these considerations in mind, we have prioritized and selected the characte
 
 The primary concern deals with considerations related to the cost criterion. Specifically, the cost associated with time spent learning and understanding the programming language is important. This suggests that general simplicity, in the form of few but expressive language constructs as well as clear, consistent combination and application of the constructs is \textbf{very important}. It may also be difficult, because concurrency is a complex topic.
 
-Syntax design is also a \textbf{very important} characteristic, as seen from the secondary and tertiary concerns. The language should express new constructs that are not available in the Arduino language in a concise manner. An aim of the syntax could be to describe concurrent programs simply. 
+Syntax design is also a \textbf{very important} characteristic, as seen from the secondary and tertiary concerns. The language should express new constructs that are not available in the Arduino language in a concise manner. An aim of the syntax could be to describe concurrent programs simply.
 
 Data types is probably also an \textbf{important} characteristic. As long as the expressivity of the language is not greatly affected, the number of data types is reduced by generalizing them. An example of this would be datatypes such as integers, doubles, and floats all being generalized to a single data type.\question{"This feature may increase memory usage" I don't understand Giovannis feedback} This reduction of datatypes, compared to the Arduino language, is likely to have a positive effect on overall simplicity and writability, and therefore cost, which is important to hobbyists. This is also related to orthogonality - having fewer constructs, and a consistent rule set for combining them, is often better than having a lot of primitives. Orthogonality is therefore also an \textbf{important} characteristic.
 
