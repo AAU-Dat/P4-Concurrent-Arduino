@@ -55,9 +55,7 @@ public class CodeGenVisitor extends arcv2BaseVisitor<CodeGenStringObject> {
         CodeGenStringObject cpp = new CodeGenStringObject();
         CodeGenStringObject temp = new CodeGenStringObject();
 
-        System.out.println(ctx.IDENTIFIER() + "123");
         if(ctx.IDENTIFIER() != null){
-            System.out.println(ctx.IDENTIFIER() + "456");
             cpp.GlobalScope += "_" + ctx.IDENTIFIER();
         } else {
             cpp.GlobalScope += ctx.ARDUINOFUNCTIONS().getText();
@@ -395,14 +393,13 @@ public class CodeGenVisitor extends arcv2BaseVisitor<CodeGenStringObject> {
 
         cpp.GlobalScope += "_" + ctx.IDENTIFIER();
 
-        if (ctx.WHOLENUMBER() != null) {
+        if (ctx.NUMBER() != null) {
             cpp.GlobalScope += "[";
-            cpp.GlobalScope += ctx.WHOLENUMBER().toString();
+            cpp.GlobalScope += ctx.NUMBER().toString();
             cpp.GlobalScope += "]";
         }
 
         cpp.GlobalScope += " = ";
-        System.out.println(ctx);
         if (ctx.STARTSQUAREBRACKET(1) != null) {
             List<ExpressionContext> list = ctx.expression();
             cpp.GlobalScope += "{";
@@ -607,7 +604,7 @@ public class CodeGenVisitor extends arcv2BaseVisitor<CodeGenStringObject> {
             for (StatementContext statement : list) {
                 cpp.GlobalScope += visit(statement).GlobalScope;
             }
-            cpp.GlobalScope += "\nPT_SLEEP(pt, " + ctx.WHOLENUMBER().getText() + ");\n";
+            cpp.GlobalScope += "\nPT_SLEEP(pt, " + ctx.NUMBER().getText() + ");\n";
             cpp.GlobalScope += "\n}\n";
         }
 

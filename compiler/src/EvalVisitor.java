@@ -13,8 +13,9 @@ import org.antlr.v4.runtime.tree.TerminalNode;
 import AstNodes.*;
 import Types.Types;
 import symbolTable.*;
-
+import Exemptions.Array_out_of_bounds;
 import Exemptions.Expression_type_exception;
+import Exemptions.Not_whole_number_exception;
 
 
 public class EvalVisitor extends arcv2BaseVisitor<AST_node> {
@@ -228,6 +229,12 @@ public class EvalVisitor extends arcv2BaseVisitor<AST_node> {
         if (entry == null) {
             throw new RuntimeErrorException(null, "this identifier '" + ctx.IDENTIFIER().getText() + "' does not exist" );
             
+        }
+        if(entry.Array_length < Float.parseFloat(ctx.NUMBER().getText())){
+            throw new Array_out_of_bounds(ctx.NUMBER());
+        }
+        if(Float.parseFloat(ctx.NUMBER().getText())% 1 != 0){
+            throw new Not_whole_number_exception(ctx.NUMBER());
         }
 
         array_node.type = entry.Type;
@@ -526,6 +533,15 @@ public class EvalVisitor extends arcv2BaseVisitor<AST_node> {
          symbolTable.push();
          
          List<TerminalNode> identifier_list = ctx.IDENTIFIER();
+
+         //checks if its a every task and if the number input is whole
+
+         if(ctx.NUMBER() != null){
+            if(Float.parseFloat(ctx.NUMBER().getText())% 1 != 0){
+                throw new Not_whole_number_exception(ctx.NUMBER());
+            }
+
+         }
          
          //we create a list of the identifiers that we need to check if they exist in the symbol table and if they are mutable and if they do 
          //we insert them into the task scope to prevent other varibles having the same name.

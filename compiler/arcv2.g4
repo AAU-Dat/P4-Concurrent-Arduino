@@ -9,10 +9,10 @@ declaration
      | typing IDENTIFIER '(' (typing IDENTIFIER (',' typing IDENTIFIER)*)? ')' '{' statement* '}' # function_declaration
      | '#' 'pin' IDENTIFIER '(' (PINDIGIT | NUMBER) ',' ('INPUT' | 'OUTPUT') ')' ';'              # pin_declaration
      | 'task' ('(' (IDENTIFIER ( ',' IDENTIFIER)*)? ')')? (
-          ('every' WHOLENUMBER)
+          ('every' NUMBER)
           | ('when' '(' expression ')')
      )? '{' statement* '}'                                                                        # task_declaration;
-// Task needs parameters and not declarations as input. 
+// Task needs parameters and not declarations as input.
 typing: PREFIXOPERATOR? TYPE TYPEOPERATOR?;
 
 block:  '{' statement* '}';
@@ -30,7 +30,7 @@ statement
                | expression
           ) ';'
      )                                                                                            # variable_declaration_statement
-     | IDENTIFIER ('[' WHOLENUMBER ']')? '=' (
+     | IDENTIFIER ('[' NUMBER ']')? '=' (
           '[' (expression (',' expression)*)? ']'
           | expression
      ) ';'                                                                                        # assignment_statement
@@ -39,7 +39,7 @@ statement
 expression
      : (NUMBER | IDENTIFIER | BOOL | CHAR | ARDUINOEXPRESSIONS)                                   # terminal_expression
      | (IDENTIFIER | ARDUINOFUNCTIONS) '(' (expression (',' expression)*)? ')'                    # function_access_expression
-     | IDENTIFIER '[' WHOLENUMBER ']'                                                                  # array_access_expression
+     | IDENTIFIER '[' NUMBER ']'                                                                  # array_access_expression
      | '(' expression ')'                                                                         # parentheses_expression
      | 'not' expression                                                                           # unary_negation_expression
      | expression (MULTI | DIVI) expression                                                       # multiplication_divide_expression

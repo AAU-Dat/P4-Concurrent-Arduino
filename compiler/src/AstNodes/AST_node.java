@@ -15,7 +15,7 @@ public class AST_node {
 
     public AST_node(String name) {
         this.name = name;
-        System.out.println(name);
+        //System.out.println(name);
 
     }
 

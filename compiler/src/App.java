@@ -19,7 +19,7 @@ public class App {
             AST_node AST = eval.visit(tree);
             
         } catch (RuntimeException e) {
-            System.out.println(e.getMessage() + " bad, bad declaration");
+            System.out.println(e.getMessage());
         }
         CodeGenVisitor cgv = new CodeGenVisitor();
         CodeGenStringObject cppc = cgv.visit(tree);

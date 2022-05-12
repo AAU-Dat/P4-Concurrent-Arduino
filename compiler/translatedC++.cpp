@@ -3,7 +3,8 @@ float _buttonState = 0;
 float _switch = 0;
 #define _BUTTON_PIN 12
 #define _LED_PIN 11
-float _a = 1;
+float _b = 5;
+float _a = {1, 2, 3, 4};
 float _l = 0;
 pt pt0;
 int pt0thread(struct pt *pt) { 

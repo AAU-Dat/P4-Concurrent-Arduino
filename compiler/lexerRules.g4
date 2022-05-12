@@ -4,7 +4,6 @@ NUMBER:                  '-'? DIGIT+ ('.' DIGIT+)?;
 PINDIGIT:                'A' [0-5];
 INT:                     DIGIT;
 fragment DIGIT:          [0-9];
-WHOLENUMBER:             DIGIT*;
 BOOL:                    'true' | 'false';
 CHAR:                    '"' . '"'; //Is this ascii or unicode?
 

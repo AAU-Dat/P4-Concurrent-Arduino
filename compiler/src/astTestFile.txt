@@ -1,11 +1,13 @@
-num buttonState = 0;
+mut num buttonState = 0;
 mut num switch = 0;
 #pin BUTTON_PIN(12, INPUT);
 #pin LED_PIN(11, OUTPUT);
-num a = {1,2,3,4};
+
+num b = 5;
+num a = [1,2,3,4];
 mut num l = 0;
 
-task(num switch) every 1000 {
+task(switch) every 1000{
     if(switch == 0){
         digitalWrite(LED_BUILTIN, HIGH);
         switch = 1;
@@ -15,7 +17,7 @@ task(num switch) every 1000 {
     }
 }
 
-num blinkLED(num buttonState){
+num blinkLED(mut num buttonState){
     if(buttonState == 1){
         digitalWrite(LED_PIN, LOW);
     } else {
