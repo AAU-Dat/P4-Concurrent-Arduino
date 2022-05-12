@@ -1,11 +1,48 @@
-\section{Visitor pattern}\label{sec:visitorpattern}\feedback{We still working on this section, and unsure what }
-This section will briefly discuss what the visitor pattern is, how it is used in Arc, and why it is used. ANTLR provides two methods of traversing a \gls{cst}, listeners and visitors. 
+\section{Visitor pattern}\label{sec:visitorpattern}\feedback{We still working on this section, and unsure what is missing}
+This section will briefly discuss the two methods ANTLR provides of traversing a \gls{cst}, listeners and visitors, what they are, how they are used, and why they are used in Arc. 
 
 The listener pattern, is not responsible for calling methods to traverse the tree. ANTLR generates enter and exit methods for each rule, these methods are then called when the walker encounters a node. The benefits of using the listener pattern, is that it is automatic, and the methods created do not have to explicitly visit all their child nodes\cite{Parr2014}. \feedback{We are unsure of how correct this actually is, taken from: Page 18}
 
-The visitor pattern, is a method used to traverse the \gls{cst} in a specific manner, where methods are used to visit each child node. By using the visitor pattern, there is more control of how the traversal of the \gls{cst} is done, and how much of the \gls{cst} is visited. ANTLR can generate a visitor interface, this interface is created from Arcs grammar, and creates all the needed visitor methods. These act as boilerplate for Arcs needed visitor methods, that can then be written out to do excatly as needed\cite{Parr2014}. 
+The visitor pattern, is a method used to traverse the \gls{cst} in a specific manner, where methods are used to visit each child node. By using the visitor pattern, there is more control of how the traversal of the \gls{cst} is done, and how much of the \gls{cst} is visited. ANTLR can generate a visitor interface, this interface is created from Arcs grammar, and creates all the needed visitor methods. These act as boilerplate for Arcs needed visitor methods, that can then be written out to do excatly as needed\cite{Parr2014}.
 
-For Arc there is made use of the visitor pattern, because it is not neccecary, for Arc, to visit all nodes, since for some of them it is know what will follow. It is also the more secure option, as it gives the option to be more specific about what happens for each node. This is especially good for futureproofing, as there might be certain things that had not been prdicted, and can therefore be specifically fixed.
+For Arc there is made use of the visitor pattern, because it is not neccecary, for Arc, to visit all nodes, since for some of them it is known what will follow. It is also the more secure option, as it gives the option to be more specific about what happens for each node. This is especially good for futureproofing, as there might be certain things that had not been predicted, and can therefore be specifically fixed.
+
+An example of how Arc implements a visitor method, can be seen in figure \ref{lst:visitorexpression}, this is the visitor method called when visiting an expression node in the \gls{cst}. The method creates a string variable 'name' that is assigned to the value of the method .getText of the formal paramater 'ctx'. From this, an AST\_node variable 'terminal' is made. Then a series of checks are made, to find the type of expression is beeing visited, to give 'terminal' the correct type. The first check being, if the formal paramater 'ctx' contains a number, if it does, the type of the terminal is assigned to be NUM, which is Arcs representation of numbers. If it does not contain a number, the next check, which is for boolean, is made, after this the same type of check is made for characters. Then a check for the identifier is made, if it contains an identifer, a SymbolHashTableEntry variable 'id' is made based on the identifer of the variable 'ctx'. If the variable 'id' is null, this means that the variable has not been declared, and an error is thrown, informing the user. \todo{Continue from here!}
+
+\todo[inline]{The description of these functions has to be checked to ensure the understanding of them is correct.}
+
+\begin{listing}[htb!]
+    \begin{minted}{java}
+        public AST_node visitTerminal_expression(arcv2Parser.Terminal_expressionContext ctx) {
+        String name;
+        name = ctx.getText();
+        AST_node terminal = new Terminal_expression_node(name);
+        if (ctx.NUMBER() != null)
+            terminal.type = Types.NUM;
+        else if (ctx.BOOL() != null)
+            terminal.type = Types.BOOL;
+        else if (ctx.CHAR() != null)
+            terminal.type = Types.CHAR;
+        else if (ctx.IDENTIFIER() != null) {
+            SymbolHashTableEntry id = symbolTable.get(ctx.IDENTIFIER().getText());
+            if(id == null){
+                throw new RuntimeException("This variable has not been declared '" + ctx.IDENTIFIER().getText() + "'");
+            }
+            else{
+                terminal.type = id.Type;
+            }
+        } else {
+            throw new RuntimeException("problems with terminal expression");
+        }
+        return terminal;
+        }
+    \end{minted}
+    \caption{Visiting an expression}
+    \label{lst:visitorexpression}
+\end{listing}
+
+%Describe to types of visitors we have used
+%Show ALOT of code examples
 
 
 %Options
