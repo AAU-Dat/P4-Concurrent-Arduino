@@ -12,8 +12,33 @@ public class SymbolTable {
     
     public SymbolTable(){
         stack.push(new HashMap<String,SymbolHashTableEntry>());
-    }
+        
+        String[] identifiers = { "digitalWrite", "anlogWrite"};
+        String[] identifiersRead = { "digitalRead", "anlogRead"};
 
+        for (String identifier : identifiers) {
+            
+            SymbolHashTableEntry entry = new SymbolHashTableEntry(Types.FUNCTION, identifier, false);
+            entry.Function_parameter_length = 2;
+            Types [] array = {Types.PIN, Types.NUM};
+            entry.Function_parameter_types = array;
+            entry.Function_return_Type = Types.NUM;
+            this.insert(entry);
+            
+        }
+        for (String identifier : identifiersRead) {
+            
+            SymbolHashTableEntry entry = new SymbolHashTableEntry(Types.FUNCTION, identifier, false);
+            entry.Function_parameter_length = 1;
+            Types [] array = {Types.PIN};
+            entry.Function_parameter_types = array;
+            entry.Function_return_Type = Types.NUM;
+            this.insert(entry);
+            
+        }
+
+
+    }
 
     public HashMap active_scope () {
         return stack.peek();

@@ -14,14 +14,14 @@ Another solution to this problem could be to hoist local variable declarations w
 
 
 \begin{listing}[htb!]
-    \begin{minted}[label=Scope clash]{text}
+  \begin{minted}[label=Scope clash]{text}
         num a = 1;
         task() {
             num a = 2; // hoist causes a clash here
         }
     \end{minted}
-    \caption{Example of hoisting that causes a clash.}
-    \label{lst:hoistclash}
+  \caption{Example of hoisting that causes a clash.}
+  \label{lst:hoistclash}
 \end{listing}
 
 
@@ -31,43 +31,43 @@ To describe the static scope rules of Arc with operational semantics, we use the
 Arc has two environments, the variable environment and the function environment. To define the semantics, some functions and sets must be described first.
 
 \begin{table}[htbp]
-    \centering
-    \begin{tabular}{l}
-        \toprule
-        $\textbf{Loc} = \mathbb{N} - $ The set of locations                                   \\
-        $x \in \textbf{Var} - $ Variables                                                     \\
-        $l \in \textbf{Loc} - $ An arbitrary location in \textbf{Loc}                         \\
-        $S \in \textbf{Stm} - $ Statements                                                    \\
-        next $- $ A special 'pointer' holding the value of the next element in \textbf{Loc}   \\
-        new $: \textbf{Loc} \rightarrow \textbf{Loc} - $ function to return succesor location \\
-        \bottomrule
-    \end{tabular}
-    \caption{Sets and function definitions.}
-    \label{tab:setsandfunctions}
+  \centering
+  \begin{tabular}{l}
+    \toprule
+    $\textbf{Loc} = \mathbb{N} - $ The set of locations                                   \\
+    $x \in \textbf{Var} - $ Variables                                                     \\
+    $l \in \textbf{Loc} - $ An arbitrary location in \textbf{Loc}                         \\
+    $S \in \textbf{Stm} - $ Statements                                                    \\
+    next $- $ A special 'pointer' holding the value of the next element in \textbf{Loc}   \\
+    new $: \textbf{Loc} \rightarrow \textbf{Loc} - $ function to return succesor location \\
+    \bottomrule
+  \end{tabular}
+  \caption{Sets and function definitions.}
+  \label{tab:setsandfunctions}
 \end{table}
 
 
 \begin{equation}\label{eq:environmentset}
-    \textbf{Env}_v = \textbf{Var} \cup \{'text{next}\} \rightharpoonup \textbf{Loc}
+  \textbf{Env}_v = \textbf{Var} \cup \{'text{next}\} \rightharpoonup \textbf{Loc}
 \end{equation}
 
 \begin{equation}\label{eq:storeset}
-    \textbf{Sto} = \textbf{Loc} \rightharpoonup \textbf{Lit}
+  \textbf{Sto} = \textbf{Loc} \rightharpoonup \textbf{Lit}
 \end{equation}
 
 
 
 \begin{table}[htbp]
-    \centering
-    \begin{tabular}{ll}
-        \toprule
-        $[FUNC_{DECL}] $ & $\dfrac
-            {env_v \vdash \langle env_f[f \to (stmt, env_v, env_f)] \rangle \to env_f \prime}
-            {env_v \vdash \langle \text{func f is stmt; } env_f \rangle \to env_f \prime}$ \\
-        \bottomrule
-    \end{tabular}
-    \caption{Arc's scope defined with operational semantics.}
-    \label{tab:arcscoperules}
+  \centering
+  \begin{tabular}{ll}
+    \toprule
+    $[FUNC_{DECL}] $ & $\dfrac
+      {env_v \vdash \langle env_f[f \to (stmt, env_v, env_f)] \rangle \to env_f \prime}
+      {env_v \vdash \langle \text{func f is stmt; } env_f \rangle \to env_f \prime}$ \\
+    \bottomrule
+  \end{tabular}
+  \caption{Arc's scope defined with operational semantics.}
+  \label{tab:arcscoperules}
 \end{table}
 
 The sets of these partial functions are described in Equations~\ref{eq:environmentset} and~\ref{eq:storeset}.
@@ -79,15 +79,15 @@ where next is bound to the next location, and calculated with new $l = l + 1$ .
 
 
 \begin{figure}[htbp]
-    \centering
-    \includegraphics[width=0.8\textwidth]{figures/Environment_Store.png}
-    \caption{Example diagram of the environment store model~\cite{Huttel2010}.}
-    \label{fig:envstomodel}
+  \centering
+  \includegraphics[width=0.8\textwidth]{figures/Environment_Store.png}
+  \caption{Example diagram of the environment store model~\cite{Huttel2010}.}
+  \label{fig:envstomodel}
 \end{figure}
 
 
 $[if_{true}]
-    env_{vf}\langle \text{if expr then stmt}_1 \text{else stmt}_2,sto \rangle \rightarrow env_{vf} \langle stmt_1,sto\rangle$
+  env_{vf}\langle \text{if expr then stmt}_1 \text{else stmt}_2,sto \rangle \rightarrow env_{vf} \langle stmt_1,sto\rangle$
 Where  $env_{vf},sto \vdash expr \to true$
 
 
@@ -112,16 +112,10 @@ What environment are tasks stored in, if any? Describe all 3 types.
 
 
 \begin{figure}[htbp]
-    \centering
-    \missingfigure{Insert image of scope rules in Arc}
-    \caption{Diagram of the scope structure of Arc.}
-    \label{fig:arcscoperules}
+  \centering
+  \missingfigure{Insert image of scope rules in Arc}
+  \caption{Diagram of the scope structure of Arc.}
+  \label{fig:arcscoperules}
 \end{figure}
 
 
-@misc{cppref,
-    oraganization       = {cppreference},
-    url = {https://en.cppreference.com/w/cpp/language/scope},
-    title        = {Scope in C++},
-    urldate = {2022-02-10}
-}
