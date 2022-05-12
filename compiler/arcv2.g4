@@ -8,8 +8,8 @@ declaration
      : typing IDENTIFIER '=' ('[' (expression (',' expression)*)? ']' | expression) ';'           # variable_declaration
      | typing IDENTIFIER '(' (typing IDENTIFIER (',' typing IDENTIFIER)*)? ')' '{' statement* '}' # function_declaration
      | '#' 'pin' IDENTIFIER '(' (PINDIGIT | NUMBER) ',' ('INPUT' | 'OUTPUT') ')' ';'              # pin_declaration
-     | 'task' ('(' (typing IDENTIFIER ( ',' typing IDENTIFIER)*)? ')')? (
-          ('every' NUMBER)
+     | 'task' ('(' (IDENTIFIER ( ',' IDENTIFIER)*)? ')')? (
+          ('every' WHOLENUMBER)
           | ('when' '(' expression ')')
      )? '{' statement* '}'                                                                        # task_declaration;
 // Task needs parameters and not declarations as input. 
@@ -30,7 +30,7 @@ statement
                | expression
           ) ';'
      )                                                                                            # variable_declaration_statement
-     | IDENTIFIER ('[' NUMBER ']')? '=' (
+     | IDENTIFIER ('[' WHOLENUMBER ']')? '=' (
           '[' (expression (',' expression)*)? ']'
           | expression
      ) ';'                                                                                        # assignment_statement
@@ -39,7 +39,7 @@ statement
 expression
      : (NUMBER | IDENTIFIER | BOOL | CHAR | ARDUINOEXPRESSIONS)                                   # terminal_expression
      | (IDENTIFIER | ARDUINOFUNCTIONS) '(' (expression (',' expression)*)? ')'                    # function_access_expression
-     | IDENTIFIER '[' NUMBER ']'                                                                  # array_access_expression
+     | IDENTIFIER '[' WHOLENUMBER ']'                                                                  # array_access_expression
      | '(' expression ')'                                                                         # parentheses_expression
      | 'not' expression                                                                           # unary_negation_expression
      | expression (MULTI | DIVI) expression                                                       # multiplication_divide_expression

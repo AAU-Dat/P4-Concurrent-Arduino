@@ -395,9 +395,9 @@ public class CodeGenVisitor extends arcv2BaseVisitor<CodeGenStringObject> {
 
         cpp.GlobalScope += "_" + ctx.IDENTIFIER();
 
-        if (ctx.NUMBER() != null) {
+        if (ctx.WHOLENUMBER() != null) {
             cpp.GlobalScope += "[";
-            cpp.GlobalScope += ctx.NUMBER().toString();
+            cpp.GlobalScope += ctx.WHOLENUMBER().toString();
             cpp.GlobalScope += "]";
         }
 
@@ -607,7 +607,7 @@ public class CodeGenVisitor extends arcv2BaseVisitor<CodeGenStringObject> {
             for (StatementContext statement : list) {
                 cpp.GlobalScope += visit(statement).GlobalScope;
             }
-            cpp.GlobalScope += "\nPT_SLEEP(pt, " + ctx.NUMBER().getText() + ");\n";
+            cpp.GlobalScope += "\nPT_SLEEP(pt, " + ctx.WHOLENUMBER().getText() + ");\n";
             cpp.GlobalScope += "\n}\n";
         }
 
