@@ -17,12 +17,41 @@
 When designing a programming language, it is a good idea to have rules for specific types, this is called type rules. It should not be possible to assign a number to a type Boolean. 
 The types that are valid in Arc are num, char and bool, they were descriped in further detail in\ref*{sec:inspiration}.
 
-Types in semantics for the Arc language can be written as:
+In the type checking semantics the types in the Arc language are be written as:
 $T \in \{num, char, bool, N\} N \in \{ 0,\mathbb{N}\}$.
-N was not descriped ealier on what the types are in Arc. 
-N is only used to access arrays. 
-For accessing an array, it has to have a natural number as index, in Arc an array is 0-indexed, therefore N can also be 0.  
 From now on semantics written mathmatticly will use T instead of type, if not given a specific type, in semantic type checking.
+N was not descriped ealier on what the types are in Arc. 
+N is only used to access arrays. As it is not a type that can be declared. 
+For accessing an array, it has to have a natural number as index, in Arc an array is 0-indexed, therefore N can also be 0.  
+In declarations and statements type checking, there will be an evaluation to $ok$ which means: \begin{quote}
+    "The type of a declaration or a statement will simply be ok; we say that
+the declaration or statement is well-typed"\cite{Huttel2010}
+\end{quote}
+
+In table \ref*{tab:DeclTypeCheck}, the type checking for variables are written. A specific type function declaration, has to type check if the return type is the same type as the declared function type. As task and a void function does not have a return type, there is not a need for type check. 
+
+\begin{table}[htb!]
+    \centering
+    \begin{tabular}{ll}
+        $[VAR_{DECL}] $       & $\dfrac
+            {expr : T}
+            {T \;x = expr : ok}$
+        \\
+        \\
+        $[FUNC_{DECL}] $      & $\dfrac
+            {env \vdash expr : T \quad stmt : ok}
+            {T \;f \{stmt \;\text{return} \; expr\}  : ok}$
+        \\
+        \\
+        $[FUNC-VOID_{DECL}] $ & $\dfrac
+            {\text{stmt} : ok}
+            {f\{stmt\}  : ok}$
+        \\
+        \\
+    \end{tabular}
+    \caption{Arc type check for declarations}
+    \label{tab:DeclTypeCheck}
+\end{table}
 
 Now that the types has been clarified, it is important to look at operations a specific type can do.
 The first type that will be clarified is num.
@@ -58,13 +87,39 @@ In \ref{tab:num-rules} the expressions which the data type num only can do is sh
         \\
         \\
     \end{tabular}
-    \caption{Type rules for num in Arc}
+    \caption{Type rules for num expressions in Arc}
     \label{tab:num-rules}
 \end{table}
 \todo[inline]{rename $[GREAT-THAN-QUAL_{EXPR}] $}
-As it only is the expressions the type num can do, it is only the most standard expressions.
-However
-\begin{table}
+
+The type num is the only type in Arc that can do arithmetic expressions, as it can only do arithmetic expressions on another num type, this can be seen in Table \ref*{tab:num-rules}. The end type of a arithmetic expression is still a num, as it makes changes the value, not the type. It is also the only type to check if a value is greater or smaller than an other num type when comparing. When doing a comparing of nums, the end type of the expression is a bool, as it true or false if the num is greater or less than the num it is compared to.
+
+\begin{table}[htb!]
+    \centering
+    \begin{tabular}{lr>{\raggedright\arraybackslash}p{6cm}}
+    $[AND_{EXPR}] $        & $\dfrac
+        {env\vdash expr_1: Bool \quad env\vdash expr_2: Bool}
+        {env\vdash expr_1 \;\text{and} \;expr_2: Bool}$
+    \\
+    \\
+    $[OR_{EXPR}] $         & $\dfrac
+        {env\vdash expr_1: Bool \quad env\vdash expr_2: Bool}
+        {env\vdash expr_1 \;\text{or} \;expr_2: Bool}$
+    \\
+    \\
+    $[NOT_{EXPR}] $        & $\dfrac
+        {env\vdash expr_1: Bool}
+        {env\vdash \text{not} \; expr_1 : Bool}$
+    \\
+    \\
+    \end{tabular}
+    \caption{Type rules for bool expressions in Arc}
+    \label{tab:bool-rules}
+\end{table}
+
+The type bool has three expressions, that are marked as a bool type check, can be seen in table \ref*{tab:bool-rules}. This means in the And, Or or Not expressions the expressions always has to evaluate to a type bool. 
+
+\begin{table}[htb!]
     \centering
     \begin{tabular}{lr>{\raggedright\arraybackslash}p{6cm}}
         $[ARRAY_{EXPR}]$       & $ \dfrac
@@ -79,35 +134,22 @@ However
         \\
         $[EQUAL_{EXPR}] $      & $\dfrac
             {env\vdash expr_1: T \quad env\vdash expr_2: T}
-            {env\vdash expr_1 \;= \;expr_2: Bool}$
+            {env\vdash expr_1 \;== \;expr_2: Bool}$
         \\
         \\
         $[NOTEQUAL_{EXPR}] $   & $\dfrac
-            {env\vdash expr_1: T \quad env\vdash expr_2: T}
-            {env\vdash expr_1 \;!= \;expr_2: Bool}$
-        \\
-        \\
-        $[AND_{EXPR}] $        & $\dfrac
-            {env\vdash expr_1: Bool \quad env\vdash expr_2: Bool}
-            {env\vdash expr_1 \;\land \;expr_2: Bool}$
-        \\
-        \\
-        $[OR_{EXPR}] $         & $\dfrac
-            {env\vdash expr_1: Bool \quad env\vdash expr_2: Bool}
-            {env\vdash expr_1 \;\lor \;expr_2: Bool}$
-        \\
-        \\
-        $[NOT_{EXPR}] $        & $\dfrac
-            {env\vdash expr_1: Bool}
-            {env\vdash not \; expr_1 : Bool}$
-        \\
-        \\
+        {env\vdash expr_1: T \quad env\vdash expr_2: T}
+        {env\vdash expr_1 \;!= \;expr_2: Bool}$
+    \\
+    \\
     \end{tabular}
-    \caption{Type rules for all expressions in Arc}
+    \caption{Type rules for all type of expressions in Arc}
     \label{tab:expr-rules}
 \end{table}
 
-\begin{table}[htbp]
+The type char does not have any expressions that only can be use on that type. All type rules for expressions is written on table \ref*{tab:expr-rules}. In the array expression the type N is used to describe the index for the array, as written before, the type num cannot be used for index. The equal and not equal expression end type is bool, as it can only be true or false.
+
+\begin{table}[htb!]
     \centering
     \begin{tabular}{ll}
         $[COMP_{STMT}] $         & $\dfrac
@@ -116,8 +158,8 @@ However
         \\
         \\
         $[VAR-DECL_{STMT}] $     & $\dfrac
-            {env \vdash x : T \quad env \vdash expr : T}
-            {env \vdash x = expr: ok}$
+            {env \vdash expr : T}
+            {env \vdash  T \;x = expr: ok}$
         \\
         \\
         $[ASSIGN_{STMT}]$        & $\dfrac
@@ -141,23 +183,23 @@ However
         \\
         \\
         $[RETURN_{STMT}] $       & $\dfrac
-            {env \vdash expr:ok}
-            {env \vdash return \;expr: ok}$
+            {env \vdash expr: T}
+            {env \vdash \text{return} \;expr: ok}$
         \\
         \\
         $[IF_{STMT}] $           & $\dfrac
             {env \vdash if (expr) : Bool \quad env \vdash stmt_1 :ok \quad env \vdash stmt_2 :ok}
-            {env \vdash if (expr) \;stmt_1 \;else \;stmt_2: ok}$
+            {env \vdash \text{if} (expr) \;stmt_1 \;\text{else} \;stmt_2: ok}$
         \\
         \\
         $[WHILE_{STMT}] $        & $\dfrac
             {env \vdash  expr : Bool \quad env \vdash stmt :ok}
-            {env \vdash while (expr) \;stmt : ok}$
+            {env \vdash \text{while} (expr) \;stmt : ok}$
         \\
         \\
         $[FOR_{STMT}] $          & $\dfrac
             {env \vdash  y : T \quad env \vdash x : T \quad env \vdash block :ok}
-            {env \vdash for (y \; in \; x) \; block : ok}$
+            {env \vdash \text{for} (y \; \text{in} \; x) \; block : ok}$
         \\
         \\
     \end{tabular}
@@ -165,25 +207,4 @@ However
     \label{tab:StatementTypeCheck}
 \end{table}
 
-\begin{table}[htbp]
-    \centering
-    \begin{tabular}{ll}
-        $[VAR_{DECL}] $       & $\dfrac
-            {expr : T}
-            {T \;x = expr : ok}$
-        \\
-        \\
-        $[FUNC_{DECL}] $      & $\dfrac
-            {return \; expr : T}
-            {T \;x\{stmt \;return \; expr\}  : ok}$
-        \\
-        \\
-        $[FUNC-VOID_{DECL}] $ & $\dfrac
-            {return \; expr : T}
-            {x\{stmt\}  : ok}$
-        \\
-        \\
-    \end{tabular}
-    \caption{Arc type check for declarations}
-    \label{tab:DeclTypeCheck}
-\end{table}
+The type checking for statements in Arc can be seen in table \ref*{tab:StatementTypeCheck}. Type checking statements gives the same outpu as the declarations in "ok", as explained before means well-typed. 
