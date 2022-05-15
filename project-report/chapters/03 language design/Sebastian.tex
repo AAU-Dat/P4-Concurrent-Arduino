@@ -14,13 +14,13 @@
 %The boolean data type works the same in Arc as in C++, there are therefore 2 values whitch the type can have.
 %The integer data type in C++ does not correspond to anything in the Arc language, therefore it is not discussed further.
 
-When designing a programming language, it is a good idea to have rules for specific types, this is called type rules. These rules are set up to make sure, it should not be possible to assign a number to a type Boolean. 
+When designing a programming language, it is a good idea to have rules for specific types, this is called type rules. These rules are set up to make sure, it should not be possible to assign a number to a type Boolean \cite*{Sebesta2016}. 
 The types that are valid in Arc are num, char and bool, they were descriped in further detail in \ref*{sec:inspiration}.
 
-In the type checking semantics the types in the Arc language are be written as:
+In the type checking semantics the types in the Arc language can be written as:
 $T \in \{num, char, bool, N\} N \in \{ 0,\mathbb{N}\}$.
-From now on semantics written mathmatticly will use T instead of type, if not given a specific type, in semantic type checking.
-N is not descriped ealier on what the types are in Arc, as it is not a type that can be declared, N is only used to access arrays. N is used for accessing an array, In C++ array access has a have a natural number, as weel as Arc. In C++ it is also 0-indexed, which is withhold in Arc aswell.  
+From now on semantics written mathmatticly will use T instead of type, if not given a specific type, in semantic type checking. If a specific type is needed, it is written instead of T.
+N is not descriped ealier on what the types are in Arc, as it is not a type that can be declared. N is used for accessing an array, In C++ array access has to have a natural number, this is also implemented in Arc aswell. In C++ it is also 0-indexed \cite{cppreferenceDataTypes}, which is withhold in Arc aswell.  
 In declarations and statements type checking, there will be an evaluation to $ok$ which means: \begin{quote}
     "The type of a declaration or a statement will simply be ok; we say that
 the declaration or statement is well-typed"\cite{Huttel2010}
@@ -53,7 +53,7 @@ In table \ref*{tab:DeclTypeCheck}, the type checking for variables are written. 
 
 Now that the types has been clarified, it is important to look at operations a specific type can do.
 The first type that will be clarified is num.
-In \ref{tab:num-rules} the expressions which the data type num only can do, is showed here.
+In table \ref{tab:num-rules} the expressions which the data type num only can do, is showed here.
 
 \begin{table}[htb!]
     \centering
@@ -90,7 +90,7 @@ In \ref{tab:num-rules} the expressions which the data type num only can do, is s
 \end{table}
 \todo[inline]{rename $[GREAT-THAN-QUAL_{EXPR}] $}
 
-The type num is the only type in Arc that can do arithmetic expressions, as it can only do arithmetic expressions on another num type, this can be seen in Table \ref*{tab:num-rules}. The end type of a arithmetic expression is still a num, as it makes changes the value, not the type. It is also the only type to check if a value is greater or smaller than an other num type when comparing. When doing a comparing of nums, the end type of the expression is a bool, as it true or false if the num is greater or less than the num it is compared to.
+The type num is the only type in Arc that can do arithmetic expressions, as it can only do arithmetic expressions on another num type, this can be seen in Table \ref*{tab:num-rules}. The end type of a arithmetic expression is still a num, as it makes changes to the value, not the type. It is also the only type to check if a value is greater or smaller than an other num type when comparing. When doing a comparing of nums, the end type of the expression is a bool, as it true or false if the num is greater or less than the num it is compared to.
 
 \begin{table}[htb!]
     \centering
@@ -115,7 +115,7 @@ The type num is the only type in Arc that can do arithmetic expressions, as it c
     \label{tab:bool-rules}
 \end{table}
 
-The type bool has three expressions, that are marked as a bool type check, can be seen in table \ref*{tab:bool-rules}. This means in the And, Or or Not expressions the expression getting type checked has to evaluate to a bool, the expressions will then evaluate to another type bool. 
+The type bool has three expressions, that can be seen in table \ref*{tab:bool-rules}. This means in the And, Or or Not expressions the expression getting type checked has to evaluate to a bool, the expressions will then evaluate to another type bool. 
 
 \begin{table}[htb!]
     \centering
@@ -206,3 +206,12 @@ The type char does not have any expressions that only can be used on that type, 
 \end{table}
 
 The type checking for statements in Arc can be seen in table \ref*{tab:StatementTypeCheck}. Type checking statements gives the same output as the declarations in "ok", as explained before means well-typed. A varable can be declared in a scope, therfore it has the same type check rules as in variable declaration, which can be seen in table \ref*{tab:DeclTypeCheck}. Return uses an expression which evaluates to a type "T", this type is the same type as the type a function is declared with. 
+
+
+
+@misc{cppreferenceDataTypes,
+  title        = {Fundamental types},
+  organization = {cppreference},
+  url          = {https://simba-os.readthedocs.io/en/latest/},
+  urldate      = {2022-04-19}
+}
