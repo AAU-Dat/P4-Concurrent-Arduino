@@ -9,7 +9,23 @@ The Arduino language has static scope, with nested and flat block structures~\ci
 
 \begin{figure}[htbp]
     \centering
-    \missingfigure{Insert image of scope rules in Arc}
+    \begin{tikzpicture}[
+        double/.style={draw, anchor=text, rectangle split,rectangle split parts=2},
+        triple/.style={draw, anchor=text, rectangle split,rectangle split parts=3}
+        ]
+        \node[state,align=center] at (14,0) {Global scope \\ 
+          \tikz{\node[double, align=center]{Function declaration scope \\
+            \tikz{\node[state, align=center] {block scopes \\
+              \tikz{\node[state, align=center] {block scope}}
+              }
+            }
+            \nodepart{second}Task declaration scope \\
+            \tikz{\node[state, align=center] {block scopes}
+            }}}
+        };
+        
+      
+      \end{tikzpicture}
     \caption{Diagram of the scope structure of Arc.}
     \label{fig:arcscoperules}
 \end{figure}
