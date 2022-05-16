@@ -1,37 +1,35 @@
 \section{Contextual constraints}\label{sec:contextualconstraints}
 The grammar of Arc is a \gls{cfg} and only expresses the structure of the language. Further contextual constraints are required to specify if a program is well-formed and meaningfully correct. This section describes Arc's contextual constraints: the scope- and type rules.
 
-\subsubsection{Scope rules}
+\subsection{Scope rules}\label{subsec:scoperules}
 The scope rules govern visibility, hiding some parts of a program from others. It also rules where certain things are allowed and others are not.
 
-The Arduino language has static scope, with nested and flat block structures~\cite{cppref}. Blocks are declarable within other blocks (nested), but functions within other functions cannot(flat). Arc will have similar scope rules, making compilation more straightforward as source code and target code resemble each other regarding scope. Figure~\ref{fig:arcscoperules} shows a graphical model of Arc's scope rules.
+The Arduino language has static scope, with nested and flat block structures~\cite{cppref}. Blocks are declarable within other blocks (nested), but functions within other functions are not (flat). Arc will have similar scope rules, making compilation more straightforward as source code and target code resemble each other when it comes to scope. Figure~\ref{fig:arcscoperules} shows a graphical model of Arc's scope rules.
 
 
 \begin{figure}[htbp]
     \centering
     \begin{tikzpicture}[
-        double/.style={draw, anchor=text, rectangle split,rectangle split parts=2},
-        triple/.style={draw, anchor=text, rectangle split,rectangle split parts=3}
+            double/.style={draw, anchor=text, rectangle split,rectangle split parts=2},
+            triple/.style={draw, anchor=text, rectangle split,rectangle split parts=3}
         ]
-        \node[state,align=center] at (14,0) {Global scope \\ 
-          \tikz{\node[double, align=center]{Function declaration scope \\
-            \tikz{\node[state, align=center] {block scopes \\
-              \tikz{\node[state, align=center] {block scope}}
-              }
-            }
-            \nodepart{second}Task declaration scope \\
-            \tikz{\node[state, align=center] {block scopes}
-            }}}
+        \node[state,align=center] at (14,0) {Global scope \\
+            \tikz{\node[double, align=center]{Function declaration scope \\
+                    \tikz{\node[state, align=center] {block scopes \\
+                            \tikz{\node[state, align=center] {block scope}}
+                        }
+                    }
+                    \nodepart{second}Task declaration scope \\
+                    \tikz{\node[state, align=center] {block scopes}
+                    }}}
         };
-        
-      
-      \end{tikzpicture}
+    \end{tikzpicture}
     \caption{Diagram of the scope structure of Arc.}
     \label{fig:arcscoperules}
 \end{figure}
 
 
-Arc statements and blocks, therefore, have nested scoping, while function declarations have a flat scope and are not declarable inside a scope. However, one key feature of Arc is its \textit{task} construct, which is not present in Arduino and requires particular focus.
+Arc statements and blocks, therefore, have nested scoping, while function declarations have flat scope and are not declarable inside a scope. However, one key feature of Arc is its \textit{task} construct, which is not present in Arduino and requires particular focus.
 
 A task declaration is like a function declaration and cannot be inside another scope. Additionally, declaring local variables inside the scope of a task declaration is not possible. The Protothreads implementation does not guarantee that the values of local variables are preserved when a thread becomes blocked, making it hard to know if using local variables in a thread will work as the programmer intended.
 
@@ -111,7 +109,7 @@ Additionally, we define the notation for updating a given environment $env_V \in
 \end{equation}
 
 
-\noindent $env_F[ f \mapsto (S, y, env_V, env_F)]$ for $env_F$
+\noindent and $env_F[ f \mapsto (S, y, env_V, env_F)]$ for $env_F$
 
 
 \begin{equation}
@@ -133,16 +131,17 @@ Additionally, we define the notation for updating a given environment $env_V \in
         v      & l = l^\prime
     \end{cases}
 \end{equation}
-
+\todo{Missing $env_T$ definition. Should just be a set union an element.}
 
 \noindent With the above definitions of the environment store model and the scope rules, Arc's declarations are described using operational semantics in Table~\ref{tab:arcscoperules}. Because of the static scope rules, the environments are contained within the results of the partial functions for variables and functions. Unlike the variable and function environments, the task environment is not a set of partial functions. This is because unlike function declarations, tasks are not used within other tasks, and as such does not need to map them.
 
 
 \begin{table}[htb!]
+    \small
     \centering
     \begin{tabular}{ll}
         \toprule
-        $[PIN_{DECL}]$  & $\dfrac
+        $[PIN_{DECL}]$  & $\frac
             {\langle env^{\prime\prime}_V, sto[l \mapsto v] \rangle \rightarrow (env^\prime_V, sto^\prime)}
             {\langle \text{\#pin} \ x = (pv, mode), env_V, sto\rangle\rightarrow (env^\prime_V, sto^\prime)}$ \\ [12pt]
                         & where $(pv, mode) \in \textbf{Pin} $                                                \\
@@ -151,7 +150,7 @@ Additionally, we define the notation for updating a given environment $env_V \in
                         & and $env^{\prime\prime}_V = env_V[x \mapsto l][\text{next} \mapsto \text{new}(l)] $ \\
         \\
 
-        $[VAR_{DECL}]$  & $\dfrac
+        $[VAR_{DECL}]$  & $\frac
             {\langle env^{\prime\prime}_V, sto[l \mapsto v] \rangle \rightarrow (env^\prime_V, sto^\prime)}
             {\langle t \ x = expr, env_V, sto\rangle\rightarrow (env^\prime_V, sto^\prime)}$                  \\ [12pt]
                         & where $env_V, sto \vdash expr \rightarrow v $                                       \\
@@ -159,14 +158,13 @@ Additionally, we define the notation for updating a given environment $env_V \in
                         & and $env^{\prime\prime}_V = env_V[x \mapsto l][\text{next} \mapsto \text{new}(l)] $ \\
         \\
 
-        $[FUNC_{DECL}]$ & $\dfrac
+        $[FUNC_{DECL}]$ & $\frac
             {env_V \vdash \langle env_F[f \mapsto \langle S, y, env_V, env_F\rangle] \rangle \rightarrow env^\prime_F}
             {env_V \vdash \langle t \ f (y) \{S \}, env_F \rangle \rightarrow env^\prime_F}$                  \\ [12pt]
 
-        $[TASK_{DECL}]$ & $\dfrac
+        $[TASK_{DECL}]$ & $\frac
             {env_{VF}\vdash \langle env_T[S, r, trig, env_V, envF] \rangle \rightarrow env^\prime_T}
             {env_{VF}\vdash \langle \text{task} \ (r) trig \{S\} \rangle \rightarrow env^\prime_T}$           \\
-        \\
         \bottomrule
     \end{tabular}
     \caption{Arc's declarations and effects on scope defined with operational semantics.}
@@ -185,22 +183,23 @@ Also of importance is that the parameters of a task describe a mutable reference
     \centering
     \begin{tabular}{ll}
         \toprule
-        $FUNC_{CALL}$ & $\dfrac{}{env_{VF} \vdash \langle f(e), sto\rangle \rightarrow sto^\prime}$ \\ [12pt]
-                      & where $env_F(f) = \langle S, y, env^\prime_V, env^\prime_F \rangle$         \\
-                      & and $\forall i | 0 \leq i \leq |y|$                                         \\
-                      & and $e \in \textbf{Expr}^{ |y| }$                                           \\
-                      & and $\forall i $                                                            \\
+        $FUNC_{CALL}$ & $\frac{}{env_{VF} \vdash \langle f(e), sto\rangle \rightarrow sto^\prime}$ \\ [12pt]
+                      & where $env_F(f) = \langle S, y, env^\prime_V, env^\prime_F \rangle$        \\
+                      & and $\forall i | 0 \leq i \leq |y|$                                        \\
+                      & and $e \in \textbf{Expr}^{ |y| }$                                          \\
+                      & and $\forall i $                                                           \\
 
-        $ENTRY$       & $\dfrac{}{}$                                                                \\ [12pt]
+        $ENTRY$       & $\frac{}{}$                                                                \\ [12pt]
         \bottomrule
     \end{tabular}
-    \caption{Semantics for function calls and task invocation}
-    \label{tab:unfinished}
+    \caption{Semantics for function calls and task invocation.}
+    \label{tab:callandentry}
 \end{table}
+\supervisor{How do I describe that each expression in the parameter list is evaluated and stored in a new location, with a variable $y_i$ from the formal parameter list pointing to that location?!}
 
 
 \subsection{Type rules}\label{subsec:typerules}
-When designing a programming language, it is a good idea to have rules for specific types, this is called type rules. These rules are set up to make sure, it should not be possible to assign a number to a type Boolean~\cite{Sebesta2016}. The types that are valid in Arc are num, char, bool, and array, as descriped in~\ref{sec:inspiration}.
+Type rules are another set of contextual constraints. These rules make sure that code fragments do not mistreat types, for example in static typing, which Arc uses, it should not be possible to assign a number to a variable declared as a boolean~\cite{Sebesta2016}. The types that are valid in Arc are num, char, bool, and array, as descriped in~\ref{sec:inspiration}.
 
 In the type checking semantics the types in the Arc language can be written as:
 $T \in \{num, char, bool, N\} N \in \{ 0,\mathbb{N}\}$.
@@ -210,30 +209,19 @@ In declarations and statements type checking, there will be an evaluation to $ok
 
 \blockcquote{Huttel2010}{The type of a declaration or a statement will simply be ok; we say that the declaration or statement is well-typed}
 
-In Table~\ref*{tab:DeclTypeCheck}, the type checking for variables are written. A specific type function declaration, has to type check if the return type is the same type as the declared function type. As task and a void function does not have a return type, there is not a need for type check, the void function is to illustrate how it would be written.
+In Table~\ref*{tab:DeclTypeCheck}, the type checking for variables and functions are written. A specific type function declaration, has to type check if the return type is the same type as the declared function type. As task and a void function do not return, these declarations are always well-typed.
 
 
 \begin{table}[htb!]
     \centering
     \begin{tabular}{ll}
         \toprule
-        $[VAR_{DECL}] $  & $\dfrac
-            {expr : T}
-            {T \;x = expr : ok}$
-        \\
-        \\
-        $[FUNC_{DECL}] $ & $\dfrac
-            {env \vdash expr : T \quad stmt : ok}
-            {T \;f \{stmt \;\text{return} \; expr\}  : ok}$
-        \\
-        \\
-        $[VOID_{DECL}] $ & $\dfrac
-            {\text{stmt} : ok}
-            {f\{stmt\}  : ok}$
-        \\
+        $[VAR_{DECL}] $  & $\frac{env \vdash expr : T}{env \vdash T \;x = expr : ok}$                            \\  [12pt]
+        $[FUNC_{DECL}] $ & $\frac{env \vdash expr : T}{env \vdash T \;f() \{S; \;\text{return} \; expr\}  : ok}$ \\  [12pt]
+        $[VOID_{DECL}] $ & $f()\{S\}  : ok$                                                                      \\
         \bottomrule
     \end{tabular}
-    \caption{Arc type check for declarations}
+    \caption{Arc type check for declarations.}
     \label{tab:DeclTypeCheck}
 \end{table}
 
@@ -247,27 +235,23 @@ In Table~\ref{tab:num-rules} the expressions which the data type num only can do
     \centering
     \begin{tabular}{lll}
         \toprule
-        $[ADD_{EXPR}] $                         & $\dfrac
+        $[ADD_{EXPR}] $                         & $\frac
             {env\vdash expr_1: num \quad env\vdash expr_2: num}
             {env\vdash expr_1 \;+\;expr_2: num}$
-        \\
-        \\
-        $[SUB_{EXPR}] $                         & $\dfrac
+        \\ [12pt]
+        $[SUB_{EXPR}] $                         & $\frac
             {env\vdash expr_1: num \quad env\vdash expr_2: num}
             {env\vdash expr_1 \;-\;expr_2: num}$
-        \\
-        \\
-        $[MULT_{EXPR}] $                        & $\dfrac
+        \\ [12pt]
+        $[MULT_{EXPR}] $                        & $\frac
             {env\vdash expr_1: num \quad env\vdash expr_2: num}
             {env\vdash expr_1 \;*\;expr_2: num}$
-        \\
-        \\
-        $[DIVI_{EXPR}] $                        & $\dfrac
+        \\ [12pt]
+        $[DIVI_{EXPR}] $                        & $\frac
             {env\vdash expr_1: num \quad env\vdash expr_2: num}
         {env\vdash expr_1 \; / \; expr_2: num}$ & where $expr_2 \neq 0$
-        \\
-        \\
-        $[REL_{EXPR}] $                         & $\dfrac
+        \\ [12pt]
+        $[REL_{EXPR}] $                         & $\frac
             {env\vdash expr_1: num \quad env\vdash expr_2: num}
             {env\vdash expr_1 \; OP \; expr_2: Bool}$                                 \\
 
@@ -276,7 +260,7 @@ In Table~\ref{tab:num-rules} the expressions which the data type num only can do
         \\
         \bottomrule
     \end{tabular}
-    \caption{Type rules for num expressions in Arc}
+    \caption{Type rules for num expressions in Arc.}
     \label{tab:num-rules}
 \end{table}
 
@@ -290,23 +274,21 @@ It is also the only type to check if a value is greater or smaller than an other
     \centering
     \begin{tabular}{ll}
         \toprule
-        $[AND_{EXPR}] $ & $\dfrac
+        $[AND_{EXPR}] $ & $\frac
             {env\vdash expr_1: Bool \quad env\vdash expr_2: Bool}
             {env\vdash expr_1 \;\text{and} \;expr_2: Bool}$
-        \\
-        \\
-        $[OR_{EXPR}] $  & $\dfrac
+        \\ [12pt]
+        $[OR_{EXPR}] $  & $\frac
             {env\vdash expr_1: Bool \quad env\vdash expr_2: Bool}
             {env\vdash expr_1 \;\text{or} \;expr_2: Bool}$
-        \\
-        \\
-        $[NOT_{EXPR}] $ & $\dfrac
+        \\ [12pt]
+        $[NOT_{EXPR}] $ & $\frac
             {env\vdash expr_1: Bool}
             {env\vdash \text{not} \; expr_1 : Bool}$
         \\
         \bottomrule
     \end{tabular}
-    \caption{Type rules for bool expressions in Arc}
+    \caption{Type rules for bool expressions in Arc.}
     \label{tab:bool-rules}
 \end{table}
 
@@ -318,28 +300,25 @@ The type bool has three expressions, that can be seen in Table~\ref{tab:bool-rul
     \centering
     \begin{tabular}{ll}
         \toprule
-        $[ARRAY_{EXPR}]$       & $ \dfrac
+        $[ARRAY_{EXPR}]$      & $ \frac
             {env\vdash expr_1: T \quad env \vdash expr_2 : N}
             {env\vdash expr_1[expr_2] : T}$
-        \\
-        \\
-        $[PARANTHESES_{EXPR}]$ & $ \dfrac
+        \\ [12pt]
+        $[PARENTHESIS{EXPR}]$ & $ \frac
             {env\vdash expr_1: T}
             {env\vdash (expr_1) : T}$
-        \\
-        \\
-        $[EQUAL_{EXPR}] $      & $\dfrac
+        \\ [12pt]
+        $[EQUAL_{EXPR}] $     & $\frac
             {env\vdash expr_1: T \quad env\vdash expr_2: T}
             {env\vdash expr_1 \;== \;expr_2: Bool}$
-        \\
-        \\
-        $[NOTEQUAL_{EXPR}] $   & $\dfrac
+        \\ [12pt]
+        $[NOTEQUAL_{EXPR}] $  & $\frac
             {env\vdash expr_1: T \quad env\vdash expr_2: T}
             {env\vdash expr_1 \;!= \;expr_2: Bool}$
         \\
         \bottomrule
     \end{tabular}
-    \caption{Type rules for other types of expressions in Arc}
+    \caption{Type rules for other types of expressions in Arc.}
     \label{tab:expr-rules}
 \end{table}
 
@@ -351,61 +330,51 @@ The type char does not have any expressions that only can be used on that type, 
     \centering
     \begin{tabular}{ll}
         \toprule
-        $[COMP_{STMT}] $     & $\dfrac
+        $[COMP_{STMT}] $     & $\frac
             {env \vdash stmt_1 :ok \quad env \vdash stmt_2 :ok}
             {env \vdash stmt_1\;;\;stmt_2: ok}$
-        \\
-        \\
-        $[VAR-DECL_{STMT}] $ & $\dfrac
+        \\ [12pt]
+        $[VAR-DECL_{STMT}] $ & $\frac
             {env \vdash expr : T}
             {env \vdash  T \;x = expr: ok}$
-        \\
-        \\
-        $[ASSIGN_{STMT}]$    & $\dfrac
+        \\ [12pt]
+        $[ASSIGN_{STMT}]$    & $\frac
             {env\vdash x: T \quad env \vdash expr : T}
             {env\vdash x = expr: ok}$
-        \\
-        \\
-        $[INDEX_{STMT}] $    & $\dfrac
+        \\ [12pt]
+        $[INDEX_{STMT}] $    & $\frac
             {env \vdash x : T \quad env \vdash expr : N \quad env \vdash expr : T}
             {env \vdash x[expr] = expr: ok}$
-        \\
-        \\
-        $[BLOCK_{STMT}] $    & $\dfrac
+        \\ [12pt]
+        $[BLOCK_{STMT}] $    & $\frac
             {env \vdash stmt :ok}
             {env \vdash \{stmt\}: ok}$
-        \\
-        \\
-        $[CALL_{STMT}] $     & $\dfrac
+        \\ [12pt]
+        $[CALL_{STMT}] $     & $\frac
             {env \vdash f:(x:T \rightarrow ok)\quad env \vdash expr:ok}
             {env \vdash call \;f(expr): ok}$
-        \\
-        \\
-        $[RETURN_{STMT}] $   & $\dfrac
+        \\ [12pt]
+        $[RETURN_{STMT}] $   & $\frac
             {env \vdash expr: T}
             {env \vdash \text{return} \;expr: ok}$
-        \\
-        \\
-        $[IF_{STMT}] $       & $\dfrac
+        \\ [12pt]
+        $[IF_{STMT}] $       & $\frac
             {env \vdash if (expr) : Bool \quad env \vdash stmt_1 :ok \quad env \vdash stmt_2 :ok}
             {env \vdash \text{if} (expr) \;stmt_1 \;\text{else} \;stmt_2: ok}$
-        \\
-        \\
-        $[WHILE_{STMT}] $    & $\dfrac
+        \\ [12pt]
+        $[WHILE_{STMT}] $    & $\frac
             {env \vdash  expr : Bool \quad env \vdash stmt :ok}
             {env \vdash \text{while} (expr) \;stmt : ok}$
-        \\
-        \\
-        $[FOR_{STMT}] $      & $\dfrac
+        \\ [12pt]
+        $[FOR_{STMT}] $      & $\frac
             {env \vdash  y : T \quad env \vdash x : T \quad env \vdash block :ok}
             {env \vdash \text{for} (y \; \text{in} \; x) \; block : ok}$
         \\
         \bottomrule
     \end{tabular}
-    \caption{Arc type check statements}
+    \caption{Arc type check statements.}
     \label{tab:StatementTypeCheck}
 \end{table}
 
 
 The type checking for statements in Arc can be seen in Table~\ref{tab:StatementTypeCheck}. Type checking statements gives the same output as the declarations in "ok", as explained before means well-typed. A varable can be declared in a scope, therfore it has the same type check rules as in variable declaration, which can be seen in Table~\ref{tab:DeclTypeCheck}. Return uses an expression which evaluates to a type "T", this type is the same type as the type a function is declared with.
-

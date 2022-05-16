@@ -1,14 +1,81 @@
-\section{Language semantics}\label{sec:languagesemantics}
-While syntax describes the structure of the language, semantics describes the \textit{meaning}. Even if a sentence is syntactically correct, it might be nonsensical according to the semantics. For example, the english sentence "What is the difference between a duck?" is syntactically correct, but not meaningful.
+\section{Semantics}\label{sec:languagesemantics}
+The contextual constraints of Arc specify whether there is meaning in some structure, but the remaining semantics describe the \textit{actual} meaning. Even if a sentence is syntactically and contextually correct, it might be nonsensical according to the semantics. For example, the english sentence "What is the difference between a duck?" is syntactically correct, but not meaningful.
 
-For a complete definition of a programming language, both syntax and semantics definitions are required. This section describes the Arc language's important part of the semantics, using operational semantics.
+For a complete definition of a programming language, syntax, contextual constraint, and semantics definitions are required. This section describes Arc's important semantics using operational semantics.
+
+% MAYBE MOVE THIS SUB SUB SECTION TO THE DISCUSSION CHAPTER
+
+% https://docs.oracle.com/cd/E19957-01/806-3568/ncg_goldberg.html (How floating point is handled in programs, OS etc.)
+\subsubsection{Number as float}\label{subsubsec:numberAsFloats}
+In our language we have chosen to handle every number as a float. At first glance, we thought it to be a perfect solution for simplicity. However, as we progressed on the project we discovered that the semantics of floats works differently in relation to mathematics and floating-point arithmetic. As illustrated in the example [ref: example], the difference is clearly visible between floats in floating-point arithmetic and mathematics.
 
 
+\begin{listing}[htb!]
+    \begin{minted}[label=Semantic meaning of floats]{text}
+        // This is false in floating-point arithmetic but true mathematically.
+        0.1 + 0.2 == 0.3
+    \end{minted}
+    \caption{Example of semantic difference between floating-point arithmetic and mathematical notation}
+    \label{lst:semanticDifference}
+\end{listing}
+
+
+This is problematic at best, to the amateur programmers we want to cater to with our language, this can be both counter intuitve and bothersome, if they are not yet familiar with floating point arithmetic. This can lead to the programmer expecting a different result from their code and result in unneccesary frustration. If they expect the code in the example to result to true, they might not even understand how to fix the issue they have created.
+
+% MOVED = 0;
+%IF(MOVED)
+%{
+%ADD SOME MORE INFORMATION ABOUT HOW WE COULD HAVE FIXED THIS OR %DONE IT IN ANOTHER WAY
+%}
+
+
+% http://dunkels.com/adam/pt/about.html (We already have this link, i just put so i can find it later)
+\subsubsection{Blocking context of protothreads}\label{subsubsec:blockingContextOfProtothreads}
+When protothreads are running, they can only run within the scope of a single C function, which means that they cannot span over multiple functions. A protothread may call a regular C function, but cannot block inside said function. Trying to block inside a nested function call is handled by creating another albeit seperate protothread for each potential blocking function. One of the benefits attached to this approach being that blocking is explicit so we always know which function is allowed to block and which functions are not. The scheduling of a protothread works by repeatedly calling the function in which the protothread is running. Each time a function is called, the protothread inside will run until it blocks or exits [ref: cite].
+
+
+\subsubsection{Important semantic rules of Arc}\label{subsubsec:importantSemanticRulesOfArc}
+One of the reasons we have decided to highlight the expressions for \textbf{and}, \textbf{or} and \textbf{not} falls down to the fact that it is foundational for our Task declaration variant with the when expression. The when expression makes use of a boolean value to decide whether or not it should run the thread - this decision is based on the evaluation of the boolean expressions.
+
+\begin{table}[htb!]
+    \centering
+    \begin{tabular}{ll}
+        \toprule
+        $[AND_{tt}]$ & $\frac
+            {env_v, sto \vdash expr_1 \to tt \quad env_v, sto \vdash expr_2 \to tt}
+            {env_v, sto \vdash expr_1 \quad and \quad expr_2 \to tt}$ \\ [12pt]
+        $[AND_{ff}]$ & $\frac
+            {env_v, sto \vdash expr_1 \to ff \quad env_v, sto \vdash expr_2 \to ff}
+            {env_v, sto \vdash expr_1 \quad and \quad expr_2 \to ff}$ \\ [12pt]
+        $[OR_{tf}]$  & $\frac
+            {env_v, sto \vdash expr_1 \to tt \quad env_v, sto \vdash expr_2 \to ff}
+            {env_v, sto \vdash expr_1 \quad or \quad expr_2 \to tt}$  \\ [12pt]
+        $[OR_{ft}]$  & $\frac
+            {env_v, sto \vdash expr_1 \to ff \quad env_v, sto \vdash expr_2 \to tt}
+            {env_v, sto \vdash expr_1 \quad or \quad expr_2 \to tt}$  \\ [12pt]
+        $[OR_{ff}]$  & $\frac
+            {env_v, sto \vdash expr_1 \to ff \quad env_v, sto \vdash expr_2 \to tt}
+            {env_v, sto \vdash expr_1 \quad or \quad expr_2 \to tt}$  \\ [12pt]
+        $[NOT_{tt}]$ & $\frac
+            {env_v, sto \vdash expr \to ff}
+            {env_v, sto \vdash not \ expr \to tt}$                    \\ [12pt]
+        $[NOT_{ff}]$ & $\frac
+            {env_v, sto \vdash expr \to tt}
+            {env_v, sto \vdash not \ expr \to ff}$                    \\
+        \bottomrule
+    \end{tabular}
+    \caption{Semantics for boolean expressions in Arc.}
+    \label{tab:booleansemantics}
+\end{table}
+
+
+
+%Then you need to find out if we want to talk about arrays in the report and also have a semantic example.
+%(If arrays needs to be mentioned, it should be mentioned in \%3 and example in \%4)
 
 
 \subsection{Operational semantics}\label{subsec:operationalsemantics}
-
-blocking context of protothreads?
+blocking context of protothreads?\urgent{remove this section}
 Talk about num and semantics of floats in relation to math? maybe mention memory impact as well.
 
 important semantic rules of Arc:
@@ -18,5 +85,3 @@ for loop, if statement, and/or/not expressions
 Med eksempler
 
 Arrays?
-
-

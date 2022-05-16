@@ -1,5 +1,7 @@
 \section{Parser generator}\label{sec:parsergenerator}
-For generating code and parsing, based on a grammar, there exists many tools to do this automatically. Therefore, a discussion of \textit{JavaCC}, \textit{ANTLR4}, and \textit{CUP} precedes the formal language description. The tools mentioned are only a few of those available and have been chosen because the group has experience with them through coursework.  The main reason a parser generator has been chosen is because of the gains in productivity that it makes possible. It also makes it possible to create a functioning compiler yet still have language design as a larger focus.
+For generating code and parsing, based on a grammar, there exists many tools to do this automatically. Therefore, a discussion of \textit{JavaCC}, \textit{ANTLR4}, and \textit{CUP} precedes the formal language description. The tools mentioned are only a few of those available and have been chosen because the group has experience with them through coursework. It is also possible to write the lexer and parser \textit{by hand}, which many do. This would give a greater control over the implementation of the language, and benefits in regards to implementing
+
+The main reason a parser generator has been chosen is because of the gains in productivity that it makes possible. It also makes it possible to create a functioning compiler yet still have language design as a larger focus.
 
 Each tool is evaluated using a reduced fragment of the Bims grammar from Table~\ref{tab:bimsgrammar}~\cite{Huttel2010}. For each tool, the grammar was adapted, and the tool was run with the rewritten grammar as input. The process of rewriting, inputting, and running the tool was compared, and a tool was selected.
 
@@ -18,7 +20,7 @@ Each tool is evaluated using a reduced fragment of the Bims grammar from Table~\
     b & \rightarrow a_1 = a_2 \mid a_1 < a_2 \mid \neg b_1 \mid b_1 \land b_2 \mid (b_1) \\
     a & \rightarrow n \mid a_1 + a_2 \mid a_1 * a_2 \mid a_1 - a_2 \mid (a_1)
   \end{align*}
-  \caption{Sample Bims syntax \cite{Huttel2010}}
+  \caption{Sample Bims syntax~\cite{Huttel2010}}
   \label{tab:bimsgrammar}
 \end{table}
 
@@ -26,9 +28,10 @@ Each tool is evaluated using a reduced fragment of the Bims grammar from Table~\
 \subsection{JavaCC}
 JavaCC stands for Java Compiler Compiler and is an open-source parser generator and lexical analyzer developed by Oracle, written in the Java language. It is one of the most popular parser generators for Java~\cite{JavaCC2021}, and it is very well documented.
 
-JavaCC takes as input a Context-Free Grammar (CFG) in Extended Backus-Naur Form (EBNF) to generate a scanner and a parser based on the input. The parser generated is a Left-to-right, Leftmost derivation with 1 token lookahead (LL(1)) parser by default. However, the parser can be extended to \textit{k} lookahead for parts of the grammar if necessary~\cite{JavaCC2021}.
+JavaCC takes as input a \gls{cfg} in \gls{ebnf} to generate a scanner and a parser based on the input. The parser generated is a Left-to-right, Leftmost derivation with 1 token lookahead (LL(1)) parser by default. However, the parser can be extended to \textit{k} lookahead for parts of the grammar if necessary~\cite{JavaCC2021}.
 
-Setting up JavaCC was easy as it is well documented, and requires Java to be installed. Having set this up, we were able to begin writing our grammar. After setting up, it became clear that writing grammars in JavaCC is simple but a bit hard to read. In JavaCC, the grammar has to be written as code, whereas the syntax of other tools resembles the way it is seen in books, as shown in Table~\ref{tab:bimsgrammar}. An example of this can be seen in Listing~\ref{List:javaCC}
+Setting up JavaCC requires Java to be installed, and was easy as it is well documented. Having set up, we were able to begin writing our grammar. After setting up, it became clear that writing grammars in JavaCC is simple but a bit hard to read. In JavaCC, the grammar has to be written very similar to code, whereas the syntax of other tools resembles the way it is seen in books, as shown in Table~\ref{tab:bimsgrammar}. An example of JavaCC can be seen in Listing~\ref{List:javaCC}
+
 
 \begin{listing}[htb!]
   \centering
@@ -41,12 +44,10 @@ Setting up JavaCC was easy as it is well documented, and requires Java to be ins
       }
     }
     PARSER_END(Example)
-
     void Input() : {}
     {
       MatchedBraces() ("\n"|"\r")* <EOF>
     }
-
     void MatchedBraces() : {}
     {
       "{" [ MatchedBraces() ] "}"
@@ -56,38 +57,39 @@ Setting up JavaCC was easy as it is well documented, and requires Java to be ins
   \label{List:javaCC}
 \end{listing}
 
-%\subsubsection{Rewriting Bims}
-%Because the generated parser is recursive descent LL(1), the input grammar must not be left-recursive. However BIMS, is left-recursive and has to be rewritten. This can be seen in Table~\ref{tab:bimsrewrite}.
 
-%\todo[inline]{I think we need to remove this section.}
+\subsubsection{Rewriting Bims}
+Because the generated parser is recursive descent LL(1), the input grammar must not be left-recursive. However BIMS, is left-recursive and has to be rewritten, the result can be seen in Table~\ref{tab:bimsrewrite}.
 
 
-% \begin{table}[htb!]
-%   \centering
-%   \begin{tabular}{ll>{\arraybackslash}p{10cm}}
-%     \textit{S}  & $\to$  & $x$ $\coloneqq$ $a$ $S'$      \\
-%                 & $\mid$ & skip $S'$                     \\
-%                 & $\mid$ & if $b$ then $S$ else $S$ $S'$ \\
-%                 & $\mid$ & while $b$ do $S$ $S'$         \\
-%     \textit{b}  & $\to$  & $a$ ? $a$ $b'$                \\
-%                 & $\mid$ & $a$ < $b'$                    \\
-%                 & $\mid$ & $\neg$$b$ $b'$                \\
-%                 & $\mid$ & ($b$) $b'$                    \\
-%     \textit{a}  & $\to$  & $n$ $a'$                      \\
-%                 & $\mid$ & $x$ $a'$                      \\
-%                 & $\mid$ & ($a$) $a'$                    \\
-%     \textit{S'} & $\to$  & ; $S$ $S'$                    \\
-%                 & $\mid$ & $\epsilon$                    \\
-%     \textit{b'} & $\to$  & $\land$ $b$ $b'$              \\
-%                 & $\mid$ & $\epsilon$                    \\
-%     \textit{a'} & $\to$  & + $a$ $a'$                    \\
-%                 & $\mid$ & * $a$ $a'$                    \\
-%                 & $\mid$ & - $a$ $a'$                    \\
-%                 & $\mid$ & $\epsilon$                    \\
-%   \end{tabular}
-%   \caption{Bims rewritten without left recursion}
-%   \label{tab:bimsrewrite}
-% \end{table}
+\begin{table}[htb!]
+  \centering
+  \begin{tabular}{lll}
+    \textit{S}  & $\to$ & $x$ $\coloneqq$ $a$ $S'$
+    $\mid$  skip $S'$
+    $\mid$  if $b$ then $S$ else $S$ $S'$
+    $\mid$  while $b$ do $S$ $S'$                             \\
+    \textit{b}  & $\to$ & $a?$ $a$ $b'$
+    $\mid$  $a$ < $b'$
+    $\mid$  $\neg b$ $b'$
+    $\mid$  ($b$) $b'$                                        \\
+    \textit{a}  & $\to$ & $n$ $a'$
+    $\mid$  $x$ $a'$
+    $\mid$  ($a$) $a'$                                        \\
+    \textit{S'} & $\to$ & ; $S$ $S'$
+    $\mid$  $\epsilon$                                        \\
+    \textit{b'} & $\to$ & $\land$ $b$ $b'$ $\mid$  $\epsilon$ \\
+    \textit{a'} & $\to$ & + $a$ $a'$
+    $\mid$  * $a$ $a'$
+    $\mid$  - $a$ $a'$
+    $\mid$  $\epsilon$                                        \\
+  \end{tabular}
+  \caption{Bims rewritten without left recursion}
+  \label{tab:bimsrewrite}
+\end{table}
+
+
+This is a lot more transition rules for the \gls{cfg}, and takes a lot of effort. The \gls{cfg} of Arc would have to be written with this in mind from the start, or the rewrite might not be feasible.
 
 \subsection{ANTLR4}
 \gls{antlr} is a powerful parser generator that can be used to process, execute, or even translate structured text or binary files. It is widely used around the world by both Twitter and Oracle for parsing queries~\cite{ANTLR_About}.
@@ -96,40 +98,20 @@ One of the major advantages of \gls{antlr} is their high level of support in alm
 
 \gls{antlr} is very easy to work with. One simply installs the plugin in their IDE of choice and read through the simple-to-understand documentation found on the official GitHub page of \gls{antlr}~\cite{ANTLR_Documentation}. Understanding the grammar rules and how to set it up in its respective grammar4 (.g4 file extension) is very manageable thanks to this. After the grammar file has been written it is possible to run the \gls{antlr} tool on it, which then automatically generate a number of files for us, such as a parser, a lexer and a set of tokens. Then the generated code can be compiled against the \gls{antlr} runtime. This also provides the developer with both a visual representation of the created parse tree or a tree in a LISP-like text form, along with a list of tokens found - all of these options are accessible through optional flags during compilation. The fourth major version of \gls{antlr} introduces a lot of new capabilities compared to that of ANTLR3, which helps to reduce the learning curve by making the development of grammars and language applications easier - in part thanks to the powerful extensions and tools included in their plugins.
 
-\begin{table}[htb!]
-  \centering
-  \begin{tabular}{ll>{\arraybackslash}p{10cm}}
-    $grammar simplegrammar;$                   \\
-    $prog$   & $\to$  & $dlcs$ $stmts;$        \\
-    $dcls$   & $\to$  & $dcl*;$                \\
-    $dcl$    & $\to$  & FLOATDLC ID            \\
-             & $\mid$ & INTDCL ID;             \\
-    $stmts$  & $\to$  & $stmt*;$               \\
-    $stmt$   & $\to$  & ID ASSIGN $val$ $expr$ \\
-             & $\mid$ & PRINT ID;              \\
-    $expr$   & $\to$  & PLUS $val$ $expr$      \\
-             & $\mid$ & MINUS $val$ $expr$     \\
-             & $\mid$ & /*EPSILON*/;           \\
-    $val$    & $\to$  & ID                     \\
-             & $\mid$ & INUM                   \\
-             & $\mid$ & FNUM;                  \\
-    \\
-    \\
-    WS       & $\to$  & [/t/n/r]+ -> $skip;$   \\
-    FLOATDLC & $\to$  & 'f';                   \\
-    INTDCL   & $\to$  & 'i';                   \\
-    PRINT    & $\to$  & 'p';                   \\
-    ID       & $\to$  & [a-e];                 \\
-    ASSIGN   & $\to$  & '=';                   \\
-    PLUS     & $\to$  & '+';                   \\
-    MINUS    & $\to$  & '-';                   \\
-    INUM     & $\to$  & [0-9]+;                \\
-    FNUM     & $\to$  & [0-9]+.[0-9]+;         \\
-    BLANK    & $\to$  & (' ')+;
-  \end{tabular}
-  \caption{An example of the ANTLR syntax}
+
+\begin{listing}[htb!]
+  \begin{minted}{antlr}
+    grammar Bims;
+    S:    VAR ':=' NUM | S ';' S;
+    B:    A '=' A;
+    A:    NUM | A ('+' | '*' | '-') A | '(' A ')';
+    
+    NUM:  [0-9]*;
+    VAR:  [a-z]*;
+  \end{minted}
+  \caption{Bims grammar from Table~\ref{tab:bimsgrammar} with ANTLR syntax}
   \label{tab:antlrexample}
-\end{table}
+\end{listing}
 
 
 \subsection{CUP}
@@ -138,7 +120,7 @@ One of the major advantages of \gls{antlr} is their high level of support in alm
 
 \begin{listing}[htb!]
   \centering
-  \begin{minted}{c}
+  \begin{minted}{java}
     /* Simple +/-*/ expression language; parser evaluates constant expressions
     import java_cup.runtime.*;
 
@@ -155,14 +137,14 @@ One of the major advantages of \gls{antlr} is their high level of support in alm
     terminal Integer NUMBER;
 
     non terminal exp;
-
     exp ::= exp PLUS NUMBER | NUMBERM;
   \end{minted}
   \caption{An example of the CUP syntax}
   \label{list:cup}
 \end{listing}
 
-In this we created a simple grammar that could add two integers together; this was done to try using CUP and to understand how everything worked.
+
+In Figure~\ref{list:cup} we created a simple grammar that could add two integers together; to try using CUP, and to understand how it works.
 
 
 \subsubsection{JFlex}
@@ -173,21 +155,16 @@ Figure~\ref{list:jflex} is an example of how JFlex looks, in conjunction with ou
 
 \begin{listing}[htb!]
   \centering
-  \begin{minted}{c}
-    LineTerminator  = \r|\n|\r\n
-    WhiteSpace      = {LineTerminator} | [\t\f]
-
+  \begin{minted}{text}
+    LineTerminator     = \r|\n|\r\n
+    WhiteSpace         = {LineTerminator} | [\t\f]
     DecIntergerLiteral = 0 | [1-9][0-9]*
-
-    %%
 
     /* literals */
     {DecIntergerLiteral}    {return symbol(sym.NUMBER);}
     \                       {string.setLenght(0); yybegin(STRING);}
-
     /*whitespace*/ 
     {WhiteSpace}            {/*ignore */}  
-    
     /*operators*/
     "+"                     {return symbol(sym.PLUS);}
   \end{minted}
@@ -195,11 +172,8 @@ Figure~\ref{list:jflex} is an example of how JFlex looks, in conjunction with ou
   \label{list:jflex}
 \end{listing}
 
-%\subsection{Experiences with CUP}
-%The general experience with CUP was good, except for connecting the parser and the lexical analyzer. At first, CUP was easy and workable, and setting up a simple grammar and creating the parser and symbol tree for it went well. But when there were specific issues it was difficult to find solutions, as CUP is not a very popular parser generator, which meant there was a minimal amount of information to be found. \todo{Maybe remove this since we don't have a section e.g "experience with ANTLR"}
 
 \subsection{Result}
 CUP will not be used in the project, as it proved difficult, combined with a lack of documentation, to connect the parser generator with the lexical analyzer generator, whereas other tools, such as JavaCC and \gls{antlr}, automatically creates the lexical analyzer.
 
-
-Based on our experiences with the different compiler compilers we have chosen to work with \gls{antlr}. We chose \gls{antlr} primarily because of how powerful it is and the great extensions it provides. These factors in particular could help us to efficiently develop our language and compiler. It does commit us to a LL parser which is not as expressive as an LR parser but we do not believe this will be a problem for our language since it will be relatively compact.
+Based on our experiences with the different compiler compilers we have chosen to work with \gls{antlr}. We chose \gls{antlr} primarily because of how powerful it is and the great extensions it provides, and because direct left recursion isn't a problem for it, as it is for JavaCC. These factors in particular could help us to efficiently develop our language and compiler. It does commit us to a LL parser which is not as expressive as an LR parser but we do not believe this will be a problem for our language since it will be relatively compact.
