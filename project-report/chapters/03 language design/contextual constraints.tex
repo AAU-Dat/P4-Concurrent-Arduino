@@ -183,13 +183,15 @@ Also of importance is that the parameters of a task describe a mutable reference
     \centering
     \begin{tabular}{ll}
         \toprule
-        $FUNC_{CALL}$ & $\frac{}{env_{VF} \vdash \langle f(e), sto\rangle \rightarrow sto^\prime}$ \\ [12pt]
-                      & where $env_F(f) = \langle S, y, env^\prime_V, env^\prime_F \rangle$        \\
-                      & and $\forall i | 0 \leq i \leq |y|$                                        \\
-                      & and $e \in \textbf{Expr}^{ |y| }$                                          \\
-                      & and $\forall i $                                                           \\
+        $FUNC_{CALL}$ & $\frac{}
+            {env_{VF} \vdash \langle f(e), sto\rangle \rightarrow sto^\prime}$                         \\ [12pt]
+                      & where $env_F(f) = \langle S, y, env^\prime_V, env^\prime_F \rangle$            \\
+                      & and $\forall i | 0 \leq i \leq |y|$                                            \\
+                      & and $e \in \textbf{Expr}^{ |y| }$                                              \\
+                      & and $\forall i $                                                               \\
 
-        $ENTRY$       & $\frac{}{}$                                                                \\ [12pt]
+        $ENTRY$       & $\frac{}
+            {env \vdash (\{|\dots T_i \dots|\}, sto) \Rightarrow (\{|\dots T_i \dots|\}, sto^\prime)}$ \\ [12pt]
         \bottomrule
     \end{tabular}
     \caption{Semantics for function calls and task invocation.}
