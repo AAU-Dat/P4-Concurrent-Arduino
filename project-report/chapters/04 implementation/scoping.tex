@@ -26,6 +26,51 @@ When using static scoping, \ref{lst:scopeexample} will print '15', because of th
 
 Arc uses static scoping, as it more simple to read and understand for users, and C++ uses a variant of static scoping. Because of this it makes sense for Arc to also a simillar scoping.
 
+In the implementation the creation of the different scopes is primarily archieved through Block structure we use in our syntax. The visitation of this structure is when we push and pop the stack of scopes. This can be seen in \ref{lst:VisitBlock} Where the visitor visit this node we first push to the context then visit its children and Afterwards we pop this scope that is no longer needed. 
+
+\begin{listing}[htb!]
+    \begin{minted}{java}
+    public AST_node visitBlock(arcv2Parser.BlockContext ctx) {
+
+        symbolTable.push();
+
+        AST_node block = new Variable_declaration_node("block");
+
+        List<arcv2Parser.StatementContext> list = ctx.statement();
+        for (arcv2Parser.StatementContext statementContext : list) {
+        visit(statementContext);   
+        }
+        symbolTable.pop();
+
+        return block;
+    }
+\end{minted}
+\caption{VisitBlock from our evalvisitor}
+\label{lst:VisitBlock}
+\end{listing}
+
+Our Scoping rules are implemented everywhere in our semantic visitor, an example of how it works can be seen in \ref{ScopeImplementationExample} Where it can be seen that our forloop use a call to our symbolTable to check if the identifier given as input has been declared. This archieved using the get function showed earlier, which returns null if it does not exist.
+
+\begin{listing}[htb!]
+    \begin{minted}{java}
+    @Override public AST_node visitForloop_statement(arcv2Parser.Forloop_statementContext ctx) { 
+        
+        ...
+
+        SymbolHashTableEntry entry = symbolTable.get(ctx.IDENTIFIER(1).getText());
+        if (entry == null) {
+            throw new RuntimeErrorException(null, "this identifier '" + ctx.IDENTIFIER(1).getText() + "' does not exist" );
+        }
+
+        ...
+    }
+\end{minted}
+\caption{The SymbolHashTableEntry class}
+\label{lst:ScopeImplementationExample}
+\end{listing}
+
+
+
 %What is scoping
 %Blocks
 %Types of scoping

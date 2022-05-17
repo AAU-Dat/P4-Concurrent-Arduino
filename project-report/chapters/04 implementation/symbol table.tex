@@ -1,0 +1,124 @@
+\section{SymbolTable}
+
+This section will explain the implementation of the symbol table. First, the structure of
+the symbol table will be introduced, it will then be explained how the other
+compiler components use the symbol table to look up variables.
+
+The symbol table used in the arc compiler is essentially built up as a stack of hashmaps that map strings to SymbolHashTableEntry's. We see the structure of a symbol SymbolHashTableEntry in \ref{lst:SymbolHashTableEntry}
+
+
+\begin{listing}[htb!]
+    \begin{minted}{java}
+    public class SymbolHashTableEntry {
+    public Types Type;
+    public String Identifier;
+    public SymbolHashTableEntry Next_entry;
+    public Types[] Function_parameter_types;
+    public Types Function_return_Type;
+    public int Function_parameter_length;
+    public int Array_length;
+    public boolean Mutability;
+
+    public SymbolHashTableEntry(Types type, String identifier, boolean mutability){
+        Type = type;
+        Identifier = identifier;
+        Mutability = mutability;
+    }
+    
+}
+\end{minted}
+\caption{The SymbolHashTableEntry class}
+\label{lst:SymbolHashTableEntry}
+\end{listing}
+
+The SymbolHashTableEntry class is a simple structure That simply has all of the data we might need to save inside of it. Here The type, mutability and idetifier is always used, the array and function varibles are only used if the entry is either a array or function. The class also has a simple constructor which covers the values a varible needs in case of and array or fuction the other values are added manually.
+
+\todo{here we could discus if we should have some inheritance like a arrays and fuction being different subclasses. why why not?}
+
+These SymbolHashTableEntry are what make up the datainside of our symbol table. As seen in \ref{lst:SymbolTable} the symbol table is  a simple stack. The constructor is abit more intresting because we preload it with the arduino functions we want to use since these are not declared in the code they are inserted here. This is to make sure that they are not given the wrong kind of input and its not possible to other functions with their names.
+
+\begin{listing}[htb!]
+    \begin{minted}{java}
+    public class SymbolTable {
+    private Stack<HashMap<String,SymbolHashTableEntry>> stack = new Stack<HashMap<String,SymbolHashTableEntry>>();
+    
+    public SymbolTable(){
+        stack.push(new HashMap<String,SymbolHashTableEntry>());
+        
+        String[] identifiers = { "digitalWrite", "anlogWrite"};
+        String[] identifiersRead = { "digitalRead", "anlogRead"};
+
+        for (String identifier : identifiers) {
+            
+            SymbolHashTableEntry entry = new SymbolHashTableEntry(Types.FUNCTION, identifier, false);
+            entry.Function_parameter_length = 2;
+            Types [] array = {Types.PIN, Types.NUM};
+            entry.Function_parameter_types = array;
+            entry.Function_return_Type = Types.NUM;
+            this.insert(entry);
+            
+        }
+        for (String identifier : identifiersRead) {
+            
+            SymbolHashTableEntry entry = new SymbolHashTableEntry(Types.FUNCTION, identifier, false);
+            entry.Function_parameter_length = 1;
+            Types [] array = {Types.PIN};
+            entry.Function_parameter_types = array;
+            entry.Function_return_Type = Types.NUM;
+            this.insert(entry);
+            
+        }
+
+
+    }
+
+}
+\end{minted}
+\caption{The code for the symbol table class}
+\label{lst:SymbolTable}
+\end{listing}
+
+The symbol table also has some utility methods used for pushing, popping hashmaps and functions for getting or iserting entry's into these hashmaps. These can be seen in \ref{SymboltableMethods} Where get method is the only larger one. The get method esseintially iterates through the hashmaps, which represents the scopes, and return thhe first entry that exist in the scope closest to the inner most scope. It esseintially starts from the top of the stack and returns the hishest entry that exists. If no entry exists it returns null.
+
+
+\begin{listing}[htb!]
+    \begin{minted}{java}
+    public HashMap active_scope () {
+        return stack.peek();
+    }
+    public void pop() {
+        stack.pop();
+        
+    }
+
+    public void push() {
+        HashMap<String, SymbolHashTableEntry> new_scope = new HashMap<String,SymbolHashTableEntry>();
+        stack.push(new_scope);
+    }
+
+    public void insert(SymbolHashTableEntry entry) {
+            this.active_scope().put(entry.Identifier, entry);
+    }
+
+    public Boolean containsKey (String key){
+        return this.active_scope().containsKey(key);
+    }
+
+    public SymbolHashTableEntry get (String key){
+        SymbolHashTableEntry entry = null;
+        ListIterator<HashMap<String, SymbolHashTableEntry>> iterator = stack.listIterator();
+        while (iterator.hasNext() && entry == null) {
+            HashMap<String, SymbolHashTableEntry> scope = iterator.next();
+            if(scope.containsKey(key)){
+                return scope.get(key);
+            }
+            
+        }
+        return null;   
+    }   
+}
+\end{minted}
+\caption{The methods isn the symbolTable}
+\label{lst:SymboltableMethods}
+\end{listing}
+
