@@ -3,8 +3,12 @@
 This section will discuss the language design of Arc, the descisions made and what could have been done differently.
 
 \subsection{Design descision} 
+Many descision have to be made during language design, this section will discuss a few of those descisions made and alternative options.
+As mentioned in section \todo{Add section reference}, Arc makes use of a single data type to represent all numbers, called num and is treated as a float. Compared to many other languages that include multiple different type to represent different categories of numbers. This descision was made, based on the assumption that using a single data type that represents all numbers, would be easier and faster to work with, compared to a system that would use e.g. Int and Float. In section \ref{subsec:numberAsFloats} some of the issues of this descision are briefly mentioned, such as the simple expression in listing \ref{lst:semanticDifference} evaluating to false, when logicly it should evaluate to true. This could prove difficult for new users to understand, and therefore make certain issues in a program hard to fix, as the solution is not entirly clear. For this reason it could be argued that dividing num into int and float, would be a better option. 
 
-As mentioned in section \todo{Add section reference}, Arc makes use of a single data type to represent all numbers, called num and is treated as a float. Compared to many other languages that include multiple different type to represent different categories of numbers. This descision was made, based on the idea that using a single data type that represents all numbers, would be easier and faster to work with, compared to a system that would use e.g. Int and Float. \todo{Operationalsemantics mentions moving a section here, that further discusses num vs int and float}
+Since Arc is a language based on giving access to simple use of concurrency, it is important that the constructs used for this, are simple and understandable. The task construct uses the task keyword to define it as a function that works concurrently, then it has its trigger or event that executes the body of the task. There has been an effort in designing the triggers to be understood as they are read, the every trigger is a time based trigger, that can be read as: "This task will execute every 1000 miliseconds". The same concept holds for every. The task with no trigger is the idle task, which is the more abstract task of the three, as it does not have a direct trigger, instead it executes whenever possible. Since no usability tests where able to be done for Arc, it is only an assumption that these trigger keywords are understandable for users, and not just the developers. An alternative could have been the tasks being defined as either timed or event based tasks, instead of using a trigger keywork to define this, an example of this can be seen in Eventually\todo{Perhaps show this}, where there are different types of event listenerns, time and pin, that take different parameters, and behave differently. 
+
+\todo[inline]{Operationalsemantics mentions moving a section here, that further discusses num vs int and float}
 
 Another design descision worth discussing is the choice of scope and type rules of Arc. \todo[inline]{Read section 3.4 and continue from here}
 %num vs int + float
@@ -32,3 +36,22 @@ The design for Arc is made in a way, to give hobbyists a simple way to work with
 \todo[inline]{add comparison between Arc and other languages such as Python, Kotlin etc.}
 
 
+\begin{listing}[htb!]
+    \begin{minted}[label=Arc example]{text}
+        #pin BUTTON_PIN(12, OUTPUT);
+        mut num buttonState = 0;
+        mut bool ledState = HIGH;
+
+        task(bool ledState) every 1000 {
+            ledState = not ledState;
+            digitalWrite(LED_BUILTIN, ledState)
+        }
+
+        task(num buttonState) {
+            buttonState = digitalRead(BUTTON_PIN);
+            Serial.Println(buttonState);
+        }
+    \end{minted}
+    \caption{Project example implemented in Arc, assuming print is possible.}
+    \label{lst:arcexample}
+\end{listing}
