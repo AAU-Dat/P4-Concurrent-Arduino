@@ -1,10 +1,10 @@
 \section{SymbolTable}
 
 This section will explain the implementation of the symbol table. First, the structure of
-the symbol table will be introduced, it will then be explained how the other
+the symbol table will be introduced, and it will then be explained how the other
 compiler components use the symbol table to look up variables.
 
-The symbol table used in the arc compiler is essentially built up as a stack of hashmaps that map strings to SymbolHashTableEntry's. We see the structure of a symbol SymbolHashTableEntry in \ref{lst:SymbolHashTableEntry}
+The symbol table used in the arc compiler is built up as a stack of hashmaps that map strings to SymbolHashTableEntry's. We see the structure of a symbol SymbolHashTableEntry in \ref{lst:SymbolHashTableEntry}
 
 
 \begin{listing}[htb!]
@@ -31,11 +31,11 @@ The symbol table used in the arc compiler is essentially built up as a stack of 
 \label{lst:SymbolHashTableEntry}
 \end{listing}
 
-The SymbolHashTableEntry class is a simple structure That simply has all of the data we might need to save inside of it. Here The type, mutability and idetifier is always used, the array and function varibles are only used if the entry is either a array or function. The class also has a simple constructor which covers the values a varible needs in case of and array or fuction the other values are added manually.
+The SymbolHashTableEntry class is a simple structure That simply has all of the data we might need to save inside of it. Here The type, mutability, and identifier are always used, and the array and function variables are only used if the entry is either an array or function. The class also has a simple constructor which covers the values a variable needs. In the case of an array or function, the other values are added manually.
 
-\todo{here we could discus if we should have some inheritance like a arrays and fuction being different subclasses. why why not?}
+\todo{here we could discus if we should have some inheritance like a arrays and function being different subclasses. why why not?}
 
-These SymbolHashTableEntry are what make up the datainside of our symbol table. As seen in \ref{lst:SymbolTable} the symbol table is  a simple stack. The constructor is abit more intresting because we preload it with the arduino functions we want to use since these are not declared in the code they are inserted here. This is to make sure that they are not given the wrong kind of input and its not possible to other functions with their names.
+These SymbolHashTableEntry are what make up the data inside of our symbol table. As seen in \ref{lst:SymbolTable} the symbol table is  a simple stack. The constructor is a bit more interesting because we preload it with the Arduino functions we want to use. Since these are not declared in the code, they are inserted here. This is to make sure that they are not given the wrong kind of input and that it is not possible to other functions with their names.
 
 \begin{listing}[htb!]
     \begin{minted}{java}
@@ -78,7 +78,7 @@ These SymbolHashTableEntry are what make up the datainside of our symbol table. 
 \label{lst:SymbolTable}
 \end{listing}
 
-The symbol table also has some utility methods used for pushing, popping hashmaps and functions for getting or iserting entry's into these hashmaps. These can be seen in \ref{SymboltableMethods} Where get method is the only larger one. The get method esseintially iterates through the hashmaps, which represents the scopes, and return thhe first entry that exist in the scope closest to the inner most scope. It esseintially starts from the top of the stack and returns the hishest entry that exists. If no entry exists it returns null.
+The symbol table also has some utility methods used for pushing and popping hashmaps and functions for getting or inserting entries into these hashmaps. These can be seen in \ref{SymboltableMethods} Where the get method is the only larger one. The get method essentially iterates through the hashmaps, which represent the scopes, and returns the first entry that exists in the scope closest to the inner most scope. It essentially starts from the top of the stack and returns the highest entry that exists. If no entry exists, it returns null.
 
 
 \begin{listing}[htb!]
@@ -121,4 +121,3 @@ The symbol table also has some utility methods used for pushing, popping hashmap
 \caption{The methods isn the symbolTable}
 \label{lst:SymboltableMethods}
 \end{listing}
-
