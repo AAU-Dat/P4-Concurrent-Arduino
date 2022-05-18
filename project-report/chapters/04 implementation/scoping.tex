@@ -1,9 +1,9 @@
-\section{Scoping}
+\section{Scoping}\label{sec:scoping}
 Scoping describes where variables are visible, meaning when a variable can be referenced or assigned. This is an important part of a programming language, since identifiers often are reused, such as i for an iteration. Because of this, scoping is used to differ variables from eachother and also to either allow references to variables or to inhibit reference. For this there are two general types of scoping, dynamic and static.
 
-Static scoping, means that the scope of variabels is determined staticly, meaning it is done before execution of the program. Static scope is used in many languages, including C and C\#. Static scoping is said to be more readable, since the code often shows directly the value of the variable. When a reference to a variable is found, following previous references and finally the assignment to that variable, the value of that variable can be determined. An example of static typing, can be seen at \ref{lst:scopeexample}.
+Static scoping, means that the scope of variabels is determined staticly, meaning it is done before execution of the program. Static scope is used in many languages, including C and C\#. Static scoping is said to be more readable, since the code often shows directly the value of the variable. When a reference to a variable is found, following previous references and finally the assignment to that variable, the value of that variable can be determined. An example of static typing, can be seen in Listing~\ref{lst:scopeexample}.
 
-Dynamic scoping, means that the scope of variabels is determined during run time of the program. Dynamic scope is used in languages including Perl and Common Lips. Dynamic scoping works by using the calling sequence of subprograms to determine the value of eks. a varible. Because of this it cannot be determined staticly as static scoping, and mus tbe done during run time. Dynamic scoping decreases readability of the code, since it can be difficult to know the exact calling sequence of subprograms that contain references to a variable\cite{Sebesta2016}. An example of how dynamic scoping works, can be seen at \ref{lst:scopeexample}. 
+Dynamic scoping, means that the scope of variabels is determined during run time of the program. Dynamic scope is used in languages including Perl and Common Lips. Dynamic scoping works by using the calling sequence of subprograms to determine the value of eks. a varible. Because of this it cannot be determined staticly as static scoping, and mus tbe done during run time. Dynamic scoping decreases readability of the code, since it can be difficult to know the exact calling sequence of subprograms that contain references to a variable~\cite{Sebesta2016}. An example of how dynamic scoping works, can be seen in Listing~\ref{lst:scopeexample}.\todo{Seems more relevant to the section on language design instead. This section should be about the concrete implementation of Arcs scoping rules than the general ideas of scoping.}
 
 \begin{listing}[htb!]
     \begin{minted}{C}
@@ -22,21 +22,19 @@ Dynamic scoping, means that the scope of variabels is determined during run time
     \label{lst:scopeexample}
 \end{listing}
 
-When using static scoping, \ref{lst:scopeexample} will print '15', because of the variable a assigned in the beginning being a global variable, and fun1 using that with the x given as it's parameter. Compared to dynamic scoping where there would be printed '20', this is because of the previously mentioned calling sequence. The variable 'a' is assigned to '5', but then in fun2() it is updated to '10' and this value is then used in fun1().
+When using static scoping, Listing~\ref{lst:scopeexample} will print '15', because of the variable a assigned in the beginning being a global variable, and fun1 using that with the x given as it's parameter. Compared to dynamic scoping where there would be printed '20', this is because of the previously mentioned calling sequence. The variable 'a' is assigned to '5', but then in fun2() it is updated to '10' and this value is then used in fun1().
 
 Arc uses static scoping, as it more simple to read and understand for users, and C++ uses a variant of static scoping. Because of this it makes sense for Arc to also a simillar scoping.
 
-In the implementation the creation of the different scopes is primarily archieved through Block structure we use in our syntax. The visitation of this structure is when we push and pop the stack of scopes. This can be seen in \ref{lst:VisitBlock} Where the visitor visit this node we first push to the context then visit its children and Afterwards we pop this scope that is no longer needed. 
+In the implementation the creation of the different scopes is primarily archieved through Block structure we use in our syntax. The visitation of this structure is when we push and pop the stack of scopes. This can be seen in Listing~\ref{lst:VisitBlock} Where the visitor visit this node we first push to the context then visit its children and Afterwards we pop this scope that is no longer needed.
 
 \begin{listing}[htb!]
     \begin{minted}{java}
     public AST_node visitBlock(arcv2Parser.BlockContext ctx) {
-
         symbolTable.push();
-
         AST_node block = new Variable_declaration_node("block");
-
         List<arcv2Parser.StatementContext> list = ctx.statement();
+
         for (arcv2Parser.StatementContext statementContext : list) {
         visit(statementContext);   
         }
@@ -44,29 +42,26 @@ In the implementation the creation of the different scopes is primarily archieve
 
         return block;
     }
-\end{minted}
-\caption{VisitBlock from our evalvisitor}
-\label{lst:VisitBlock}
+    \end{minted}
+    \caption{VisitBlock from our evalvisitor}
+    \label{lst:VisitBlock}
 \end{listing}
 
-Our Scoping rules are implemented everywhere in our semantic visitor, an example of how it works can be seen in \ref{ScopeImplementationExample} Where it can be seen that our forloop use a call to our symbolTable to check if the identifier given as input has been declared. This archieved using the get function showed earlier, which returns null if it does not exist.
+Our Scoping rules are implemented everywhere in our semantic visitor, an example of how it works can be seen in Listing~\ref{lst:ScopeImplementationExample} where it can be seen that our forloop use a call to our symbolTable to check if the identifier given as input has been declared. This archieved using the get function showed earlier, which returns null if it does not exist.
 
 \begin{listing}[htb!]
     \begin{minted}{java}
     @Override public AST_node visitForloop_statement(arcv2Parser.Forloop_statementContext ctx) { 
-        
         ...
-
         SymbolHashTableEntry entry = symbolTable.get(ctx.IDENTIFIER(1).getText());
         if (entry == null) {
             throw new RuntimeErrorException(null, "this identifier '" + ctx.IDENTIFIER(1).getText() + "' does not exist" );
         }
-
         ...
     }
-\end{minted}
-\caption{The SymbolHashTableEntry class}
-\label{lst:ScopeImplementationExample}
+    \end{minted}
+    \caption{The SymbolHashTableEntry class}
+    \label{lst:ScopeImplementationExample}
 \end{listing}
 
 
