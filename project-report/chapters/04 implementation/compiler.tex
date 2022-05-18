@@ -16,7 +16,7 @@ The Arc compiler follows many of the steps of the general model. Figure~\ref{fig
 
 \begin{figure}[htb!]
     \centering
-    
+
 
     \begin{tikzpicture}[node distance=3cm]
 
@@ -45,4 +45,4 @@ The Arc compiler follows many of the steps of the general model. Figure~\ref{fig
     \label{fig:arccompilermodel}
 \end{figure}
 
-In figure \ref{fig:arccompilermodel}, the source code is first scanned into tokens and then parsed into an AST, Antlr handles all this, therefore the box around scanner and parser. The AST is then type checked. After type check, the code is then scope checked. the type and scope check rules can be read in section 3.4. After the code has been checked further. It is time to code generate the Arc code, into Arduino code. Which is the last step in the compiler. The code is then in Arduino code.  
+In figure \ref{fig:arccompilermodel}, the source code is first scanned into tokens and then parsed into an \gls{ast}, Antlr handles all this, therefore the box around scanner and parser. The \gls{ast} is then type checked. After type check, the code is then scope checked. the type and scope check rules can be read in section 3.4. After the code has been checked further. It is time to code generate the Arc code, into Arduino code. Which is the last step in the compiler. The code is then in Arduino code.
