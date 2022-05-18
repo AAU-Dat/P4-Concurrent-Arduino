@@ -1,0 +1,112 @@
+\chapter{Arc Grammar}\label{app:grammar}
+\section{Keywords}
+\begin{listing}[htb!]
+    \begin{minted}[label=Arc keywords]{antlr}
+        RETURN:                  'return';
+        WHILE:                   'while';
+        IT:                      'it';
+        FOR:                     'for';
+        IN:                      'in';
+        WHEN:                    'when';
+        VOID:                    'void';
+        SETUP:                   'setup';
+        ELSE:                    'else';
+        DEFINE:                  'define';
+        EVERY:                   'every';
+        TASK:                    'task';
+        PINMODE:                 'pinmode';
+        INPUT:                   'INPUT';
+        OUTPUT:                  'OUTPUT';
+        YIELD:                   'yield';
+        ARDUINOEXPRESSIONS:      HIGH | LOW | LED_BUILTIN; 
+        fragment HIGH:           'HIGH';
+        fragment LOW:            'LOW';
+        fragment LED_BUILTIN:    'LED_BUILTIN';
+        ARDUINOFUNCTIONS:        DIGITALWRITE | DIGITALREAD | ANALOGREAD | ANALOGWRITE;
+        fragment DIGITALREAD:    'digitalRead';
+        fragment DIGITALWRITE:   'digitalWrite';
+        fragment SLEEP:          'sleep';
+        fragment ANALOGREAD:     'analogRead';
+        fragment ANALOGWRITE:    'analogWrite';
+        INPUT_PULLUP:            'INPUT_PULLUP';
+    \end{minted}
+\end{listing}
+
+
+\clearpage
+\section{Lexer grammar}
+
+\begin{listing}[htb!]
+    \begin{minted}[label=Arc lexer grammar]{antlr}
+        lexer grammar lexerRules;
+        NUMBER:                  '-'? DIGIT+ ('.' DIGIT+)?;
+        PINDIGIT:                'A' [0-5];
+        INT:                     DIGIT;
+        fragment DIGIT:          [0-9];
+        BOOL:                    'true' | 'false';
+        CHAR:                    '"' . '"';
+        TYPEOPERATOR:            '[]';
+        PREFIXOPERATOR:          'mut ';
+        TYPE:                    'num' | 'bool' | 'char';
+        COMMENTS:                '//' .*? '\n' -> skip;
+        LINECOMMENTS:            '/*' .*? '*/' -> skip;
+        MULTI:                   '*';
+        DIVI:                    '/';
+        PLUS:                    '+';
+        MINUS:                   '-';
+        RELATIONEQOPERATORS:     '==' | '!=';
+        RELATIONOPERATORS:       '<' | '>' | '<=' | '>=';
+        AND:                     'and';
+        OR:                      'or';
+        NOT:                     'not';
+        XOR:                     'xor';
+        IDENTIFIER:              ALPHA (DIGIT | ALPHA)*;
+        ASSIGNMENT:              '=';
+        SEPERATOR:               ',';
+        STARTPARANTHESES:        '(';
+        ENDPARANTHESES:          ')';
+        STARTSQUAREBRACKET:      '[';
+        ENDSQUAREBRACKET:        ']';
+        STARTCURLYBRACKET:       '{';
+        ENDCURLYBRACKET:         '}';
+        fragment ALPHA:          [a-z] | [A-Z] | '_';
+        WS:                      [ \t\n\r]+    -> skip;
+    \end{minted}
+\end{listing}
+
+\clearpage
+\section{CFG}
+\begin{listing}[htb!]
+    \begin{minted}[label=Arc grammar]{antlr}
+        grammar arcv2;
+        start: declaration* EOF;
+        declaration
+            : typing IDENTIFIER '=' ('[' (expression (',' expression)*)? ']' | expression) ';'
+            | typing IDENTIFIER '(' (typing IDENTIFIER (',' typing IDENTIFIER)*)? ')' '{' statement* '}'
+            | '#' 'pin' IDENTIFIER '(' (PINDIGIT | NUMBER) ',' ('INPUT' | 'OUTPUT') ')' ';'
+            | 'task' ('(' (IDENTIFIER ( ',' IDENTIFIER)*)? ')')? (('every' NUMBER) | ('when' '(' expression ')'))? '{' statement* '}';
+        typing: PREFIXOPERATOR? TYPE TYPEOPERATOR?;
+        block:  '{' statement* '}';
+        statement
+            : block
+            | 'return' expression ';'
+            | 'if' '(' expression ')' block ('else' block)?
+            | 'for' '(' typing IDENTIFIER 'in' IDENTIFIER ')' block
+            | 'while' '(' expression ')' block
+            | (typing IDENTIFIER '=' ('[' (expression (',' expression)*)? ']' | expression) ';')
+            | IDENTIFIER ('[' NUMBER ']')? '=' ('[' (expression (',' expression)*)? ']' | expression) ';'
+            | (IDENTIFIER | ARDUINOFUNCTIONS) '(' (expression (',' expression)*)? ')' ';';
+        expression
+            : (NUMBER | IDENTIFIER | BOOL | CHAR | ARDUINOEXPRESSIONS)
+            | (IDENTIFIER | ARDUINOFUNCTIONS) '(' (expression (',' expression)*)? ')'
+            | IDENTIFIER '[' NUMBER ']'
+            | '(' expression ')'
+            | 'not' expression
+            | expression (MULTI | DIVI) expression
+            | expression (PLUS | MINUS) expression
+            | expression RELATIONEQOPERATORS expression
+            | expression RELATIONOPERATORS expression
+            | expression 'and' expression
+            | expression 'or' expression;
+    \end{minted}
+\end{listing}

@@ -109,7 +109,7 @@ Additionally, we define the notation for updating a given environment $env_V \in
 \end{equation}
 
 
-\noindent and $env_F[ f \mapsto (S, y, env_V, env_F)]$ for $env_F$
+and $env_F[ f \mapsto (S, y, env_V, env_F)]$ for $env_F$
 
 
 \begin{equation}
@@ -121,7 +121,7 @@ Additionally, we define the notation for updating a given environment $env_V \in
 \end{equation}
 
 
-\noindent and similarly for a $sto \in \textbf{Sto}$ we write $sto[ l \mapsto v ]$ to indicate the update of $sto$ given by
+and similarly for a $sto \in \textbf{Sto}$ we write $sto[ l \mapsto v ]$ to indicate the update of $sto$ given by
 
 
 \begin{equation}
@@ -133,7 +133,7 @@ Additionally, we define the notation for updating a given environment $env_V \in
 \end{equation}
 \todo{Missing $env_T$ definition. Should just be a set union an element.}
 
-\noindent With the above definitions of the environment store model and the scope rules, Arc's declarations are described using operational semantics in Table~\ref{tab:arcscoperules}. Because of the static scope rules, the environments are contained within the results of the partial functions for variables and functions. Unlike the variable and function environments, the task environment is not a set of partial functions. This is because unlike function declarations, tasks are not used within other tasks, and as such does not need to map them.
+With the above definitions of the environment store model and the scope rules, Arc's declarations are described using operational semantics in Table~\ref{tab:arcscoperules}. Because of the static scope rules, the environments are contained within the results of the partial functions for variables and functions. Unlike the variable and function environments, the task environment is not a set of partial functions. This is because unlike function declarations, tasks are not used within other tasks, and as such does not need to map them.
 
 
 \begin{table}[htb!]

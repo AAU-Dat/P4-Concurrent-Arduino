@@ -41,7 +41,7 @@ Based on the belowe considerations and examples, the \gls{cfg} in Listing~\ref{l
 \end{listing}
 
 
-The syntactic categories of Listing~\ref{lst:lexicalrules} represent the lexical rules, called a lexical grammar in \gls{antlr}. For brevity, only the rules relevant for the transitions in Listing~\ref{lst:arccfg} are included, as the actual lexical file is larger and includes the rules and names used by \gls{antlr} to generate code.
+The syntactic categories of Listing~\ref{lst:lexicalrules} represent the lexical rules, called a lexical grammar in \gls{antlr}. For brevity, only the rules relevant for the transitions in Listing~\ref{lst:arccfg} are included. The complete lexical rules can be seen in Appendix~\ref{app:grammar}. It is larger because it includes rule names used by \gls{antlr} to generate token names code.
 
 
 \begin{listing}[htb!]
@@ -79,12 +79,12 @@ When designing a language the amount of types and what types to be implemented i
 According to our priorities, many types will not be necessary. For a small and simple language that can give hobbyists the opportunity to work with concurrency, a handful of types will be sufficient. Therefore, in Arc there will only be three scalar types: \textit{Num}, \textit{Bool}, and \textit{Char}. Num for numbers that can work with arithmetic, Bool for boolean to evaluate expressions and give either true or false values, and Char for some text characters. These types should be sufficient enough for hobbyists to create concurrent code in this language, thereby living up the criteria we set for the language. For needs above what is in Arc, we assume that the users are not hobbyists as we have described them.
 
 \paragraph{Num} is for all numbers in Arc. Languages such as C, have many different types for different categories of numbers, integers, floats, doubles, and so on. Other languages such as JavaScript only have two types to represent numbers, Number and BigInt, where number can store both integers and floats.
-The choice of including many different and specified types for numbers, as in languages such as C, gives users more specified control over the code that they write.
-Compared to this, the option of using few or a single type to represent numbers in Arc, would, in our presumption, lead to a more simple language.
 
-For Arc, a basic ability to manipulate numbers simply, will be sufficient. For this, a direction in a similar manner to how JavaScript handles numbers, will be used, all numbers in Arc will be floats. Since the goal of Arc, is simple concurrency, in-depth control of arithmetic will not be a concern, and focus will be on giving users an easy way to begin work with concurrency.
+The choice of including many different and specified types for numbers, as in languages such as C, gives users more specified control over the code that they write. Compared to this, the option of using few or a single type to represent numbers in Arc, would, in our presumption, lead to a more simple language.
 
-\paragraph{Bool} is included in Arc, as in many other languages, and simply evaluates to either true for false. The value of a bool is written as true and false. We assume this makes it more readable and easy to understand for hobbyists. Boolean is an important type to implement, not only for some of Arcs concurrency structures, but for code in general, as it is used to evaluate expressions.
+For Arc, a basic ability to manipulate numbers, will be sufficient. For this, a direction in a similar manner to how JavaScript handles numbers, will be used, all numbers in Arc will be floats. Since the goal of Arc, is simple concurrency, in-depth control of arithmetic will not be a concern, and focus will be on giving users an easy way to begin work with concurrency. Since all numbers are represented using floats, and floats take up more memory than integers, this will make Arc programs use more memory
+
+\paragraph{Bool} is included in Arc, as in many other languages, and simply evaluates to either true or false. The value of a bool is written as true and false. We assume this makes it more readable and easy to understand for hobbyists. Boolean is an important type to implement, not only for some of Arcs concurrency structures, but for code in general, as it is used to evaluate expressions.
 
 \paragraph{Char} is for all characters in Arc. There are a few different ways of giving users the ability to manipulate text. C does not have built-in strings, but instead uses character arrays. Other languages such as Python, have built-in strings. Arc will use char in a similar way to C. Since for simple concurrency, basic string manipulation will be sufficient and not having it would limit users, it was decided to be included.
 
