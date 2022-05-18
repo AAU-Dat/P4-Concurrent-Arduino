@@ -1,55 +1,44 @@
-section{Code Generation}
-
+\section{Code Generation}\label{sec:codegeneration}
 This section will explain the code gen part of the compiler. In this part of the implementation, the target
-code is generated. The target code is, in this case, the Arduino language is essentially c++ with some Arduino constructs. The code is generated using another visitor pattern similar to the one we use for semantic analysis. It follows the divide and conquer principle and uses the antlr generated ast. It then generates the code going through the ast and passing the generated code between the nodes using our CodeGenStringObject.
+code is generated. The target code is the Arduino language, which is essentially c/c++ with some Arduino constructs. The code is generated using another visitor pattern similar to the one we use for semantic analysis. It follows the divide and conquer principle and uses the antlr generated \gls{ast}. It then generates the code going through the \gls{ast} and passing the generated code between the nodes using our CodeGenStringObject.
 
 \begin{listing}[htb!]
-    \begin{minted}{java}
-        public class CodeGenStringObject {
-            public String GlobalScope = "";
+    \begin{minted}[label=CodeGenStringObject class definition]{java}
+    public class CodeGenStringObject {
+    public String GlobalScope = "";
     public String Setup = "";
     public String Loop = "";
-
     public String Type_Coverter (String input){
-        
         if(input.equals("mut num") || input.equals("num" )){
             input = "float";
         }
-        
         if(input.equals("mut char")){
             input = "char";
         }
-
         if(input.equals("mut bool")){
             input = "bool";
         }
-        
         return input;
+        }
     }
-    
-}
-\end{minted}
-\caption{code gen object used in code gen}
-\label{lst:code gen object}
+    \end{minted}
+    \caption{CodeGen object used in code generation.}
+    \label{lst:code gen object}
 \end{listing}
 
 We use the CodeGenStringObject because a node sometimes will generate code in 3 different places of the final code at once. Hence we have made an object containing three different strings and a method. The three strings each correspond to one of the three areas that can be generated to the three sections, GlobalScope, the Setup structure, and the loop structure. This makes it possible to do all code-gen simply in a single visit of the three because it's unnecessary to keep track of 3 different placements in the file and switch between writing in them. The final code gen is done by using the final CodeGenStringObject and simply inserting the three strings into the file in order. \todo{this needs to be more clear, and use an example to show it} The method in CodeGenStringObject is simply used in code-gen to rewrite the types that we have in the input to the corresponding types in c++.
 
-The visitor pattern is very similar to the one used for type checking, scope checking, etc. This is because they are all extensions of the arcv2basevisitor. This is possible because they're using the same Antlr generated Ast as input. A custom ast is not created because it would look very similar to the one Antlr would generate because our grammar generally creates a quite shallow tree, so the ast would not be very different in structure. It would also make it necessary to do a lot of reimplementing a lot of methods and data structures that antlr ast has baked in. Therefore we keep using the antlr AST since there isn't a lot of upside to making a new one. \todo{does this sound convincing?} 
+The visitor pattern is very similar to the one used for type checking, scope checking, etc. This is because they are all extensions of the arcv2basevisitor. This is possible because they're using the same Antlr generated \gls{ast} as input. A custom \gls{ast} is not created because it would look very similar to the one Antlr would generate because our grammar generally creates a quite shallow tree, so the \gls{ast} would not be very different in structure. It would also make it necessary to do a lot of reimplementing a lot of methods and data structures that antlr \gls{ast} has baked in. Therefore we keep using the antlr \gls{ast} since there isn't a lot of upside to making a new one. \todo{does this sound convincing?}
 
 
 In figure \ref{lst:codegenexpression} we see a simple example of how The code gen visitor works. Here we see it first creates two objects of the class CodeGenStringObject shown earlier. One is named cpp, which stands for c + +, and one is named temp since it is temporary and does not get returned out of the method. Then we assign temp the result, and the global scope of this object is then added to cpp. Only the global scope is added since we know only different expressions can exist within an expression, and none of our expressions add to anything other than the global scope. Then we use the result of ctx.plus to check if we should add a plus or minus to cpp. Ctx.plus equals either a plus terminal or null if it doesn't exist; hence this is possible. In the end, we do the same thing again with the visit, just with the second expression, which is then added to cpp, and cpp is returned to the parent of this node. We don't check if more exist because only two can exist in a plus-minus ctx. So basically, this visitor visits a node, adds the result of visiting its children to it, and then returns it to its own parent, which is how our code-gen works.
 
 
-
-
-initial example 
 \begin{listing}[htb!]
-    \begin{minted}{java}
+    \begin{minted}[label=CodegenVisitor.visitPlusMinusExpression]{java}
     public CodeGenStringObject visitPlus_minus_expression(arcv2Parser.Plus_minus_expressionContext ctx) {
         CodeGenStringObject cpp = new CodeGenStringObject();
         CodeGenStringObject temp = new CodeGenStringObject();
-
         temp = visit(ctx.expression(0));
         cpp.GlobalScope += temp.GlobalScope + " ";
 
@@ -58,45 +47,40 @@ initial example
         } else {
             cpp.GlobalScope += "- ";
         }
-
         temp = visit(ctx.expression(1));
         cpp.GlobalScope += temp.GlobalScope;
 
         return cpp;
     }
-\end{minted}
-\caption{code gen object used in code gen}
-\label{lst:codegenexpression}
+    \end{minted}
+    \caption{code gen object used in code gen}
+    \label{lst:codegenexpression}
 \end{listing}
 
 
-A different interesting part of the code-gen visitor is the task declaration visit which is visible here\ref{codeGenTask}. 
+A different interesting part of the code-gen visitor is the task declaration visit which is visible here\ref{lst:codeGenTask}.
 This one has a bit more happening. The first part until line??? describes the creation of the cpp CodeGenStringObject and all the things that should be added to the global scope every time a task is declared. It also creates a name for the thread, which will be used in c++. This is necessary because the tasks in arc do not have names. These names are generated generically based on a counter function which can be seen at the button, so they end up being named pt0thread, pt1thread, etc.
 That means all the things need to be inserted to create a protothread. Afterward, we see three control structures, an if, else if, and an else, which describe the three different ways we describe a task.
 
 Firstly in line??, we have an if statement that, similarly to the previous example, checks if there is an every and if there is, we enter the if statement. Inside First that happens is the creation of a list of all the statements that are the immediate children of task declaration. This list is then iterated through, and the result of the visits to the individual children are added to the cpp in order. This Finishes with adding what is essentially a call to a protothreads function sleep that sleeps the thread for the amount of time specified in the Number, which corresponds only to every because it only exists if there is an every.
 
-Second is the case where we use a when. In that case, we add an if statement inside of the protothread and insert the product of a visit to the boolean expression that we know has to exist if there is a when per our grammar. On line??, we again see the construct used to add the statements.  
+Second is the case where we use a when. In that case, we add an if statement inside of the protothread and insert the product of a visit to the boolean expression that we know has to exist if there is a when per our grammar. On line??, we again see the construct used to add the statements.
 
-The Third else case is just the same statement iteration without anything extra. 
+The Third else case is just the same statement iteration without anything extra.
 
 
-how it works with example
-    -tasks
-    \begin{listing}[htb!]
-        \begin{minted}{java}
+how it works with example -tasks
+\begin{listing}[htb!]
+    \begin{minted}[label=CodegenVisitor.visitTaskDeclaration]{java}
     @Override
     public CodeGenStringObject visitTask_declaration(arcv2Parser.Task_declarationContext ctx) {
         CodeGenStringObject cpp = new CodeGenStringObject();
-
         String ptName = "pt" + Integer.toString(get_task_number());
         String ptNameThread = ptName + "thread";
 
         cpp.GlobalScope += "pt " + ptName;
         cpp.GlobalScope += ";\n";
         cpp.GlobalScope += "int " + ptNameThread + "(struct pt *pt) { \n PT_BEGIN(pt);\n for(;;){ \n";
-
-        // region Every
 
         if (ctx.EVERY() != null) {
             List<StatementContext> list = ctx.statement();
@@ -105,56 +89,44 @@ how it works with example
             }
             cpp.GlobalScope += "\nPT_SLEEP(pt, " + ctx.NUMBER().getText() + ");\n";
             cpp.GlobalScope += "\n}\n";
-        }
-
-        // endregion
-
-        // region When
-
-        else if (ctx.WHEN() != null) {
+        } else if (ctx.WHEN() != null) {
             cpp.GlobalScope += "if (" + visit(ctx.expression()).GlobalScope + ") { \n";
-
             List<StatementContext> list = ctx.statement();
+
+            for (StatementContext statement : list) {
+                cpp.GlobalScope += visit(statement).GlobalScope;
+            }
+            cpp.GlobalScope += "\n}\n";
+        } else {
+            List<StatementContext> list = ctx.statement();
+            
             for (StatementContext statement : list) {
                 cpp.GlobalScope += visit(statement).GlobalScope;
             }
             cpp.GlobalScope += "\n}\n";
         }
-
-        // endregion
-
-        // region Default
-
-        else {
-            List<StatementContext> list = ctx.statement();
-            for (StatementContext statement : list) {
-                cpp.GlobalScope += visit(statement).GlobalScope;
-            }
-            cpp.GlobalScope += "\n}\n";
-        }
-
-        // endregion
-
         cpp.GlobalScope += "PT_END(pt);\n}";
-
         cpp.Setup += "PT_INIT(&" + ptName + ");";
         cpp.Loop += "PT_SCHEDULE(" + ptNameThread + "(&" + ptName + "));";
 
         return cpp;
     }
+    \end{minted}
+    \caption{Code generation of task declarations.}
+    \label{lst:codeGenTask}
+\end{listing}
 
-    private int count = 0;
-
-    public int get_task_number() {
-        int temp = count;
-        count += 1;
-        return temp;
-    }
-
-    }
-        \end{minted}
-        \caption{code showing how task are generated}
-        \label{lst:codeGenTask}
-    \end{listing}
+\begin{listing}
+    \begin{minted}[label=CodegenVisitor.getTaskNumber]{java}
+        private int count = 0;
+        public int get_task_number() {
+            int temp = count;
+            count += 1;
+            return temp;
+        }
+    \end{minted}
+    \caption{Keeping track of the number of tasks.}
+    \label{lst:codeGenTaskNumber}
+\end{listing}
 
 

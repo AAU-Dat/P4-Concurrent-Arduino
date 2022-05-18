@@ -1,42 +1,39 @@
-\section{Type checker}
+\section{Type checker}\label{sec:typechecker}
 This section will discuss the type checker for Arc, how it is structured and an example of how it is implemented.
 
-The type checker verifies that operands of an operator are of compatible types, and if not, throws an error, with an error message for the user to use to fix the issue \cite{Sebesta2016}. It does this by walking through the \gls{cst} from the bottom-up, with a visitor pattern \cite{Parr2014}. An example of the type checker throwing an error would be the case where a user tries to use the plus operand on a num and a char, this will throw an error to the user telling them, that this operation is not valid in Arc.
+The type checker verifies that operands of an operator are of compatible types, and if not, throws an error, with an error message for the user to use to fix the issue~\cite{Sebesta2016}. It does this by walking through the \gls{cst} from the bottom-up, with a visitor pattern~\cite{Parr2014}. An example of the type checker throwing an error would be the case where a user tries to use the plus operand on a num and a char, this will throw an error to the user telling them, that this operation is not valid in Arc.
 
-There are two ways to type check, static and dynamic type checking. Static type checking works on compile time, dynamic type checking is done during run time. Usually it is better to use static type checking, as it catches errors earlier compared to dynamic type checking, and is less costly \cite{Sebesta2016}. Altough dynamic typing allows for more flexablility when writing code, as in languages such as Python where types are not needed to be declared, but simply values are to be given.
+There are two ways to type check, static and dynamic type checking. Static type checking works on compile time, dynamic type checking is done during run time. Usually it is better to use static type checking, as it catches errors earlier compared to dynamic type checking, and is less costly~\cite{Sebesta2016}. Altough dynamic typing allows for more flexablility when writing code, as in languages such as Python where types are not needed to be declared, but simply values are to be given.
 
-In Arc there will be made use of a static type checker, this is because the language that Arc transpiles to is C++ which is a staticly typed language. For this reason it makes sense for Arc to also be a staticly typed language, so it can be easily used with the Arduino, which uses a language that is a subset of the C++ language. \todo{indsæt evt ref til at Arduino bruger C++} Combined with the previously mentioned benefits of using a staticly typed language, it seemed like the obviouse decision to have Arc be a staticly typed language. Although an argument could be made that Arc should be made a dynamicly typed language, since often dynamicly typed languages, such as Python, tend to be faster to write code in. Since time is a limiting factor for our definition of a hobbyist, it would make sense to make a language that encourages less time spent writing code. But since Arc is only made to work with simple concurrency, this time spent on writing code, might not give as much of a gain, as in a standard language. \todo{This just sounds like bullshit -gustav "true"}
+In Arc there will be made use of a static type checker, this is because the language that Arc transpiles to is C++ which is a staticly typed language. For this reason it makes sense for Arc to also be a staticly typed language, so it can be easily used with the Arduino. Combined with the previously mentioned benefits of using a staticly typed language, it seemed like the obvious decision to have Arc be a staticly typed language.
+
+Although an argument could be made that Arc should be a dynamicly typed language, since often dynamicly typed languages, such as Python, tend to be faster to write code in. Since time is a limiting factor for our definition of a hobbyist, it would make sense to make a language that encourages less time spent writing code. But since Arc is only made to work with simple concurrency, this time spent on writing code, might not give as much of a gain, as in a standard language. \todo{This just sounds like bullshit}
+
 
 \begin{listing}[htb!]
-    \begin{minted}{java}
+    \begin{minted}[label=Typechecking in SemanticVisitor.visitAssignmentStatement]{java}
         SymbolHashTableEntry entry = symbolTable.get(ctx.IDENTIFIER().getText());
-        
-
-        //TODO  this needs to handle arrays (should we even allow array assignment)
         AST_node expression = visit(ctx.expression(0));
 
         if (entry == null) {
             throw new RuntimeException(" this varible '" + ctx.IDENTIFIER().getText() + "' does not exist");
-        }
-        else if (entry.Mutability != true) {
+        } else if (entry.Mutability != true) {
             throw new RuntimeException(" this varible '" + ctx.IDENTIFIER().getText() + "' is not mutable and therefore cannot be assigned to");
-        }
-        else if (entry.Type !=  expression.type) {
+        } else if (entry.Type != expression.type) {
             throw new Expression_type_exception("the assingment expression has bad typing");
-        }
-        else{
+        } else{
             symbolTable.insert(entry);
         }
     \end{minted}
-    \caption{Code snippet of Arcs type checker}
+    \caption{Code snippet of Arcs type checking.}
     \label{lst:typecheckerexample}
 \end{listing}
-\todo[inline]{Feel like it is missing a function name}
-\todo{this is actually a bad example as it shows too much you talk about alot of checks that arent type check like scope cheks}
+%\todo{this is actually a bad example as it shows too much you talk about alot of checks that arent type check like scope cheks}
 %\ref{lst:typecheckerexample} shows am example of Arcs typechecker. This example shows the part of the typechecker, handles assignments. It does this by creating 'entry' of the class SymbolHashTableEntry and assigns it to the contents of a ctx file\todo{yeah, naw. thats not whats happening were creating an entry and assigning to it the result of a lookup in the symbolTable based on the IDENTIFIER that were assigning to.}. Then it creates 'expression' of the AST\_node class, and uses a visitor method to assign it to the first expression of the \gls{cst}\todo{this is closer. here were creating a ast nodes and assingning it the result of a visit to a expression. and in our visitor a visit always returns a ast node}. It is then evaluated in a sequence of if statements, to ensure that the assignment is a legal action in Arc. First checking if the entry even exists, then if the entry is mutable and finally checking if the types of the entry and expression are equvilant. If the entry passes all the checks, it is then inserted into the sybol table. If it does not pass one of the checks, an exeption is thrown and a relevant error message is given.
 %\todo[inline]{Entire paragraph has to be checked to ensure it is correct - It was not}
 
-\ref{lst:typecheckerexample} shows an example of Arcs typechecker. This example shows the part of the typechecker, handles assignments. First an 'entry' of the class SymbolHashTableEntry is made, this 'entry' is assigned to the result of a lookup in the symbolTable based on the IDENTIFIER. Then the expression of that node is made, we call this variable 'expression' and is the class AST\_node. 'Expression' is made by visiting the expression of the ctx node, and with Arcs visitor, it always returns an AST node.
+
+Listing~\ref{lst:typecheckerexample} shows an example of Arcs typechecker. This example shows the part of the typechecker, handles assignments. First an 'entry' of the class SymbolHashTableEntry is made, this 'entry' is assigned to the result of a lookup in the symbolTable based on the IDENTIFIER. Then the expression of that node is made, we call this variable 'expression' and is the class \gls{ast}\_node. 'Expression' is made by visiting the expression of the ctx node, and with Arcs visitor, it always returns an \gls{ast} node.
 
 After creating these variables, some typechecking can be done, this is specifically type checking for assignemnts of variables. The first check, that ensure that the entry actually exists, is not actually type checking, but rather a part of scope handling. The next check, ensure that the entry that is being assigned to, is actually mutable, meaning that it can be modified, if not an error is thrown, that informs the user that they are trying to assing to an immutable variable. After this a check is made to ensure that the entry that is being assigned to, and the expressions typing actually match and are compatible for assignment. If this check fails, an error message informing users that the assignment has bad typing is made.
 
