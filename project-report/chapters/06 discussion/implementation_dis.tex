@@ -1,0 +1,12 @@
+%Implementation
+    %Was ANTLR a good tool for us
+        %Antlr good for us since we are inexperinced and had to make many changes
+    %Have we actually used visitor pattern, if not why?
+    %Should we have included a front end for our compiler - flags
+    %AST
+    %Pattern of implementation strengths and weaknesses
+    %strengths and weaknesses of another implementation
+\subsection*{language discussion}
+    With the small sample of experience on how to write a compiler in the group, it was quickly decided the group would use a parser generator. One of the main reasons the group would like a parser generator was, it would be easier, if the grammar would change throughout the making of the compiler. Antlr was the choosen parser generator, one main reason for the Antlr, was the group fairly quickly to setup and understand. Looking back at the other options, Antlr would still be choosen, because it is now the tool the group is comfoftable with.  
+
+    With the AST Antlr made, it made possible to implement a visitor pattern for the rest of the compiler. The code for the visitor pattern could be updated to make it faster and using less space. One of the strengths of using a visitor pattern is, it is easier to make changes to the checks, if chars be relational equal, the code would only have to be written in one place, this makes it easy if in the future, some checks is rewritten. However one of the big weaknesses of the visitor pattern is if the grammar would be changed. There would have to be a written a node if a type was made. This big weaknes for visitor pattern comes short in Arc, as Antlr generates these nodes 
