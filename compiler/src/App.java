@@ -3,6 +3,9 @@ import org.antlr.v4.runtime.tree.*;
 import AstNodes.*;
 import antlr.*;
 import CodeGen.*;
+import Visitors.CodeGenVisitor;
+import Visitors.SemanticVisitor;
+
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -14,7 +17,7 @@ public class App {
         CommonTokenStream tokens = new CommonTokenStream(lexer);
         arcv2Parser parser = new arcv2Parser(tokens);
         ParseTree tree = parser.start();
-        EvalVisitor eval = new EvalVisitor();
+        SemanticVisitor eval = new SemanticVisitor();
         try {
             AST_node AST = eval.visit(tree);
             

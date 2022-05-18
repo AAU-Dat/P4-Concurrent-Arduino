@@ -1,3 +1,4 @@
+package Visitors;
 import antlr.arcv2BaseVisitor;
 import antlr.arcv2Parser;
 import antlr.arcv2Parser.ExpressionContext;
@@ -18,7 +19,7 @@ import Exemptions.Expression_type_exception;
 import Exemptions.Not_whole_number_exception;
 
 
-public class EvalVisitor extends arcv2BaseVisitor<AST_node> {
+public class SemanticVisitor extends arcv2BaseVisitor<AST_node> {
     SymbolTable symbolTable = new SymbolTable(); 
     
     
