@@ -1,1 +1,22 @@
 \section{Integration test}\label{subsec:integrationtest}
+In this section, the integration test will be described as how we intended to create the tests. Due to the focus have been used else were, the integration test have been pushed back and now a proper implementation of integration test will take too long.
+
+% https://www.javatpoint.com/integration-testing
+% What is a integration test? and what is it used to?
+A integration test is a test that test individual components of a program. It tests units or integrated components as a group to make sure that each unit or components can integrate wich each other with any errors or bugs [ref: to link].
+
+% How is a integration test divided up? and which structure would we go with if we had proper integration testing
+% (Like a unit test have arrange act assert)
+Write it here
+
+% Which part can we test? And which give meaning to test?
+    % We could test the lexer and parser, but we can asssume that antlr have done that throughly and therfore we dont need to.
+    
+% The first sentence should properly rewritten if its not correct.
+So for our project, we could chose to test the lexer and parser to see if we get the correct syntax and tokens generated from the source code. But as this part is already thorughly tested by ANTLR it self, and therefore assumes that this part works as intended. It would make more sense for us to test the compiler as a whole to controll that we get the correct output for our targeted language.
+
+
+% Test the compiler as whole, and if the target code is the same as the inputted code? Check if its equivalent in the semantic meaning.
+    % Give some input code
+    % Get some output code in the target language
+    % Is the shit semantic equivalent?
