@@ -3,56 +3,84 @@ The contextual constraints of Arc specify whether there is meaning in some struc
 
 For a complete definition of a programming language, syntax, contextual constraint, and semantics definitions are required. This section describes Arc's important semantics using operational semantics.
 
-% MAYBE MOVE THIS SUB SUB SECTION TO THE DISCUSSION CHAPTER
 
-% https://docs.oracle.com/cd/E19957-01/806-3568/ncg_goldberg.html (How floating point is handled in programs, OS etc.)
 \subsection{Number as float}\label{subsec:numberAsFloats}
-In our language we have chosen to handle every number as a float. At first glance it looked like a good solution for simplicity. However, as we progressed on the project we discovered that the semantics of floats works differently in relation to mathematics and floating-point arithmetic. As illustrated in Listing~\ref{lst:semanticDifference}, the difference is clearly visible between floats in floating-point arithmetic and mathematics.
+In Arc every number is a float. At first glance it looked like a good solution for simplicity. However, as we progressed on the project we discovered that the semantics of floats works differently between mathematics with real numbers and floating-point arithmetic. As illustrated in Listing~\ref{lst:semanticDifference}, the difference is clearly visible between floats and real numbers.
 
 
 \begin{listing}[htb!]
     \begin{minted}[label=Semantic meaning of floats]{text}
-        // This is false in floating-point arithmetic but true mathematically.
-        0.1 + 0.2 == 0.3
+        0.1 + 0.2 == 0.3 //false in floating-point arithmetic but true in real numbers.
+        0.1 + 0.2 == 0.30000000000000004 //true in floating point, false in real numbers
     \end{minted}
     \caption{Example of semantic difference between floating-point arithmetic and mathematical notation}
     \label{lst:semanticDifference}
 \end{listing}
 
 
-This is problematic at best. To the amateur programmers Arc is supposed to cater to this can be both counter intuitve and bothersome, if they are not familiar with floating point arithmetic. This can lead to the programmer expecting a different result from their code and lead to unneccesary frustration. If they expect the code in the example to result to true, they might not even understand how to fix the issue they have created.
+\question[inline]{Move section to discussion?}
 
-\subsection{Important semantic rules of Arc}\label{subsec:importantSemanticRulesOfArc}
-One of the reasons we have decided to highlight the expressions for \textbf{and}, \textbf{or} and \textbf{not} falls down to the fact that it is foundational for our Task declaration variant with the when expression. The when expression makes use of a boolean value to decide whether or not it should run the thread - this decision is based on the evaluation of the boolean expressions.
+This is problematic at best. To the amateur programmers which Arc is supposed to cater to, this can be both counter intuitve and bothersome, if they are not familiar with floating point arithmetic. This can lead to the programmer expecting a different result from their code and lead to unneccesary frustration. If they expect the code in the example to result to the real numbers result of the calculation, they might not even understand how to fix the issue at hand.
+
+\subsection{Semantic rules}\label{subsec:semanticrules}
+For the most part, Arc's semantics follow the semantics described in~\cite{Huttel2010}. This section explains the choice of semantics, and references \cite{Huttel2010} for details. Because Arduino programns are supposed to always loop forever, small-step semantics are used to describe Arc's semantics. This is contrary to the semantics of declarations from section~\ref{subsec:scoperules} which uses bigstep semantics, because declarations are atomic operations.
+
+\subsubsection{Expressions}
+Expressions in Arc can be explained similarly to the small-step semantics presented on~\cite[p.~37]{Huttel2010} extended with the environment-store model from section~\ref{subsec:scoperules}. Table~\ref{tab:divisionsemantics} contains the semantics for division with the environment-store model.
+
+
+\begin{table}[htbp]
+    \centering
+    \begin{tabular}{ll}
+        \toprule
+        $DIVI_{EXPR-1}$ & $\frac{env_V, sto \vdash expr_1 \Rightarrow expr^\prime_1}{env_V, sto \vdash expr_1 / expr_2 \Rightarrow expr^\prime_1 / expr_2}$ \\ [12pt]
+        $DIVI_{EXPR-2}$ & $\frac{env_V, sto \vdash expr_2 \Rightarrow expr^\prime_2}{env_V, sto \vdash expr_1 / expr_2 \Rightarrow expr_1 / expr^\prime_2}$ \\ [12pt]
+        $DIVI_{EXPR-3}$ & $v_1 / v_2 \Rightarrow v$ where $v =v_1 / v_2$ and $v_2 \neq 0$                                                                   \\
+        \bottomrule
+    \end{tabular}
+    \caption{Arc semantics for division.}
+    \label{tab:divisionsemantics}
+\end{table}
+
+
+The type rules also define rules for boolean expressions, but these are not included as small step semantics in~\cite{Huttel2010}. Instead they are described in Table~\ref{tab:booleansemantics}. It is largely formulaic and repetitive, and for brevity $OR_{EPXR}$ are not included in the table because they are similar to $AND_{EXPR}$ but substituting logical or $\lor$ for logical and $\land$.
 
 
 \begin{table}[htb!]
     \centering
     \begin{tabular}{lll}
         \toprule
-        $[AND_{tt}]$ & $\frac
-            {env_v, sto \vdash expr_1 \to tt \ env_v, sto \vdash expr_2 \to tt}
-            {env_v, sto \vdash expr_1 \text{ and } expr_2 \to tt}$ \\ [12pt]
-        $[AND_{ff}]$ & $\frac
-            {env_v, sto \vdash expr_i \to ff}
-            {env_v, sto \vdash expr_1 \text{ and } expr_2 \to ff}$
-                     & $i \in \{1, 2\}$                            \\ [12pt]
-        $[OR_{tt}]$  & $\frac
-            {env_v, sto \vdash expr_i \to tt}
-            {env_v, sto \vdash expr_1 \text{ or } expr_2 \to tt}$
-                     & $i \in \{1, 2\}$                            \\ [12pt]
-        $[OR_{ff}]$  & $\frac
-            {env_v, sto \vdash expr_1 \to ff \ env_v, sto \vdash expr_2 \to tt}
-            {env_v, sto \vdash expr_1 \text{ or } expr_2 \to ff}$  \\ [12pt]
-        $[NOT_{tt}]$ & $\frac
-            {env_v, sto \vdash expr \to ff}
-            {env_v, sto \vdash \text{ not } expr \to tt}$          \\ [12pt]
-        $[NOT_{ff}]$ & $\frac
-            {env_v, sto \vdash expr \to tt}
-            {env_v, sto \vdash \text{ not } expr \to ff}$          \\
+        $AND_{EXPR-1}$ & $\frac
+            {env_V, sto \vdash expr_1 \Rightarrow expr^\prime_1}
+            {env_V, sto \vdash expr_1 \text{ and } expr_2 \Rightarrow expr^\prime_1 \text{ and } expr_2}$ \\ [12pt]
+        $AND_{EXPR-2}$ & $\frac
+            {env_V, sto \vdash expr_2 \Rightarrow expr^\prime_2}
+            {env_V, sto \vdash expr_1 \text{ and } expr_2 \Rightarrow expr_1 \text{ and } expr^\prime_2}$ \\ [12pt]
+        $AND_{EXPR-3}$ & $v_1 \text{ and } v_2 \Rightarrow v$ where $ v = v_1 \land v_2$                  \\ [12pt]
+        $NOT_{EXPR-1}$ & $\frac
+            {env_V, sto \vdash expr \Rightarrow expr^\prime}
+            {env_V, sto \vdash \text{ not } expr \Rightarrow \text{ not } expr^\prime}$                   \\ [12pt]
+        $NOT_{EXPR-2}$ & $\text{not } v_1 \Rightarrow v$ where $v = \neg v_1 $                            \\
         \bottomrule
     \end{tabular}
     \caption{Semantics for boolean expressions in Arc.}
     \label{tab:booleansemantics}
+\end{table}
+
+
+For the statements, Arc uses similar rules to those found in~\cite[Ch.~10]{Huttel2010}, and the rules for \textit{for statement} in Table~\ref{tab:statementsemantics}.
+
+
+\begin{table}[htbp]
+    \centering
+    \begin{tabular}{ll}
+        $FOR_{STMT-1}$ & $\langle \text{for } t \ x_1 \text{ in } x_2 \ \{ S \}, sto, env \rangle \Rightarrow$                                      \\
+                       & $\qquad \langle x_1 = v; \text{ for } t \ x_1 \text{ in } x^\prime_2 \ \{ S \}, sto, env \rangle$                          \\
+                       & where $x_2 = v : x^\prime_2$                                                                                               \\[12pt]
+        $FOR_{STMT-2}$ & $\langle \text{for } t \ x_1 \text{ in } x_2 \ \{ S \}, sto, env \rangle \Rightarrow \langle x_1 = v; S, sto, env \rangle$ \\
+                       & where $x_2 = v : \epsilon$
+    \end{tabular}
+    \caption{Semantics for statements in Arc}
+    \label{tab:statementsemantics}
 \end{table}
 

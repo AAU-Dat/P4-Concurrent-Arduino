@@ -10,28 +10,28 @@ This chapter covers the implementation of the Arc programming language. This inc
 \input{chapters/04 implementation/codegen.tex}
 
 
-\section{MOVE ME EVENTUALLY}
-This section contains text that has to be moved to proper sections.
+% \section{MOVE ME EVENTUALLY}
+% This section contains text that has to be moved to proper sections.
 
-\subsection*{Arc implemementation of the sample project}
-The sample project implemented in Arc.
+% \subsection*{Arc implemementation of the sample project}
+% The sample project implemented in Arc.
 
-\begin{listing}[htb!]
-    \begin{minted}[label=Arc example]{text}
-        #pin BUTTON_PIN(12, OUTPUT);
-        mut num buttonState = 0;
-        mut bool ledState = HIGH;
+% \begin{listing}[htb!]
+%     \begin{minted}[label=Arc example]{text}
+%         #pin BUTTON_PIN(12, OUTPUT);
+%         mut num buttonState = 0;
+%         mut bool ledState = HIGH;
 
-        task(bool ledState) every 1000 {
-            ledState = not ledState;
-            digitalWrite(LED_BUILTIN, ledState)
-        }
+%         task(bool ledState) every 1000 {
+%             ledState = not ledState;
+%             digitalWrite(LED_BUILTIN, ledState)
+%         }
 
-        task(num buttonState) {
-            buttonState = digitalRead(BUTTON_PIN);
-            Serial.Println(buttonState);
-        }
-    \end{minted}
-    \caption{Project example implemented in Arc, assuming print is possible.}
-    \label{lst:arcexample}
-\end{listing}
+%         task(num buttonState) {
+%             buttonState = digitalRead(BUTTON_PIN);
+%             Serial.Println(buttonState);
+%         }
+%     \end{minted}
+%     \caption{Project example implemented in Arc, assuming print is possible.}
+%     \label{lst:arcexample}
+% \end{listing}
