@@ -6,6 +6,8 @@
 %AST
 %Pattern of implementation strengths and weaknesses
 %strengths and weaknesses of another implementation
+
+%hvad har vi gjort, hvad har det gjort, hvad kunne vi have gjort
 \section{Parser generator}
 With the amount of experience on how to write a compiler, before the project, it seemed as the obviouse choice to use a parser generator, compared to making one manually. For this, there were many different options, but for Arc, \gls{antlr} was choosen as the parser generator. The main reason for choosing \gls{antlr}, was that the group, fairly quickly understood how to setup and use \gls{antlr}. It could be argued that the other parser generators might also have been a valid option for Arc, but since time was a limiting factor, is made sense to use \gls{antlr}. Looking back at the other options, \gls{antlr} would still be choosen, because it is now the tool the group is comfotable with. One of the main reasons the group chose a parser generator, instead of making one, was the lack of experience, and a parser generator was a good tool, for writting a language with little experience. This lack of experience lead to many issues that had to be fixed, during the design of Arc. Doing this manually would prove very time consuming as everything would have to be re-made everytime an issue was found, with a parser generator an issue could be fixed, and the rest could be generated based on the fix.
 
