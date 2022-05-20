@@ -159,7 +159,7 @@ public class CodeGenVisitor extends arcv2BaseVisitor<CodeGenStringObject> {
 
         if (ctx.RELATIONEQOPERATORS() == null) {
             return cpp;
-        } else if (ctx.RELATIONEQOPERATORS().toString() == "==") {
+        } else if (ctx.RELATIONEQOPERATORS().toString().equals("==")) {
             cpp.GlobalScope += "== ";
         } else {
             cpp.GlobalScope += "!= ";
