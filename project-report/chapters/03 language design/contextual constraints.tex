@@ -176,28 +176,30 @@ To use the declared bindings we further define their calling and usage. Variable
 
 Tasks are once again special. They are never called explicitly in Arc code, but the set of all declared tasks serve as the entrypoint of the program. This is done through parallel composition and invocation of all declared tasks, of which there must be at least one.
 
-Also of importance is that the parameters of a task describe a mutable reference to a declared variable in $env_V$, that critically cannot be used in another task. This means that declarations are implicit calls with a call-by-reference model for its parameters.
+Also of importance is that the parameters of a task describe a mutable reference to a declared variable in $env_V$, that critically cannot be used in another task. This means that task declarations have no formal parameters, only references to actual parameters.
 
 
 \begin{table}[htb!]
     \centering
     \begin{tabular}{ll}
         \toprule
-        $FUNC_{CALL}$ & $\frac{}
-            {env_{VF} \vdash \langle f(e), sto\rangle \rightarrow sto^\prime}$                         \\ [12pt]
-                      & where $env_F(f) = \langle S, y, env^\prime_V, env^\prime_F \rangle$            \\
-                      & and $\forall i | 0 \leq i \leq |y|$                                            \\
-                      & and $e \in \textbf{Expr}^{ |y| }$                                              \\
-                      & and $\forall i $                                                               \\
+        $FUN_{CALL-1}$ & $\frac
+            {env, sto \vdash e_i \Rightarrow e^\prime_i}
+            {env, sto \vdash \langle f(\dots, e_i, \dots), env,sto \rangle \rightarrow \langle f(\dots, e^\prime_i, \dots), env, sto \rangle}$ \\ [12pt]
+        $FUN_{CALL-2}$ & $\langle f(v_1,\dots,v_i), env, sto \rangle \Rightarrow$                                                              \\
+                       & $\qquad \langle \{y_1 = v_1;\dots;y_i = v_i; S\}, (env^\prime_V, env^\prime_F):env, sto \rangle$                      \\ [12pt]
 
-        $ENTRY$       & $\frac{}
-            {env \vdash (\{|\dots T_i \dots|\}, sto) \Rightarrow (\{|\dots T_i \dots|\}, sto^\prime)}$ \\ [12pt]
+                       & where $env_F(f) = \langle S, y, env^\prime_V, env^\prime_F \rangle$                                                   \\
+                       & and $env = (env_V, env_F) : env^\prime $                                                                              \\
+                       & and $y = y_1,\dots,y_i$                                                                                               \\
+        $ENTRY$        & $\frac{}
+            {env \vdash (\{|\dots T_i \dots|\}, sto) \Rightarrow (\{|\dots T_i \dots|\}, sto^\prime)}$                                         \\ [12pt]
         \bottomrule
     \end{tabular}
     \caption{Semantics for function calls and task invocation.}
     \label{tab:callandentry}
 \end{table}
-\supervisor{How do I describe that each expression in the parameter list is evaluated and stored in a new location, with a variable $y_i$ from the formal parameter list pointing to that location?!}
+
 
 
 \subsection{Type rules}\label{subsec:typerules}
