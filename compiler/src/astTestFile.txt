@@ -1,1 +1,27 @@
-num b = 2 + 2;
+num buttonState = 0;
+mut num switch = 0;
+#pin BUTTON_PIN(12, INPUT);
+#pin LED_PIN(11, OUTPUT);
+
+task(num switch) every 1000 {
+    if(switch == 0){
+        digitalWrite(led_builtin, HIGH);
+        switch = 1;
+    } else {
+        digitalWrite(led_builtin, LOW);
+        switch = 0;
+    }
+}
+
+num blinkLED(num buttonState){
+    if(buttonState == 1){
+        digitalWrite(LED_PIN, HIGH);
+    } else {
+        digitalWrite(LED_PIN, LOW);
+    }
+}
+
+task() {
+    buttonState = digitalRead(BUTTON_PIN);
+    blinkLED();
+}
