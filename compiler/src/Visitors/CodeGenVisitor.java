@@ -632,6 +632,7 @@ public class CodeGenVisitor extends arcv2BaseVisitor<CodeGenStringObject> {
             for (StatementContext statement : list) {
                 cpp.GlobalScope += visit(statement).GlobalScope;
             }
+            cpp.GlobalScope += "PT_YIELD(pt);";
             cpp.GlobalScope += "\n}\n";
         }
 
