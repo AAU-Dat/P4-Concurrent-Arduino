@@ -4,15 +4,12 @@ float _switch = 0;
 #define _BUTTON_PIN 12
 #define _LED1_PIN 10
 #define _LED2_PIN 11
-
 pt pt0;
 int pt0thread(struct pt *pt)
 {
     PT_BEGIN(pt);
     for (;;)
     {
-        _ledState = !_ledState;
-        digitalWrite(LED_BUILTIN, _ledState);
         if (_switch == 0)
         {
             digitalWrite(_LED1_PIN, HIGH);
