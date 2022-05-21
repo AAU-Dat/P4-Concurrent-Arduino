@@ -1,0 +1,9 @@
+\section{Problem statement}
+
+The problem statement Arc set out to solve, is as follows: 
+\textbf{To create a programming language for the Arduino with a set of concurrency constructs, that leverages the Protothreads library, to concisely express a concurrent flow of control.}
+To solve this problem statement, Arc was made to be based on some library that supported concurrency on the Arduino, and creating a syntax that is concise and understandable for hobbyists. To do this an understanding of what concurrency is, was made and a few current libraries that made concurrency on the Arduino possible were tested. Protothreads was chosen, and from this the grammar for Arc could be made, with emphesis on simplicity. After designing the syntax for Arc, it could then be translated to Protothreads, during code generation. The syntax of Arc resembles that of C, but with a few changes that were deemed better suited for hobbyists to use, such as the num type, that replaces all numbering types in C. Effort was especially put into the concurrency structures of Arc, since they were the main solution to the problme Arc set out to solve. Arc makes use of tasks, that use trigger words to describe when they are executed. The \textbf{When}, \textbf{Every} and idle tasks, are executed as they are read, apart from the idle, which executes whenever possible. This was done in an effort to make it clear to users, how each task functions, and concisely express the flow of the code. \question{This might not cover the problem statement well and too much focus on the syntax design of Arc}
+
+From this, it can be concluded that Arc has solved the problem statement it set out to solve, but ofcourse there are areas that need imporvement and further testing.
+
+
