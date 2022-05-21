@@ -16,7 +16,7 @@ Integration test is a test method, which test how well components and units test
 
 The structure that would fit best in our implementation compared to how we have created our implementation part in the report would be the Big Bang Approach. The Big Bang Approach is one of the most used structures in integration test, where the purpose of this test structure is to group all of the components and unit test and test it all at once. In our case this fits perfectly, as we would like to test if some specific source code can be transpilet to a specific target code as C++. And to check if the transpilet code is semantic equivalent to the source code. A disadvantage of using Big Bang Approach is if an error occour or a bug makes the program fail, it is hard to figure out which components or unit that is to blame for the errors [ref: to link].
 
-So for this project, we could chose to test the lexer and parser to check if we get the corect syntax and toksen generated from a specific source code. But, as this part is already throughly tested by ANTLR, we can with certianty assume that this park work as intended. It would make more sense for us to test the compiler as a whole unit, to check wether or not we get the correct output code as we expect to get.
+So for this project, we could chose to test the lexer and parser to check if we get the corect syntax and toksen generated from a specific source code. But, as this part is already throughly tested by ANTLR, we can with certianty assume that this park work as intended. It would make more sense for us to test the compiler as a whole unit, to check wether or not we get the correct output code as we expect to get. The code we want to test can be seen at [ref: arc code].
 
 % Test the compiler as whole, and if the target code is the same as the inputted code? Check if its equivalent in the semantic meaning.
     % Give some input code
@@ -27,38 +27,25 @@ So for this project, we could chose to test the lexer and parser to check if we 
 % Arc code example
 \begin{listing}[htb!]
     \begin{minted}[label=Arc code example]{java}
-    num buttonState = 0;
-    mut num switch = 0;
-    #pin BUTTON_PIN(12, INPUT);
-    #pin LED_PIN(11, OUTPUT);
+        #pin BUTTON_PIN(12, OUTPUT);
+        mut num buttonState = 0;
+        mut bool ledState = HIGH;
 
-    task(num switch) every 1000 {
-        if(switch == 0){
-            digitalWrite(led_builtin, HIGH);
-            switch = 1;
-        } else {
-            digitalWrite(led_builtin, LOW);
-            switch = 0;
+        task(bool ledState) every 1000 {
+            ledState = not ledState;
+            digitalWrite(LED_BUILTIN, ledState)
         }
-    }
 
-    num blinkLED(num buttonState){
-        if(buttonState == 1){
-            digitalWrite(LED_PIN, HIGH);
-        } else {
-            digitalWrite(LED_PIN, LOW);
+        task(num buttonState) {
+            buttonState = digitalRead(BUTTON_PIN);
+            Serial.Println(buttonState);
         }
-    }
-
-    task() {
-        buttonState = digitalRead(BUTTON_PIN);
-        blinkLED();
-    }
     \end{minted}
     \caption{Arc code example}
     \label{lst:arc code example}
 \end{listing}
 
+When compiling the code from the Arc example we want to check after the outputed code in our target language have the same semantic equivalent. We do this buy manuel looking trhough the new transpilet code and go through each line of code to see if it do the same as the source code. As you can see in the transpilet code at [ref: transpilet code], both of the code have the same equivalent semantic and therefore we can say that the test of the compiler as a whole works as intended.
 
 % C++ Generated code from Arc code example
 \begin{listing}[htb!]

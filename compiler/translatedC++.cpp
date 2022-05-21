@@ -1,24 +1,16 @@
 #include "protothreads.h"
-float _buttonState = 0;
-float _switch = 0;
-#define _BUTTON_PIN 12
 #define _LED_PIN 11
+#define _BUTTON_PIN 12
+float _buttonState = 0;
+bool _ledState = HIGH;
 pt pt0;
 int pt0thread(struct pt *pt)
 {
     PT_BEGIN(pt);
     for (;;)
     {
-        if (_switch == 0)
-        {
-            digitalWrite(_led_builtin, HIGH);
-            _switch = 1;
-        }
-        else
-        {
-            digitalWrite(_led_builtin, LOW);
-            _switch = 0;
-        }
+        _ledState = !_ledState;
+        digitalWrite(LED_BUILTIN, _ledState);
         PT_SLEEP(pt, 1000);
     }
     PT_END(pt);
@@ -49,8 +41,8 @@ int pt1thread(struct pt *pt)
 void setup()
 {
     Serial.begin(9600);
-    pinMode(_BUTTON_PIN, INPUT);
     pinMode(_LED_PIN, OUTPUT);
+    pinMode(_BUTTON_PIN, OUTPUT);
     PT_INIT(&pt0);
     PT_INIT(&pt1);
 }
