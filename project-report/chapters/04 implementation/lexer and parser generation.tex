@@ -1,41 +1,36 @@
 \section{Lexer and parser generation}\label{sec:lexerandparsergen}
+
 This section briefly covers how the lexer and parser for Arc has been implemented, and what alternatives could have been used.
 
-The lexer, also called a lexical analyzer or scanner, takes a character stream and turns it into tokens. Tokens are a representation of something in a language, such as a num in Arc would be a token, that represents numbers. The lexer recognizes and can discard characters of the character stream, so that the parser can ignore them. For example whitespaces, that the parser does not need to concern itself with. If the lexer did not discard these, the parser would constantly have to check for them. These tokens are then passed to the parser, that makes syntatic sense of them. It compares the tokens and their structure to the grammar of the specific language.\cite{Parr2014}
+The lexer, also called a lexical analyzer or scanner, takes a character stream and turns it into a list of tokens. Tokens are a representation of something in a language. A num in Arc would, for example, be a token that represents numbers. The lexer recognizes and can discard characters of the character stream, so that the parser can ignore them. For example is the parser not concerned with whitespaces, and nor does it need to, so it can simply discard them. If the lexer did not discard these, the parser would constantly have to check for them. These tokens are then passed on to the parser, which is tasked to make syntatic sense of them. It compares the tokens and their structure to the grammar of the specific language \cite{Parr2014}.
 
-For Arc, \gls{antlr} has been used, for creating the grammer and also to generate both the lexer and parser. From writing the grammar, is was possible for \gls{antlr} to generate the lexer, parser and more.\cite{Parr2014} This made \gls{antlr} highly effective for designing Arc, as small changes to the grammar could easily be made, without having to re-create the lexer and parser everytime. Instead only the grammar had to be changed, and \gls{antlr} would generate a new lexer and parser, based on the new grammar.
+For Arc, \gls{antlr} has been used to create the grammar, and also to generate both the lexer and the parser. From the written grammar, it is possible for \gls{antlr} to generate the lexer, parser and more \cite{Parr2014}. This made \gls{antlr} highly effective to work with when designing Arc, as minute changes to the grammar could easily be made without a worry - while the generation of the lexer and parser would not have to be recreated with every iteration. Instead, only the grammar would ever need to be updated to reflect our changes, and then \gls{antlr} would be responsible for generating all of the neccessary files based on the new grammar.
 
-The grammar was made in a file called 'arcv2.g4' which is an \gls{antlr} file, that \gls{antlr} recognizes and also the lexical rule were made in a file called 'lexerRules.g4'. With these files, \gls{antlr} could generate all needed files for the parser, the lexical analyzer, and other supporting files.
+The grammar was made in a file called 'arc.g4', which is an \gls{antlr}4 grammar file used to state the rules of the language. We decided to go with a modular approach, and seggregate the lexer and parser rules into separate files. Therefore, the lexer rules can be found in a file called 'lexerRules.g4' and is imported into the main arc grammar file. These two files are everything \gls{antlr} needs to generate all needed files for the parser and the lexer.
 
+Figure \ref{fig:lexerandparserfiles} show the files that \gls{antlr} generates for us when including the '-visitor' flag during compilation. The flag is responsible for generating the parse tree visitor files. The file 'arcLexer.java' is the lexer responsible for the lexical analysis, and the file 'arcParser.java' is the parser. Then there is a list of tokens for both grammar files, and some other boilerplate code, neccessary for the analysis. Finally, the file 'arcVisitor.java' act as the visitor interface, while the file 'arcBaseVisitor.java' is the abstract class implementing the visitor interface. Most of these files are simply boilerplate and thus neccessary for \gls{antlr} to work its magic. Much further detail about these files are beyond the scope of this project.
 
 \begin{figure}[htb!]
     \begin{center}
         \includegraphics[width=0.25\textwidth]{figures/lexerAndParserFiles.png}
-        \caption{Files generated for Arcs parser and lexical analyzer}
+        \caption{Files generated for Arcs parser and lexical analyzer, including the flag '-visitor'}
         \label{fig:lexerandparserfiles}
     \end{center}
 \end{figure}
 
-
-Figure \ref{fig:lexerandparserfiles} shows the files that \gls{antlr} generates for the lexer, parser and visitor, from the grammar rules and lexical rules. The file 'arcv2Parser.java' is the parser, 'arcv2lexer.java' is the lexical analyzer, 'arcv2Visitor.java' and 'arcv2BaseVisitor.java' are the visitor methods and the interface for the visitor methods. There will not be gone into depth of the contents of these files, as they are not meant to be understood clearly of users, but rather only for the functions in these files to be used. \question{Kan vi sige det sådan her?}
-
+Listing \ref{lst:parserandlexerexample} shows how the parser, lexer and visitor is used in practise. In \textbf{line 1} an input is created from a test file. This input is a character stream used by the lexer instantiated in \textbf{line 2}. Then a list of tokens gets created based on the lexical analysis in \textbf{line 3}, which is given to the parser in \textbf{line 4}. Now, that the input has been parsed, the \gls{cst} is created in \textbf{line 5} and is ready to be traversed in \textbf{line 6}, using our custom visitor class inheriting from the 'ArcBaseVisitor' class.
 
 \begin{listing}[htb!]
     \begin{minted}{java}
         CharStream input = CharStreams.fromFileName("src/astTestFile.txt");
-        arcv2Lexer lexer = new arcv2Lexer(input);
+        arcLexer lexer = new arcLexer(input);
         CommonTokenStream tokens = new CommonTokenStream(lexer);
-        arcv2Parser parser = new arcv2Parser(tokens);
+        arcParser parser = new arcParser(tokens);
         ParseTree tree = parser.start();
-        //EvalVisitor eval = new EvalVisitor();
+        // Any custom Visitor classes
     \end{minted}
     \caption{An example of how the parser and lexer is used}
     \label{lst:parserandlexerexample}
 \end{listing}
 
-
-Listing \ref{lst:parserandlexerexample} shows how the parser, lexer and visitor are used in practise. Line 1 creates an input based on a file, this input is a stream of characters, that can the be used for the lexer seen on line 2. Line 2 then creates a variable 'lexer', that uses Arcs lexer on input, this variable is then used on line 3 as a paramater of the function CommonTokenStream, to create the tokens. These tokens are then used on line 4 in the parser function arcv2Parser, to create the variable 'parser'. This variable is used on line 5, to create the \gls{cst}, with the .start method, to create the variable 'tree'. \question{Is this descriptive enough of what happens and is it correct? And do we want to include line 6 as it is the visitor}
-
-
-Another option to this could have been, writing out both the parser and lexer by hand, this could be very educational, as creating our own parser and lexer, would give in-depth knowledge of how they each work. But this would increase the time needed to create Arc considerably as, as mentioned previously, any minor change made in the grammar, would also mean going through the lexer and parser to fix them accordingly. This could lead to time wasted, which is a limiting factor for this project. Therefore it was decided to use the obviouse solution, to use the tools that readily avaliable. For this reason in particular, using \gls{antlr} to generate the lexer and parser for us, was the obviouse choice.
-
+We have gained a lot of knowledge about parsers and lexers from the semester courses and by reviewing \gls{antlr}s generated files and documentation; but writing our own from scratch could also have been a high rewarding educational opportunity. Alas, this would also have meant considerably extra development time, while any potential changes also needs to be reflected in all layers of the code. One small change to the grammar file, would also have to be changed in both the lexer and the parser. Using \gls{antlr} to handle that for us, has both saved us time and energy, so that we could focus on learning rather than maintaining a custom solution.

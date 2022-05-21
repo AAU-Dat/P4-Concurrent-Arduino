@@ -1,9 +1,13 @@
-\section{Visitor pattern}\label{sec:visitorpattern}\feedback{We still working on this section, and unsure what is missing}
-% This section will briefly discuss the two methods ANTLR provides of traversing a \gls{cst}, listeners and visitors, what they are, how they are used, and why they are used in Arc.
+\section{Visitor pattern}\label{sec:visitorpattern}
 
-% The listener pattern, is not responsible for calling methods to traverse the tree. ANTLR generates enter and exit methods for each rule, these methods are then called when the walker encounters a node. The benefits of using the listener pattern, is that it is automatic, and the methods created do not have to explicitly visit all their child nodes\cite{Parr2014}. \feedback{We are unsure of how correct this actually is, taken from: Page 18}
+This section goes into detail about working with the integrated visitor pattern that \gls{antlr} provides its users with. There are multiple ways of traversing the \gls{cst}, with the two most popular being the listener and the visitor classes. Running the \gls{antlr} tools without any extra flags, results in the listener class being chosen by default. The difference between the two is that the listener is called by the walker-object provided by ANTLR, whereas the visitor must be called explicitly in order to walk its children \cite{Parr2014}. The listener is great for creating a \gls{cst} in which all of the nodes gets visited and none are ignored. It is thus an automatic process. Therefore, we can do the tree walking ourselves by choosing the visitor class, rather than simply reacting to the tree walker by choosing the listener class.
 
-The visitor pattern, is a method used to traverse the \gls{cst} in a specific manner, where methods are used to visit each child node. By using the visitor pattern, there is more control of how the traversal of the \gls{cst} is done, and how much of the \gls{cst} is visited. ANTLR can generate a visitor interface, this interface is created from Arcs grammar, and basevisitor abract class is also created it functions as a boilerplate for the a visitor implemementation.\cite{Parr2014}.
+The visitor design pattern is a way to traverse the \gls{cst} in such a way that allows us to add new operations to an existing structure without having to modify it. It makes it both fast and easy to scale classes and fulfills the open/closed principle, by allowing extension and no modification. The 'Visitor' interface and the abstract 'BaseVisitor' class created by \gls{antlr} is necessary for the visitor implementation.
+
+
+
+
+
 
 The arc implemementation makes use of the visitor pattern, because it provides flexibility in how each node is handled and allows for good scalebility. It is also the more extendable option because new kinds of nodes are chagenges to old nodes are handled in just one place each\todo{is this understandeble}. This is especially good for futureproofing, as there might be certain things that had not been predicted, and can therefore be specifically fixed.
 
