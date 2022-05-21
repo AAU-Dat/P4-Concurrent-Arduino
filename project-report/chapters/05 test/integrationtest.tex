@@ -2,9 +2,9 @@
 
 % https://dzone.com/articles/integration-testing-what-it-is-and-how-to-do-it-ri#:~:text=What%20Is%20System%20Integration%20Testing,together%20into%20a%20complete%20system
 
-In this section the integration test will be describe as a hypothetical test, due to the timeframe within the scope of this semester. This means that the integration test will be described as how we intended to create integration test.
+This section will describe the integration test as a hypothetical test; due to the timeframe within the scope of this semester. This means that the integration test will be described as how we intended to create an integration test.
 
-Integration test is a test method, which test how well components and units test intereact with eacher other; To make sure that each of the components or units can intergrate with each other without any errors or bugs. When creating integration test there are some popular structures you can follow to make sure that the integration test follows the same structure and to make sure the qualitative of the test is high enough. Some of the structures that can be followed is:
+An integration test is a test method that tests how well components and units interact with each other; To make sure that each of the components or units can interact without any errors or bugs. When creating an integration test, you can follow some famous formats to ensure that the integration test follows the same format and to ensure the qualitative of the test is high enough. Some of the forms are:
 
 \begin{enumerate}
     \item Big Bang Approached
@@ -14,9 +14,9 @@ Integration test is a test method, which test how well components and units test
     \item Hybrid/Sandwhich Integration
 \end{enumerate}
 
-The structure that would fit best in our implementation compared to how we have created our implementation part in the report would be the Big Bang Approach. The Big Bang Approach is one of the most used structures in integration test, where the purpose of this test structure is to group all of the components and unit test and test it all at once. In our case this fits perfectly, as we would like to test if some specific source code can be transpilet to a specific target code as C++. And to check if the transpilet code is semantic equivalent to the source code. A disadvantage of using Big Bang Approach is if an error occour or a bug makes the program fail, it is hard to figure out which components or unit that is to blame for the errors [ref: to link].
+The form that would fit best in our implementation compared to how we have created our implementation part in the report would be the Big Bang Approach. The Big Bang Approach is one of the most used structures in an integration test, where the purpose of this test structure is to group all of the components and unit tests and test them all at once. In our case, this fits perfectly, as we would like to try if some specific source code can be transpile to a particular target code as C++. And to check if the transpile code is semantic equivalent to the source code. A disadvantage of using the Big Bang Approach is that if an error occurs or a bug makes the program fail, it is hard to determine which components or units are to blame for the mistakes [ref: to link].
 
-So for this project, we could chose to test the lexer and parser to check if we get the corect syntax and toksen generated from a specific source code. But, as this part is already throughly tested by ANTLR, we can with certianty assume that this park work as intended. It would make more sense for us to test the compiler as a whole unit, to check wether or not we get the correct output code as we expect to get.
+So for this project, we could choose to test the lexer and parser to check if we get the correct syntax and token generated from a specific source code. But, as this part is already thoroughly tested by ANTLR, we can certainly assume that this park works as intended. It would make more sense for us to try the compiler as a whole unit to check whether or not we get the correct output code we expect to get. The code we want to test can be seen at [ref: arc code].
 
 % Test the compiler as whole, and if the target code is the same as the inputted code? Check if its equivalent in the semantic meaning.
     % Give some input code
@@ -27,43 +27,104 @@ So for this project, we could chose to test the lexer and parser to check if we 
 % Arc code example
 \begin{listing}[htb!]
     \begin{minted}[label=Arc code example]{java}
-    num buttonState = 0;
-    mut num switch = 0;
-    #pin BUTTON_PIN(12, INPUT);
-    #pin LED_PIN(11, OUTPUT);
+        mut num buttonState = 0;
+        mut num switch = 0;
+        #pin BUTTON_PIN(12, INPUT);
+        #pin LED1_PIN(10, OUTPUT);
+        #pin LED2_PIN(11, OUTPUT);
 
-    task(num switch) every 1000 {
-        if(switch == 0){
-            digitalWrite(led_builtin, HIGH);
-            switch = 1;
-        } else {
-            digitalWrite(led_builtin, LOW);
-            switch = 0;
+        task(num switch) every 1000 {
+            if(switch == 0){
+                digitalWrite(LED1_PIN, HIGH);
+                switch = 1;
+            } else {
+                digitalWrite(LED1_PIN, LOW);
+                switch = 0;
+            }
         }
-    }
 
-    num blinkLED(num buttonState){
-        if(buttonState == 1){
-            digitalWrite(LED_PIN, HIGH);
-        } else {
-            digitalWrite(LED_PIN, LOW);
+        num blinkLED(num buttonState){
+            if(buttonState == 1){
+                digitalWrite(LED2_PIN, HIGH);
+            } else {
+                digitalWrite(LED2_PIN, LOW);
+            }
         }
-    }
 
-    task() {
-        buttonState = digitalRead(BUTTON_PIN);
-        blinkLED();
-    }
+        task(num buttonState) {
+            buttonState = digitalRead(BUTTON_PIN);
+            blinkLED(buttonState);
+        }
     \end{minted}
     \caption{Arc code example}
     \label{lst:arc code example}
 \end{listing}
 
+When compiling the code from the Arc example, we want to check after the output code in our target language has the exact semantic equivalent. We do this by manually looking through the new transpile code and going through each line of code to see if it does the same as the source code. As you can see in the transpile code at [ref: transpile code], both of the codes have the exact equivalent semantics, and therefore we can say that the test of the compiler as a whole work as intended.
 
 % C++ Generated code from Arc code example
 \begin{listing}[htb!]
     \begin{minted}[label=Generated C++ code from Arc code example]{java}
+        #include "protothreads.h"
+        float _buttonState = 0;
+        float _switch = 0;
+        #define _BUTTON_PIN 12
+        #define _LED1_PIN 10
+        #define _LED2_PIN 11
+        pt pt0;
+        int pt0thread(struct pt *pt){
+            PT_BEGIN(pt);
+            for (;;)
+            {
+                if (_switch == 0)
+                {
+                    digitalWrite(_LED1_PIN, HIGH);
+                    _switch = 1;
+                }
+                else
+                {
+                    digitalWrite(_LED1_PIN, LOW);
+                    _switch = 0;
+                }
+                PT_SLEEP(pt, 1000);
+            }
+            PT_END(pt);
+        }
+        float _blinkLED(float _buttonState){
+            if (_buttonState == 1)
+            {
+                digitalWrite(_LED2_PIN, HIGH);
+            }
+            else
+            {
+                digitalWrite(_LED2_PIN, LOW);
+            }
+        }
+        pt pt1;
+        int pt1thread(struct pt *pt){
+            PT_BEGIN(pt);
+            for (;;)
+            {
+                _buttonState = digitalRead(_BUTTON_PIN);
+                _blinkLED(_buttonState);
+                PT_YIELD(pt);
+            }
+            PT_END(pt);
+        }
 
+        void setup(){
+            Serial.begin(9600);
+            pinMode(_BUTTON_PIN, INPUT);
+            pinMode(_LED1_PIN, OUTPUT);
+            pinMode(_LED2_PIN, OUTPUT);
+            PT_INIT(&pt0);
+            PT_INIT(&pt1);
+        }
+
+        void loop(){
+            PT_SCHEDULE(pt0thread(&pt0));
+            PT_SCHEDULE(pt1thread(&pt1));
+        }
     \end{minted}
     \caption{Generated C++ code from Arc code example}
     \label{lst:generated C++ code from Arc code example}
