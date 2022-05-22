@@ -207,6 +207,7 @@ The semantics of the concurrently running tasks are described in Table~\ref{tab:
         $TASK_{LOOP-1}$ & $\frac
             {(S, env_V, env_F, sto) \Rightarrow (S^\prime, env_V, env_F, sto^\prime)}
             {(\{|\dots T_i \dots|\}, env, sto) \Rightarrow (\{|\dots T_i \dots S^\prime|\}, env, sto^\prime)}$ \\ [12pt]
+                        & where $T_i = (S, r, trig, env_V, env_F)$                                             \\ [12pt]
         $TASK_{LOOP-2}$ & $\frac
             {(S, env_V, env_F, sto) \Rightarrow (env_V, env_F, sto^\prime)}
             {(\{|\dots T_i \dots|\}, env, sto) \Rightarrow (\{|\dots T_i \dots|\}, env, sto^\prime)}$          \\ [12pt]
