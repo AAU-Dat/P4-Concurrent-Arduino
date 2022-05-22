@@ -1,32 +1,44 @@
 \section{Scoping}\label{sec:scoping}
-Scoping describes where variables are visible, meaning when a variable can be referenced or assigned. This is an important part of a programming language, since identifiers often are reused, such as i for an iteration. Because of this, scoping is used to differ variables from eachother and also to either allow references to variables or to inhibit reference. For this there are two general types of scoping, dynamic and static.
 
-Static scoping, means that the scope of variabels is determined staticly, meaning it is done before execution of the program. Static scope is used in many languages, including C and C\#. Static scoping is said to be more readable, since the code often shows directly the value of the variable. When a reference to a variable is found, following previous references and finally the assignment to that variable, the value of that variable can be determined. An example of static typing, can be seen in Listing~\ref{lst:scopeexample}.
+Scoping is a description of when and where a variable is visible, can be referenced or assigned a value. It is an important part of any programming language. Identifiers are often reused - some even commonly, such as the iterator 'i' used in loop constructs or 'temp' for temporary local variables and so on. Scoping is very useful for handling the different layers of a code. We typically distinguish between two types of scoping: dynamic and static.
 
-Dynamic scoping, means that the scope of variabels is determined during run time of the program. Dynamic scope is used in languages including Perl and Common Lips. Dynamic scoping works by using the calling sequence of subprograms to determine the value of eks. a varible. Because of this it cannot be determined staticly as static scoping, and mus tbe done during run time. Dynamic scoping decreases readability of the code, since it can be difficult to know the exact calling sequence of subprograms that contain references to a variable~\cite{Sebesta2016}. An example of how dynamic scoping works, can be seen in Listing~\ref{lst:scopeexample}.\todo{Seems more relevant to the section on language design instead. This section should be about the concrete implementation of Arcs scoping rules than the general ideas of scoping.}
+Static scoping, as the name implies, means that the scope of variables are determined statically, before the execution of a program. Static scoping is used by many languages, including C and C\#. Static scoping is said to be more readable, since the code often directly shows the value of a variable. When a reference to a variable is found and we want to know the value, we can follow the variable from its initialisation and look at any changes to the value of the variable in previous references. This means that the compiler first looks for the variable in the current block, then the global variables, and then in smaller scopes.
+
+Dynamic scoping, on the contrary, means that the scope of variables is determined at run time. Dynamic scoping, albeit not as popular, is used in languages such as Perl and Common Lisp. Dynamic scoping works by using the calling sequence of subprograms to determine the value of a variable. It is said to decrease readability while it can be difficult to know exactly which calling sequences of subprograms contains a reference to a variable \cite{Sebesta2016}. This means that the compiler first looks in the current block; but then it moves on to each successive calling function in reverse. An example of the difference between static and dynamic scoping can be seen in Listing \ref{lst:scopeexample}.
 
 \begin{listing}[htb!]
     \begin{minted}{C}
-        int a = 5;
+        int a;
 
-        int fun1(x){
-            return x + a
-        }
-        int fun2(){
+        void main()
+        {
             a = 10;
-            return fun1(10);
+            f();
         }
-        print(fun2());
+
+        void f()
+        {
+            int a = 20;
+            g();
+        }
+
+        void g()
+        {
+            print (a);
+        }
+
+        // static scope, prints: 10
+        // dynamic scope, prints: 20
     \end{minted}
-    \caption{An example of how static and dynamic scope differs}
+    \caption{An example of how static and dynamic scoping differs.}
     \label{lst:scopeexample}
 \end{listing}
 
-When using static scoping, Listing~\ref{lst:scopeexample} will print '15', because of the variable a assigned in the beginning being a global variable, and fun1 using that with the x given as it's parameter. Compared to dynamic scoping where there would be printed '20', this is because of the previously mentioned calling sequence. The variable 'a' is assigned to '5', but then in fun2() it is updated to '10' and this value is then used in fun1().
+If the code snippet uses static scoping, the print method is going to print '10'. While the variable 'a' is not available in the scope of function 'g', the compiler is going to look in the global scope and find a variable 'a' there. In the 'main' function the variable 'a' is assigned the value of 10. In function 'f' another varibale 'a' is instantiated and immediately assigned the value of 20, however, 'a' in this function refers to the local variable and has nothing to do with the global 'a'. If the code snippet uses dynamic scoping, the print method is going to print '20'. Instead of looking at the global variables, the compiler goes back to the calling function 'g' and looks for a variable 'a', which it finds and then prints as the result.
 
-Arc uses static scoping, as it more simple to read and understand for users, and C++ uses a variant of static scoping. Because of this it makes sense for Arc to also a simillar scoping.
+Arc uses static scoping because of it being more readable and easier to understand. C++ uses a variant of static scoping, which also makes it more reasonable for Arc to use a similar scope.
 
-In the implementation the creation of the different scopes is primarily archieved through Block structure we use in our syntax. The visitation of this structure is when we push and pop the stack of scopes. This can be seen in Listing~\ref{lst:VisitBlock} Where the visitor visit this node we first push to the context then visit its children and Afterwards we pop this scope that is no longer needed.
+The implementation of different scopes is primarily handled by the block structure in our syntax. We push and pop the stack of scopes upon visitation. This can be seen in Listing {lst:VisitBlock}. The visitor begins by pushing the scope onto the stack in \textbf{line 2}, then it goes on to visit its children before popping the scope in \textbf{line 9}, when it is no longer needed.
 
 \begin{listing}[htb!]
     \begin{minted}{java}
@@ -43,11 +55,11 @@ In the implementation the creation of the different scopes is primarily archieve
         return block;
     }
     \end{minted}
-    \caption{VisitBlock from our evalvisitor}
+    \caption{VisitBlock from our visitor.}
     \label{lst:VisitBlock}
 \end{listing}
 
-Our Scoping rules are implemented everywhere in our semantic visitor, an example of how it works can be seen in Listing~\ref{lst:ScopeImplementationExample} where it can be seen that our forloop use a call to our symbolTable to check if the identifier given as input has been declared. This archieved using the get function showed earlier, which returns null if it does not exist.
+The scoping rules of Arc is implemented everywhere in our semantic visitor. An example of this can be seen in Listing \ref{lst:ScopeImplementationExample}. When the visitor reaches a for-loop, it makes a call to the symbolTable to check for the identifier given as input and find out if it has been declared properly. The get function returns null if it does not exist, therefore, we check if the 'entry' identifier is null before continuing.
 
 \begin{listing}[htb!]
     \begin{minted}{java}
@@ -63,11 +75,3 @@ Our Scoping rules are implemented everywhere in our semantic visitor, an example
     \caption{The SymbolHashTableEntry class}
     \label{lst:ScopeImplementationExample}
 \end{listing}
-
-
-
-%What is scoping
-%Blocks
-%Types of scoping
-%Pros and cons of the two
-%What does Arc use
