@@ -7,7 +7,7 @@ The scope rules govern visibility, hiding some parts of a program from others. I
 The Arduino language has static scope, with nested and flat block structures~\cite{cppref}. Blocks are declarable within other blocks (nested), but functions within other functions are not (flat). Arc will have similar scope rules, making compilation more straightforward as source code and target code resemble each other when it comes to scope. Figure~\ref{fig:arcscoperules} shows a graphical model of Arc's scope rules.
 
 
-\begin{figure}[htbp]
+\begin{figure}[htb!]
     \centering
     \begin{tikzpicture}[
             double/.style={draw, anchor=text, rectangle split,rectangle split parts=2},
@@ -68,39 +68,37 @@ Following the standard of~\cite{Huttel2010}, sets are bolded and begins with a c
     \centering
     \begin{tabular}{l}
         \toprule
-        $\textbf{Val} = \textbf{Num} \cup \textbf{Bool} \cup \textbf{Char} \cup \textbf{Array} \cup \textbf{Pin}\ -$ Values                                                        \\
-        $\textbf{Pin} = \textbf{PinValues} \times \textbf{Modes}\ -$ Pins are tuples of Arduino pins and modality                                                                  \\
-        $\textbf{Array} = \mathbb{N} \rightharpoonup \textbf{Val} \setminus \textbf{Pin}\ -$ Arrays map numbers to non-pin values                                                  \\
-        $\textbf{Par} = \textbf{Types} \times \textbf{Var}\ -$ Set of possible formal parameters                                                                                   \\
-        $\textbf{Trig} = \{\epsilon, (\text{every} \times \mathbb{N}), (\text{when} \times \textbf{Expr}) \}\ -$ Set of triggers                                                   \\
-        $v \in \textbf{Val}\ -$ Literal values                                                                                                                                     \\
-        $x \in \textbf{Var}\ -$ Variable id                                                                                                                                        \\
-        $f \in \textbf{Fun}\ -$ Function id                                                                                                                                        \\
-        $t \in \textbf{Types}\ -$ Type names                                                                                                                                       \\
-        $y \in \textbf{Par}*\ -$ Formal parameter lists                                                                                                                            \\
-        $r \in \textbf{Var}*\ -$ Reference parameter lists                                                                                                                         \\
-        $S \in \textbf{Stm}\ -$ Statements                                                                                                                                         \\
-        $l \in \textbf{Loc}\ -$ An arbitrary location in \textbf{Loc}                                                                                                              \\
-        next $\ -$ A special 'pointer' holding the value of the next element in \textbf{Loc}                                                                                       \\
-        new $: \textbf{Loc} \rightarrow \textbf{Loc}\ -$ function to return succesor location                                                                                      \\
+        $\textbf{Val} = \textbf{Num} \cup \textbf{Bool} \cup \textbf{Char} \cup \textbf{Array} \cup \textbf{Pin}\ -$ Values                                            \\
+        $\textbf{Pin} = \textbf{PinValues} \times \textbf{Modes}\ -$ Pins are tuples of Arduino pins and modality                                                      \\
+        $\textbf{Array} = \mathbb{N} \rightharpoonup \textbf{Val} \setminus \textbf{Pin}\ -$ Arrays map numbers to non-pin values                                      \\
+        $\textbf{Par} = \textbf{Types} \times \textbf{Var}\ -$ Set of possible formal parameters                                                                       \\
+        $\textbf{Trig} = \{\epsilon, (\text{every} \times \mathbb{N}), (\text{when} \times \textbf{Expr}) \}\ -$ Set of triggers                                       \\
+        $v \in \textbf{Val}\ -$ Literal values                                                                                                                         \\
+        $x \in \textbf{Var}\ -$ Variable id                                                                                                                            \\
+        $f \in \textbf{Fun}\ -$ Function id                                                                                                                            \\
+        $t \in \textbf{Types}\ -$ Type names                                                                                                                           \\
+        $y \in \textbf{Par}^*\ -$ Formal parameter lists                                                                                                               \\
+        $r \in \textbf{Var}^*\ -$ Reference parameter lists                                                                                                            \\
+        $S \in \textbf{Stm}\ -$ Statements                                                                                                                             \\
+        $l \in \textbf{Loc}\ -$ An arbitrary location in \textbf{Loc}                                                                                                  \\
+        next $\ -$ A special 'pointer' holding the value of the next element in \textbf{Loc}                                                                           \\
+        new $: \textbf{Loc} \rightarrow \textbf{Loc}\ -$ function to return succesor location                                                                          \\
         \\
-        $\textbf{Sto} = \textbf{Loc} \rightharpoonup \textbf{Val}\ -$ Set of stores                                                                                                \\
-        $\textbf{Env}_V = \textbf{Var} \cup \{\text{next}\} \rightharpoonup \textbf{Loc}\ -$ Set of variable environments                                                          \\
-        $\textbf{Env}_F = \textbf{Fun} \rightharpoonup \textbf{Stm} \times \mathcal{P} (\textbf{Par}) \times \textbf{Env}_V \times \textbf{Env}_F\ -$ Set of function environments \\
-        $\textbf{Env}_T = \textbf{Stm} \times \mathcal{P} (\textbf{Var}) \times \textbf{Trig} \times \textbf{Env}_V \times \textbf{Env}_F\ -$ Set of task environments             \\
+        $\textbf{Sto} = \textbf{Loc} \rightharpoonup \textbf{Val}\ -$ Set of stores                                                                                    \\
+        $\textbf{Env}_V = \textbf{Var} \cup \{\text{next}\} \rightharpoonup \textbf{Loc}\ -$ Set of variable environments                                              \\
+        $\textbf{Env}_F = \textbf{Fun} \rightharpoonup \textbf{Stm} \times \textbf{Par}^* \times \textbf{Env}_V \times \textbf{Env}_F\ -$ Set of function environments \\
+        $\textbf{Env}_T = \textbf{Stm} \times \textbf{Var}^* \times \textbf{Trig} \times \textbf{Env}_V \times \textbf{Env}_F\ -$ Set of task environments             \\
         \bottomrule
     \end{tabular}
     \caption{Sets and function definitions.}
     \label{tab:setsandfunctions}
 \end{table}
 
-\supervisor{Should we define types as $\{\epsilon, mut\} \times \textbf{Typenames} \cup \textbf{Typenames}$}
+
+Additionally, we define the notation for updating a given environment $env_V \in \textbf{Env}_V$ we write $env_V[ x \mapsto l]$ to denote the update of $env_V$ given by~\ref{eqn:variableenvironment}
 
 
-Additionally, we define the notation for updating a given environment $env_V \in \textbf{Env}_V$ we write $env_V[ x \mapsto l]$ to denote the update of $env_V$ given by
-
-
-\begin{equation}
+\begin{equation}\label{eqn:variableenvironment}
     env_V[x \mapsto l](y) =
     \begin{cases}
         env_V(y) & y \neq x \\
@@ -109,10 +107,10 @@ Additionally, we define the notation for updating a given environment $env_V \in
 \end{equation}
 
 
-and $env_F[ f \mapsto (S, y, env_V, env_F)]$ for $env_F$
+\noindent and $env_F[ f \mapsto (S, y, env_V, env_F)]$ for $env_F$ given by~\ref{eqn:functionenvironment}
 
 
-\begin{equation}
+\begin{equation}\label{eqn:functionenvironment}
     env_F[f \mapsto (S, y, env_V, env_F)](g) =
     \begin{cases}
         env_F(g)             & g \neq f \\
@@ -121,17 +119,17 @@ and $env_F[ f \mapsto (S, y, env_V, env_F)]$ for $env_F$
 \end{equation}
 
 
-and similarly for a $sto \in \textbf{Sto}$ we write $sto[ l \mapsto v ]$ to indicate the update of $sto$ given by
+\noindent and similarly for a $sto \in \textbf{Sto}$ we write $sto[ l \mapsto v ]$ to indicate the update of $sto$ given by~\ref{eqn:store}
 
 
-\begin{equation}
+\begin{equation}\label{eqn:store}
     sto[l \mapsto v](l^\prime) =
     \begin{cases}
         sto(l) & l \neq l^\prime \\
         v      & l = l^\prime
     \end{cases}
 \end{equation}
-\todo{Missing $env_T$ definition. Should just be a set union an element.}
+
 
 With the above definitions of the environment store model and the scope rules, Arc's declarations are described using operational semantics in Table~\ref{tab:arcscoperules}. Because of the static scope rules, the environments are contained within the results of the partial functions for variables and functions. Unlike the variable and function environments, the task environment is not a set of partial functions. This is because unlike function declarations, tasks are not used within other tasks, and as such does not need to map them.
 
@@ -172,11 +170,7 @@ With the above definitions of the environment store model and the scope rules, A
 \end{table}
 
 
-To use the declared bindings we further define their calling and usage. Variables are immutable, and it therefore makes sense to have functions use call-by-value for the parameters. Function calls should not allow recursion, as this makes the runtime memory usage of the Arduino more stable.
-
-Tasks are once again special. They are never called explicitly in Arc code, but the set of all declared tasks serve as the entrypoint of the program. This is done through parallel composition and invocation of all declared tasks, of which there must be at least one.
-
-Also of importance is that the parameters of a task describe a mutable reference to a declared variable in $env_V$, that critically cannot be used in another task. This means that task declarations have no formal parameters, only references to actual parameters.
+To use the declared bindings we further define their calling and usage. Variables are immutable, and it therefore makes sense to have functions use call-by-value for the parameters. Function calls also should not allow recursion, as this makes the runtime memory usage of the Arduino more stable. The semantics for function calls can be seen in Table~\ref{tab:functioncalls}.
 
 
 \begin{table}[htb!]
@@ -189,15 +183,41 @@ Also of importance is that the parameters of a task describe a mutable reference
         $FUN_{CALL-2}$ & $\langle f(v_1,\dots,v_i), env, sto \rangle \Rightarrow$                                                              \\
                        & $\qquad \langle \{y_1 = v_1;\dots;y_i = v_i; S\}, (env^\prime_V, env^\prime_F):env, sto \rangle$                      \\ [12pt]
 
-                       & where $env_F(f) = \langle S, y, env^\prime_V, env^\prime_F \rangle$                                                   \\
+                       & where $env_F(f) = (S, y, env^\prime_V, env^\prime_F)$                                                                 \\
                        & and $env = (env_V, env_F) : env^\prime $                                                                              \\
                        & and $y = y_1,\dots,y_i$                                                                                               \\
-        $ENTRY$        & $\frac{}
-            {env \vdash (\{|\dots T_i \dots|\}, sto) \Rightarrow (\{|\dots T_i \dots|\}, sto^\prime)}$                                         \\ [12pt]
         \bottomrule
     \end{tabular}
-    \caption{Semantics for function calls and task invocation.}
-    \label{tab:callandentry}
+    \caption{Semantics for function calls.}
+    \label{tab:functioncalls}
+\end{table}
+
+
+Tasks are once again special. Taks are never called explicitly in Arc code, but the set of all declared tasks serve as the entrypoint of the program. This is done through parallel composition and invocation of all declared tasks, of which there must be at least one.
+
+Also of importance is that the parameters of a task describe a mutable reference to a declared variable in $env_V$, that critically cannot be used in another task. This means that task declarations have no formal parameters, only references to actual parameters.
+
+The semantics of the concurrently running tasks are described in Table~\ref{tab:taskinvocation}. The composition of all tasks are created from $env_T$, which is a set build of declared tasks, such that $env_T \rightarrow \{T_1 \dots T_n \}$ where $n = |env_T|$.
+
+
+\begin{table}[htb!]
+    \centering
+    \begin{tabular}{ll}
+        \toprule
+        $TASK_{LOOP-1}$ & $\frac
+            {(S, env_V, env_F, sto) \Rightarrow (S^\prime, env_V, env_F, sto^\prime)}
+            {(\{|\dots T_i \dots|\}, env, sto) \Rightarrow (\{|\dots T_i \dots S^\prime|\}, env, sto^\prime)}$ \\ [12pt]
+        $TASK_{LOOP-2}$ & $\frac
+            {(S, env_V, env_F, sto) \Rightarrow (env_V, env_F, sto^\prime)}
+            {(\{|\dots T_i \dots|\}, env, sto) \Rightarrow (\{|\dots T_i \dots|\}, env, sto^\prime)}$          \\ [12pt]
+                        & where $T_i = (S, r, trig, env_V, env_F)$                                             \\ [12pt]
+        $TASK_{LOOP-3}$ & $\frac
+            {(S, env_V, env_F, sto) \Rightarrow (env_V, env_F, sto^\prime)}
+            {(\{|\dots T_i \dots S|\}, env, sto) \Rightarrow (\{|\dots T_i \dots|\}, env, sto^\prime)}$        \\
+        \bottomrule
+    \end{tabular}
+    \caption{Semantics for the parallel invocation of tasks as a programs entrypoint.}
+    \label{tab:taskinvocation}
 \end{table}
 
 

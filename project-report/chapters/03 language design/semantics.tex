@@ -5,7 +5,7 @@ For a complete definition of a programming language, syntax, contextual constrai
 
 
 \subsection{Number as float}\label{subsec:numberAsFloats}
-In Arc every number is a float. At first glance it looked like a good solution for simplicity. However, as we progressed on the project we discovered that the semantics of floats works differently between mathematics with real numbers and floating-point arithmetic. As illustrated in Listing~\ref{lst:semanticDifference}, the difference is clearly visible between floats and real numbers.
+In Arc every number is a float. At first glance it looked like a good solution for simplicity. However, as we progressed on the project we discovered that the semantics of floats works differently between mathematics with real numbers and floating-point arithmetic. As illustrated in Listing~\ref{lst:semanticDifference}, the difference is clearly visible between floats and real numbers.\question{Move section to discussion?}
 
 
 \begin{listing}[htb!]
@@ -13,12 +13,10 @@ In Arc every number is a float. At first glance it looked like a good solution f
         0.1 + 0.2 == 0.3 //false in floating-point arithmetic but true in real numbers.
         0.1 + 0.2 == 0.30000000000000004 //true in floating point, false in real numbers
     \end{minted}
-    \caption{Example of semantic difference between floating-point arithmetic and mathematical notation}
+    \caption{Example of difference between floating-point arithmetic and mathemematics.}
     \label{lst:semanticDifference}
 \end{listing}
 
-
-\question[inline]{Move section to discussion?}
 
 This is problematic at best. To the amateur programmers which Arc is supposed to cater to, this can be both counter intuitve and bothersome, if they are not familiar with floating point arithmetic. This can lead to the programmer expecting a different result from their code and lead to unneccesary frustration. If they expect the code in the example to result to the real numbers result of the calculation, they might not even understand how to fix the issue at hand.
 
@@ -29,7 +27,7 @@ For the most part, Arc's semantics follow the semantics described in~\cite{Hutte
 Expressions in Arc can be explained similarly to the small-step semantics presented on~\cite[p.~37]{Huttel2010} extended with the environment-store model from section~\ref{subsec:scoperules}. Table~\ref{tab:divisionsemantics} contains the semantics for division with the environment-store model.
 
 
-\begin{table}[htbp]
+\begin{table}[htb!]
     \centering
     \begin{tabular}{ll}
         \toprule
@@ -71,14 +69,16 @@ The type rules also define rules for boolean expressions, but these are not incl
 For the statements, Arc uses similar rules to those found in~\cite[Ch.~10]{Huttel2010}, and the rules for \textit{for statement} in Table~\ref{tab:statementsemantics}.
 
 
-\begin{table}[htbp]
+\begin{table}[htb!]
     \centering
     \begin{tabular}{ll}
+        \toprule
         $FOR_{STMT-1}$ & $\langle \text{for } t \ x_1 \text{ in } x_2 \ \{ S \}, sto, env \rangle \Rightarrow$                                      \\
                        & $\qquad \langle x_1 = v; \text{ for } t \ x_1 \text{ in } x^\prime_2 \ \{ S \}, sto, env \rangle$                          \\
                        & where $x_2 = v : x^\prime_2$                                                                                               \\[12pt]
         $FOR_{STMT-2}$ & $\langle \text{for } t \ x_1 \text{ in } x_2 \ \{ S \}, sto, env \rangle \Rightarrow \langle x_1 = v; S, sto, env \rangle$ \\
-                       & where $x_2 = v : \epsilon$
+                       & where $x_2 = v : \epsilon$                                                                                                 \\
+        \bottomrule
     \end{tabular}
     \caption{Semantics for statements in Arc}
     \label{tab:statementsemantics}
