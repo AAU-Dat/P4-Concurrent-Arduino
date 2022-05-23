@@ -6,6 +6,26 @@ This section will discuss the language design of Arc, the decisions made, and wh
 Many decisions have to be made during language design; this section will discuss a few of those decisions made and alternative options.
 As mentioned in section \todo{Add section reference}, Arc makes use of a single data type to represent all numbers, called num, and is treated as a float. Compared to many other languages that include multiple different types to represent different categories of numbers. This decision was made based on the assumption that using a single data type that represents all numbers would be easier and faster to work with than a system, e.g., Int and Float. In section \ref{subsec:numberAsFloats} some of the issues of this decision are briefly mentioned, such as the simple expression in listing \ref{lst:semanticDifference} evaluating to false, when logically it should evaluate to true. This could prove problematic for new users to understand and make specific issues in a program hard to fix, as the solution is not entirely clear. For this reason, it could be argued that dividing num into int and float would be a better option as this would solve some of the issues of num.
 
+
+
+\subsection{Number as float}\label{subsec:numberAsFloats}\todo{write into discussion}
+In Arc, every number is a floating-point number. At first glance, it looked like a good solution for simplicity. However, as we progressed on the project, we discovered that the semantics of floats works differently between mathematics with real numbers and floating-point arithmetic. As illustrated in Listing~\ref{lst:semanticDifference}, the difference between floats and real numbers is visible.
+
+
+\begin{listing}[htb!]
+    \begin{minted}[label=Semantic meaning of floats]{text}
+        0.1 + 0.2 == 0.3 //false in floating-point arithmetic but true in real numbers.
+        0.1 + 0.2 == 0.30000000000000004 //true in floating point, false in real numbers
+    \end{minted}
+    \caption{Example of difference between floating-point arithmetic and mathemematics.}
+    \label{lst:semanticDifference}
+\end{listing}
+
+
+To the amateur programmers whom Arc is supposed to cater to, this can be counterintuitive and bothersome if they are unfamiliar with floating-point arithmetic. If they expect the code in the example to result in the real numbers result of the calculation, they might not even understand how to fix the issue at hand. This inconsistency can lead to the programmer expecting a different result from their code and lead to unnecessary frustration.
+
+
+
 %Since Arc is a language based on giving access to simple use of concurrency, it is important that the constructs used for this, are simple and understandable. Arc ended up with three main concurrency structures, \textbf{When}, \textbf{Where}, and the idle task. The task construct uses the task keyword to define it as a function that works concurrently, then it has its trigger or event that executes the body of the task. There has been an effort in designing the triggers to be understood as they are read, the every trigger is a time based trigger, that can be read as: "This task will execute every 1000 miliseconds". The same concept holds for every. The task with no trigger is the idle task, which is the more abstract task of the three, as it does not have a direct trigger, instead it executes whenever possible. 
 
 Parameters given to a task are mutable; this was done to prevent issues such as race conditions. Although it might have been a better option to leave this up to the user to handle, giving them more control over the program. They then would learn the concepts and issues that can arise from working with concurrency and how to handle them accordingly.

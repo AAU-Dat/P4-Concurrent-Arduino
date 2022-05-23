@@ -3,23 +3,6 @@ The contextual constraints of Arc specify whether there is meaning in some struc
 
 For a complete definition of a programming language, syntax, contextual constraint, and semantics are required. This section describes Arc's important semantics using operational semantics.
 
-
-\subsection{Number as float}\label{subsec:numberAsFloats}
-In Arc, every number is a floating-point number. At first glance, it looked like a good solution for simplicity. However, as we progressed on the project, we discovered that the semantics of floats works differently between mathematics with real numbers and floating-point arithmetic. As illustrated in Listing~\ref{lst:semanticDifference}, the difference between floats and real numbers is visible.\question{Move section to discussion?}
-
-
-\begin{listing}[htb!]
-    \begin{minted}[label=Semantic meaning of floats]{text}
-        0.1 + 0.2 == 0.3 //false in floating-point arithmetic but true in real numbers.
-        0.1 + 0.2 == 0.30000000000000004 //true in floating point, false in real numbers
-    \end{minted}
-    \caption{Example of difference between floating-point arithmetic and mathemematics.}
-    \label{lst:semanticDifference}
-\end{listing}
-
-
-To the amateur programmers whom Arc is supposed to cater to, this can be counterintuitive and bothersome if they are unfamiliar with floating-point arithmetic. If they expect the code in the example to result in the real numbers result of the calculation, they might not even understand how to fix the issue at hand. This inconsistency can lead to the programmer expecting a different result from their code and lead to unnecessary frustration.
-
 \subsection{Semantic rules}\label{subsec:semanticrules}
 This section explains the choice of semantics. For the most part, Arc's semantics follow the semantics described in~\cite{Huttel2010}. Because Arduino programs are supposed to always loop forever, small-step semantics are used to describe Arc's semantics, unlike the semantics of declarations from section~\ref{subsec:scoperules}, which uses big-step semantics because declarations are atomic operations.
 
