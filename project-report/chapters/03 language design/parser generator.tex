@@ -1,7 +1,8 @@
 \section{Parser generator}\label{sec:parsergenerator}
-For generating lexer and parser code, based on a grammar, there exists many tools to do this automatically. Therefore, a discussion of \textit{JavaCC}, \textit{\gls{antlr}}, and \textit{CUP} precedes the formal language description. The tools mentioned are only a few of those available and have been chosen because the group has experience with them through coursework. It is also possible to write the lexer and parser \textit{by hand}, which many do. Writing the lexer and parser by hand would give greater control over the implementation of the language, and would not require us to learn a new tool.
+Many tools exist to automatically generate lexer and parser code, based on a grammar. Therefore, a \textit{JavaCC}, \textit{\gls{antlr}}, and \textit{CUP} discussion precedes the formal language description. The tools mentioned are only a few of those available and chosen because the group has experience with them through coursework. It is also possible to write the lexer and parser \textit{by hand}, which many do. Writing the lexer and parser by hand would give us greater control over the implementation of the language and would not require us to learn a new tool.
 
-Each tool is evaluated using a reduced fragment of the Bims grammar from Table~\ref{tab:bimsgrammar}~\cite{Huttel2010}. For each tool, the grammar was adapted, and the tool was run with the rewritten grammar as input. The process of rewriting, inputting, and running the tool was compared, and a tool was selected.
+Each tool is evaluated using a reduced fragment of the Bims grammar from Table~\ref{tab:bimsgrammar}~\cite{Huttel2010}. For each tool, the grammar was adapted, and the tool was run with the rewritten grammar as input. Rewriting, inputting, and running the tool were compared, and a tool was selected.
+
 
 
 \begin{table}[htb!]
@@ -24,12 +25,11 @@ Each tool is evaluated using a reduced fragment of the Bims grammar from Table~\
 
 
 \subsection{JavaCC}
-JavaCC stands for Java Compiler Compiler and is an open-source parser generator and lexical analyzer developed by Oracle, written in the Java language. It is one of the most popular parser generators for Java~\cite{JavaCC2021}, and it is very well documented.
+JavaCC stands for Java Compiler Compiler and is an open-source parser generator and lexical analyzer developed by Oracle and written in the Java language. It is well documented and one of Java's most popular parser generators.
 
-JavaCC takes as input a \gls{cfg} in \gls{ebnf} to generate a scanner and a parser based on the input. The parser generated is a Left-to-right, Leftmost derivation with 1 token lookahead (LL(1)) parser by default. However, the parser can be extended to \textit{k} lookahead for parts of the grammar if necessary~\cite{JavaCC2021}.
+JavaCC takes as input a \gls{cfg} in \gls{ebnf} to generate a scanner and a parser based on the input. The parser generated is a Left-to-right, Leftmost derivation with one token lookahead (LL(1)) parser by default. However, the parser can be extended to \textit{k} lookahead for parts of the grammar if necessary~\cite{JavaCC2021}.
 
-Setting up JavaCC requires Java to be installed, and was easy as it is well documented. Having set up, we were able to begin writing our grammar. After setting up, it became clear that writing grammars in JavaCC is simple but a bit hard to read. In JavaCC, the grammar has to be written very similar to code, whereas the syntax of other tools resembles the way it is seen in books, as shown in Table~\ref{tab:bimsgrammar}. An example of JavaCC can be seen in Listing~\ref{List:javaCC}
-
+Setting up JavaCC was easy and only required a Java installation. Having set up, we were able to begin writing our grammar. After setting up, it became clear that writing grammar in JavaCC is simple but a bit hard to read. In JavaCC, the grammar has to be written very similar to code, whereas the syntax of other tools resembles the way it is seen in books, as shown in Table~\ref{tab:bimsgrammar}. An example of JavaCC can be seen in Listing~\ref{List:javaCC}.
 
 \begin{listing}[htb!]
   \centering
@@ -57,8 +57,7 @@ Setting up JavaCC requires Java to be installed, and was easy as it is well docu
 
 
 \subsubsection{Rewriting Bims}
-Because the generated parser is recursive descent LL(1), the input grammar must not be left-recursive. However BIMS, is left-recursive and has to be rewritten, the result can be seen in Table~\ref{tab:bimsrewrite}.
-
+Because the generated parser is recursive descent LL(1), the input grammar must not be left-recursive. However, BIMS is left-recursive and has to be rewritten; the resulting grammar is in Table~\ref{tab:bimsrewrite}.
 
 \begin{table}[htb!]
   \centering
@@ -87,14 +86,14 @@ Because the generated parser is recursive descent LL(1), the input grammar must 
 \end{table}
 
 
-This is a lot more transition rules for the \gls{cfg}, and takes a lot of effort. The \gls{cfg} of Arc would have to be written with this in mind from the start, or the rewrite might not be feasible.
+This \gls{cfg} has many more transition rules and takes a lot of effort to write. The \gls{cfg} of Arc would have to be written with this in mind from the start, or the rewrite might not be feasible.
 
 \subsection{ANTLR4}
-\gls{antlr} is a powerful parser generator that can be used to process, execute, or even translate structured text or binary files. It is widely used around the world by both Twitter and Oracle for parsing queries~\cite{ANTLR_About}.
+\gls{antlr} is a powerful parser generator used to process, execute, or even translate structured text or binary files. It is used worldwide by both Twitter and Oracle for parsing queries~\cite{ANTLR_About}.
 
-One of the major advantages of \gls{antlr} is their high level of support in almost any popular IDE, making it easy to work with regardless of the preferred development environment of the programmer. The ability to generate the lexer, parser and concrete syntax tree from a single grammar file is also very appealing. The grammar is very similar to that of EBNF and utilises a custom parsing technology called Adaptive LL(*) or ALL(*). This differs from the LL(*) used in ANTLR3, by analysing the grammar dynamically at runtime rather than statically, before the parser executes~\cite{Parr2014}.
+One of the advantages of \gls{antlr} is the high level of support in almost any popular IDE, making it easy to work with regardless of the preferred development environment of the programmer. The ability to generate the lexer, parser, and concrete syntax tree from a single grammar file is also very appealing. The grammar is very similar to that of EBNF and utilizes a custom parsing technology called Adaptive LL(*) or ALL(*). This technology differs from the LL(*) used in ANTLR3 by analyzing the grammar dynamically at runtime rather than statically before the parser executes~\cite{Parr2014}.
 
-\gls{antlr} is very easy to work with. One simply installs the plugin in their IDE of choice and read through the simple-to-understand documentation found on the official GitHub page of \gls{antlr}~\cite{ANTLR_Documentation}. Understanding the grammar rules and how to set it up in its respective grammar4 (.g4 file extension) is very manageable thanks to this. After the grammar file has been written it is possible to run the \gls{antlr} tool on it, which then automatically generate a number of files for us, such as a parser, a lexer and a set of tokens. Then the generated code can be compiled against the \gls{antlr} runtime. This also provides the developer with both a visual representation of the created parse tree or a tree in a LISP-like text form, along with a list of tokens found - all of these options are accessible through optional flags during compilation. The fourth major version of \gls{antlr} introduces a lot of new capabilities compared to that of ANTLR3, which helps to reduce the learning curve by making the development of grammars and language applications easier - in part thanks to the powerful extensions and tools included in their plugins.
+\gls{antlr} is very easy to use. Install the plugin in a supported IDE of choice and follow the documentation found on the official GitHub page~\cite{ANTLR_Documentation}. Thanks to this, understanding the grammar rules and how to set it up in its respective grammar4 (.g4 file extension) is very manageable. After the grammar file has been written, it is possible to run the \gls{antlr} tool, automatically generating several files, such as a parser, a lexer, and a set of tokens. Then the generated code can be compiled with the relevant compiler. This process also provides the developer with a visual representation of the created parse tree or a tree in a LISP-like text form and a list of tokens found - all of these options are accessible through optional flags during compilation. The fourth major version of \gls{antlr} introduces a lot of new capabilities compared to ANTLR3, which helps reduce the learning curve by making the development of grammars and language applications easier - in part thanks to the powerful extensions and tools included in their plugins.
 
 
 \begin{listing}[htb!]
@@ -113,7 +112,7 @@ One of the major advantages of \gls{antlr} is their high level of support in alm
 
 
 \subsection{CUP}
-"CUP stands for Construction of Useful Parsers and is a Look-Ahead Left-to-right, Rightmost derivation (LALR) parser generator for Java"~\cite{cupParserGenerator}. CUP implements a standard LALR(1) parser generation. Documentation for CUP recommends using the scanner generator JFlex, as a Lexical Analyzer Generator. Figure~\ref{list:cup} is an example of how CUP was used.
+CUP stands for Construction of Useful Parsers and is a Look-Ahead Left-to-right, Rightmost derivation (LALR) parser generator for Java~\cite{cupParserGenerator}. CUP implements a standard LALR(1) parser generation. Documentation for CUP recommends using the scanner generator JFlex, as a Lexical Analyzer Generator. Listing~\ref{list:cup} is an example of how CUP was used.
 
 
 \begin{listing}[htb!]
@@ -142,13 +141,13 @@ One of the major advantages of \gls{antlr} is their high level of support in alm
 \end{listing}
 
 
-In Figure~\ref{list:cup} we created a simple grammar that could add two integers together; to try using CUP, and to understand how it works.
+In Listing~\ref{list:cup} we created a simple grammar that could add two integers together; to try using CUP, and to understand how it works.
 
 
 \subsubsection{JFlex}
 JFlex is an abbreviation for Java Flex. Flex is an abbreviation for Fast Lexical Analyzer Generator. As the name suggests, it is a tool for generating fast lexers. It makes adjustments to the size and speed of the generated lexer possible.
 
-Figure~\ref{list:jflex} is an example of how JFlex looks, in conjunction with our previously mentioned CUP file.
+Listing~\ref{list:jflex} is an example of how JFlex looks, in conjunction with our previously mentioned CUP file.
 
 
 \begin{listing}[htb!]
@@ -172,8 +171,8 @@ Figure~\ref{list:jflex} is an example of how JFlex looks, in conjunction with ou
 
 
 \subsection{Result}
-CUP will not be used in the project, as it proved difficult, combined with a lack of documentation, to connect the parser generator with the lexical analyzer generator, whereas other tools, such as JavaCC and \gls{antlr}, automatically creates the lexical analyzer.
+CUP will not be used in the project, as it proved difficult, combined with a lack of documentation, to connect the parser generator with the lexical analyzer generator. In contrast, other tools, such as JavaCC and \gls{antlr}, automatically create the lexical analyzer.
 
-Based on our experiences with the different compiler compilers we have chosen to work with \gls{antlr}. We chose \gls{antlr} primarily because of how powerful it is and the great extensions it provides, and because direct left recursion isn't a problem for it, as it is for JavaCC. These factors in particular could help us to efficiently develop our language and compiler. It does commit us to a LL parser which is not as expressive as an LR parser but we do not believe this will be a problem for our language since it will be relatively compact.
+Based on our experiences with the different compiler compilers, we have chosen to work with \gls{antlr}. We chose \gls{antlr} primarily because of how powerful it is and the great extensions it provides and because direct left recursion is not a problem for it, as it is for JavaCC. In particular, these factors could help us develop our language and compiler efficiently. It does commit us to a LL parser which is not as expressive as an LR parser, but we do not believe this will be a problem for our language since it will be relatively compact.
 
-\gls{antlr} allow us to quickly iterate and test grammars and grammar structures, which is why we use the tool rather than write the lexer and parser by hand. This is practical as the implementation of the lexer and parser is only a small part of the implementation.
+\gls{antlr} allows us to iterate and test grammars and grammar structures quickly, so we use the tool rather than write the lexer and parser by hand. This iteration process is practical as implementing the lexer and parser is only a part of the implementation.
