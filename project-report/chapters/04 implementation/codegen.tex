@@ -73,7 +73,8 @@ how it works with example -tasks
 \begin{listing}[htb!]
     \begin{minted}[label=CodegenVisitor.visitTaskDeclaration]{java}
     @Override
-    public CodeGenStringObject visitTask_declaration(arcv2Parser.Task_declarationContext ctx) {
+    public CodeGenStringObject visitTask_declaration(arcv2Parser.Task_declarationContext ctx)
+    {
         CodeGenStringObject cpp = new CodeGenStringObject();
         String ptName = "pt" + Integer.toString(get_task_number());
         String ptNameThread = ptName + "thread";
