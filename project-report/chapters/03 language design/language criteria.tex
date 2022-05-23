@@ -63,9 +63,10 @@ Expressivity is only \textbf{somewhat important} since concurrency language cons
 
 Type checking at compile-time, especially concurrency-related issues, such as mutability, would potentially be compelling, but it depends on the rest of the design. For now, it is \textbf{less important}.
 
-Arduino does not use the exceptions and exception handling available in the C++ language by default. The standard solution for Arduino code writers is to write code that handles the possible exceptions that may occur without the exception language constructs. For the sake of footprint, this will also be the preferred solution for this project, and exception handling is \textbf{not important}.
+Arduino does not use the exceptions and exception handling available in the C++ language by default. 
+The standard solution for Arduino developers is to write code that handles the possible exceptions, without the exception language constructs. For the sake of footprint, this will also be the preferred solution for this project, and exception handling is \textbf{not important}.
 
-Aliasing refers to having two or more distinct names in a program that refers to the same memory location~\cite{Sebesta2016}. The simpler the language is, for example, not having pointers, the easier this is to restrict. While restricted aliasing is \textbf{very important}, it is expected to be easy to manage in a simple language. When dealing with concurrency, it is also essential to avoid accidental data corruption.
+Aliasing refers to having two or more distinct names in a program that refers to the same memory location~\cite{Sebesta2016}. The simpler the language is, for example, not having pointers, the easier this is to restrict. While restricted aliasing is \textbf{very important}, it is expected to be easy to manage in a simple language.
 
 
 \begin{table}[htb]
@@ -93,4 +94,4 @@ Aliasing refers to having two or more distinct names in a program that refers to
 \end{table}
 
 
-It is worth noting that the Arduino programming language already has addressed several of the above concerns compared to C++. Examples of this can be seen in introducing new constants and the disabling of some language capabilities like exceptions and try-catch blocks from C++. The Arduino IDE is another point to consider in favor of cost concerns for the Arduino platform.
+It is worth noting that the Arduino programming language already has addressed several of the above concerns compared to C++. Examples of this are the new constants and disabling of some language capabilities like exceptions and try-catch blocks from C++. The Arduino IDE is another point to consider in favor of cost concerns for the Arduino platform.
