@@ -3,13 +3,13 @@ Arduino is an open-source electronics platform that enables users to quickly cre
 
 An Arduino UNO is used as the reference board for this project because \gls{aau} has provided one. All physical tests and examples will run on this board, and the implementation will depend on the Arduino UNO specification henceforth.
 
-The software for the Arduino is the official Arduino IDE, in which developers can write code in the Arduino programming language. The IDE and the programming language is built on Wiring, which builds on Processing \cite{WhatArduino,WiringOrg}.
+The software for the Arduino is the official Arduino \gls{ide}, in which developers can write code in the Arduino programming language. The \gls{ide} and the programming language is built on Wiring, which builds on Processing \cite{WhatArduino,WiringOrg}.
 
 \subsection{The Arduino programming language}\label{subsec:arduinoprogramminglanguage}
 The Arduino programming language closely resembles the C programming language and is, in fact, a set of C/C++ functions \cite{ArduinoSupportC}. It contains most of the constructs of C++, with some additional functions added and a few features, turned off in the compiler, such as exceptions \cite{Nongnuorg}.
 
 \subsubsection{Sketches}
-A program written in the Arduino IDE and programming language is called a sketch. A sketch follows a basic structure that consists of implementing the procedures "setup()" and "loop()". Setup is a procedure called once during a run - when the Arduino is turned on or reset; it initializes variables, pin modes, libraries, and some additional links. After setup, the loop begins. The loop procedure is a loop that runs for the duration of the runtime of the program and contains the logic of the project \cite{ArduinoLanguage}.
+A program written in the Arduino gls{ide} and programming language is called a sketch. A sketch follows a basic structure that consists of implementing the procedures "setup()" and "loop()". Setup is a procedure called once during a run - when the Arduino is turned on or reset; it initializes variables, pin modes, libraries, and some additional links. After setup, the loop begins. The loop procedure is a loop that runs for the duration of the runtime of the program and contains the logic of the project \cite{ArduinoLanguage}.
 
 \subsection{Who uses the Arduino?}\label{subsec:whouses}
 A wide range of people, such as students, hobbyists, children, programmers, and professionals, use Arduino for many different purposes \cite{WhatArduino}. Some are focused on the learning aspects of the Arduino - architecture, code, and embedded systems, while others are more interested in designing product concepts. Students and children can use the board to learn the basics of electronics; hobbyists may use it to build personal \gls{diy} projects, while professionals often use it to design product concepts \cite{WhatArduino}.
