@@ -1,4 +1,5 @@
 \section{Existing solutions}\label{sec:existingsolutions}
+\todo{From Emphasis to end needs to be reformulated}
 This section explores some ways of achieving concurrency on an Arduino. Emphasis is put on the immediate advantages and disadvantages related to each model when considering the impact on the hobbyist users, which means the new challenges, if any, introduced by the model in question.
 
 A small sample project is implemented in each model for the sake of comparison: The builtin \gls{led} of the Arduino is set to blink - turn on and off - every half second. Concurrently, the state of a button is read and printed continously. The example will be implemented in the Arc programming language as well. Figure~\ref{fig:exampleprojectschematic} shows the schematic for the project.
@@ -85,7 +86,7 @@ The pitch for Protothreads is promising and directly addresses the concern about
 \end{table}
 
 
-Protothreads uses a cooperative form of concurrency, which means it is us to the user to synchronize the program. This model means that a program written with protothreads is partially event-driven and blocking - it must finish, or pause, explicitly before moving on to the next task. An overview comparison between protothreads and event-based and thread-based concurrency can is available in Table~\ref{tab:protothreadscomparison}, which shows that protothreads mix the traditional event-based and thread-based models.
+Protothreads uses a cooperative form of concurrency, which means it is up to the user to synchronize the program. This model means that a program written with protothreads is partially event-driven and blocking - it must finish, or pause, explicitly before moving on to the next task. An overview comparison between protothreads, event-based and thread-based concurrency is available in Table~\ref{tab:protothreadscomparison}, which shows that protothreads mix the traditional event-based and thread-based models.
 
 Protothreads are also implemented on a single stack with stack rewinding, unlike traditional multithreading, which has a stack per thread. This implementation is the reason for the low overhead of Protothreads. On the Arduino, this is achieved by utilizing \textbf{local continuations} - threads are simply structs with an unsigned short - and macros that expand to a switch statement with several returns. The short in the protothread is set and compared against the expanded switch throughout the program running~\cite{AdamDunkelProtothreads}.
 
@@ -95,10 +96,10 @@ Protothreads are also implemented on a single stack with stack rewinding, unlike
 Because protothreads are structs with only a short, they have a size of only two bytes. This model means that there is no hidden memory cost during the program's execution. However, the implementation details of the Protothread library do have a few effects on how to write programs when using it.
 
 First, a protothread only saves the short across blocking calls, which means that local variables inside a thread are not preserved - a rule of thumb from the designer is that the user should not use local variables inside a protothread. Instead, it is prudent to use global variables if the user wants to preserve data.
-
+\todo{Bastardized i belive is a negative ladet ord}
 Secondly, the scheduling of protothreads uses a switch statement in a bastardized way that restricts the rest of the code, such that code cannot contain switch statements.
 
-Lastly, when using protothreads, some of the Arduino functions - like delay() - should not be used. Protothreads are already blocking if written to be, so blocking the cpu with delay() could potentially prevent protothreads from executing correctly~\cite{AdamDunkelProtothreads}.
+Lastly, when using protothreads, some of the Arduino functions - like delay() - should not be used. Protothreads are already blocking if \todo{written to be, sounds strange} written to be, so blocking the cpu with delay() could potentially prevent protothreads from executing correctly~\cite{AdamDunkelProtothreads}.
 
 Lastly, some of the Arduino functions - like delay() - should not be used when using protothreads. Protothreads are already blocking if written to be, so blocking the \gls{cpu} with delay() could potentially prevent protothreads from executing correctly~\cite{AdamDunkelProtothreads}.
 
@@ -171,9 +172,7 @@ Only \gls{frtos} is considered for this project, as it is the only \gls{os} ment
 
 
 \subsubsection{FreeRTOS}
-Installing
-
-\glspl{os} are installed on the Arduino the same way libraries are - by including them in the code. Unlike the libraries from subsection~\ref{subsec:arduinolibraries}, \gls{frtos} contains additional libraries which may be included together with the \gls{os}. These additional libraries contain the non-core features of the \gls{os}, for example, semaphores, which may be included if needed.
+Installing a \glspl{os} on a Arduino is the same way as a library is installed - by including them in the code. Unlike the libraries from subsection~\ref{subsec:arduinolibraries}, \gls{frtos} contains additional libraries which may be included together with the \gls{os}. These additional libraries contain the non-core features of the \gls{os}, for example, semaphores, which may be included if needed.
 
 
 \begin{listing}[htb!]
