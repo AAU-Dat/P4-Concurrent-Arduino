@@ -2,7 +2,7 @@
 This report details a programming language’s design, definition, and implementation, as per \gls{aau}'s fourth-semester module description. \cite{AAU_Modules_P4}. The programming language is named Arc for \textit{Arduino Concurrently}, and its purpose is to make it a little simpler to write concurrent programs for the arduino.
 
 \section{Initial problem}\label{sec:initialproblem}
-The problem analysis begins from the project proposal: "A Concurrent Programming Language for Arduino." The proposal outlines how microcontrollers, like the Arduino, are used in \gls{cps} to monitor and control the surroundings. However, although sensor input is sent asynchronously to the \gls{cpu}, the Arduino has no direct support for concurrency.
+The problem analysis begins from the project proposal: "A Concurrent Programming Language for Arduino." The proposal outlines how microcontrollers, like the Arduino, are used in a \gls{cps} to monitor and control the surroundings. However, although sensor input is sent asynchronously to the \gls{cpu}, the Arduino has no direct support for concurrency.
 
 \subsection{Project outline}
 The project proposal presents the following tasks and challenges:
@@ -16,7 +16,7 @@ The project proposal presents the following tasks and challenges:
 
 \paragraph{Challenges}
 \begin{itemize}
-    \item Handle context switch taking \textbf{real-time constraints} in mind
+    \item Handle context switching and having \textbf{real-time constraints} in mind
     \item Provide constructs to handle \textbf{race conditions} (atomic sessions, semaphores, asynchronous queues, etc.)
     \item Comply with memory requirements
 \end{itemize}

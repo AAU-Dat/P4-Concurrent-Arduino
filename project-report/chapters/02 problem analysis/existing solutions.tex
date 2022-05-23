@@ -88,12 +88,12 @@ The pitch for Protothreads is promising and directly addresses the concern about
 
 Protothreads uses a cooperative form of concurrency, which means it is up to the user to synchronize the program. This model means that a program written with protothreads is partially event-driven and blocking - it must finish, or pause, explicitly before moving on to the next task. An overview comparison between protothreads, event-based and thread-based concurrency is available in Table~\ref{tab:protothreadscomparison}, which shows that protothreads mix the traditional event-based and thread-based models.
 
-Protothreads are also implemented on a single stack with stack rewinding, unlike traditional multithreading, which has a stack per thread. This implementation is the reason for the low overhead of Protothreads. On the Arduino, this is achieved by utilizing \textbf{local continuations} - threads are simply structs with an unsigned short - and macros that expand to a switch statement with several returns. The short in the protothread is set and compared against the expanded switch throughout the program running~\cite{AdamDunkelProtothreads}.
+Protothreads are also implemented on a single stack with stack rewinding, unlike traditional multithreading, which has a stack per thread. This implementation is the reason for the low overhead of Protothreads. On the Arduino, this is achieved by utilizing \textbf{local continuations} - threads are simply structs with an unsigned short - and macros that expand to a switch statement with several returns. The short in the protothread is set and compared against the expanded switch throughout the program running \cite{AdamDunkelProtothreads}.
 
 
 
 
-Because protothreads are structs with only a short, they have a size of only two bytes. This model means that there is no hidden memory cost during the program's execution. However, the implementation details of the Protothread library do have a few effects on how to write programs when using it.
+Because protothreads are structs with only a short, they have a size of only two bytes. This model means that there is no hidden memory cost during the program's execution. However, the implementation details of the Protothreads library has little effect on how to write programs when using it.
 
 First, a protothread only saves the short across blocking calls, which means that local variables inside a thread are not preserved - a rule of thumb from the designer is that the user should not use local variables inside a protothread. Instead, it is prudent to use global variables if the user wants to preserve data.
 \todo{Bastardized i belive is a negative ladet ord}
@@ -166,7 +166,7 @@ Eventually will not be used for this project because of the poor documentation, 
 
 
 \subsection{Achieving Concurrency with an Operating System}\label{subsec:arduinoos}
-Rather than a library, an actual \gls{os} can be installed on the Arduino instead. Several options exist, such as Simba~\cite{SimbaOS} and \gls{frtos}~\cite{AboutRTOS}. Compared to a library, \glspl{os} are much bigger projects. This quality is typically also reflected in the documentation, and documentation is not a quality to search for when evaluating them. Instead, the overhead - size in particular - is considered.
+Rather than a library, an actual \gls{os} can be installed on the Arduino instead. Several options exist, such as Simba \cite{SimbaOS} and \gls{frtos} \cite{AboutRTOS}. Compared to a library, \glspl{os} are much bigger projects. This quality is typically also reflected in the documentation, and documentation is not a quality to search for when evaluating them. Instead, the overhead (size in particular) is considered.
 
 Only \gls{frtos} is considered for this project, as it is the only \gls{os} mentioned as a solution on the Arduino site, which has a version 1 release.
 
@@ -213,7 +213,7 @@ Installing a \glspl{os} on a Arduino is the same way as a library is installed -
 
 \blockcquote{AboutRTOS}{\gls{frtos} is an operating system specifically designed for microcontrollers and microcomputers, such as the Arduino. It has been developed in partnership with the leading chip companies in the world, over more than 18 years, with special emphasis on reliability, accessibility and ease of use.}
 
-From the pitch, \gls{frtos} sounds promising, and the list of available features is much more extensive than Protothreads. Where Protothreads only allow for cooperative scheduling, described explicitly by the programmer, \gls{frtos} has support for cooperative and preemptive scheduling, as well as scheduling, handled implicitly.
+From the pitch, \gls{frtos} sounds promising, and the list of available features is much more extensive than Protothreads. Where Protothreads only allow for cooperative scheduling (described explicitly by the programmer), \gls{frtos} has support for cooperative and preemptive scheduling, as well as scheduling, handled implicitly.
 
 Comparing the \gls{frtos} implementation of the sample project from Listing~\ref{lst:freeftosexample} and Listing~\ref{lst:protothreadsexample}, the base implementation of \gls{frtos} resembles Protothreads. Both implementations describe similar tasks and set up the task in the setup() function. Protothreads also schedules the loop function's tasks, but this is nothing major.
 
@@ -230,7 +230,7 @@ Another critical difference is the size and strength of each task. Unlike Protot
 \end{figure}
 
 
-Because the scheduler is much more complex, \gls{frtos} also makes prioritization possible. Figure~\ref{fig:freertosprio} illustrates how the scheduler can be instructed to prioritize specific tasks, in this case, vControlTask, higher than vKeyHandlerTask, which is again prioritized higher than the idle task. This concept is not supported in Protothreads and can only be simulated partially by scheduling a task more frequently than another, which has drawbacks.
+Because of the scheduler being much more complex, \gls{frtos} also makes prioritization possible. Figure~\ref{fig:freertosprio} illustrates how the scheduler can be instructed to prioritize specific tasks, (in this case, vControlTask, higher than vKeyHandlerTask), which is again prioritized higher than the idle task. This concept is not supported in Protothreads and can only be simulated partially by scheduling a task more frequently than another, which has its own drawbacks.
 
 
 \subsection{Summary}\label{subsec:concurrencysummary}
