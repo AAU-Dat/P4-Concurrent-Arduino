@@ -29,11 +29,11 @@ The Arduino language has static scope, with nested and flat block structures~\ci
 \end{figure}
 
 
-Arc statements and blocks, therefore, have nested scoping, while function declarations have flat scope and are not declarable inside a scope. However, one key feature of Arc is its \textit{task} construct, which is not present in Arduino and requires particular focus.
+Arc statements and blocks, therefore, have nested scoping, while function declarations have a flat scope and are not declarable inside a scope. However, one key feature of Arc is its \textit{task} construct, which is not present in Arduino and requires particular focus.
 
 A task declaration is like a function declaration and cannot be inside another scope. Additionally, declaring local variables inside the scope of a task declaration is not possible. The Protothreads implementation does not guarantee that the values of local variables are preserved when a thread becomes blocked, making it hard to know if using local variables in a thread will work as the programmer intended.
 
-Another solution to this problem could be to hoist local variable declarations within a task declaration into the global scope. However, this could make static scopechecking more difficult. Listing~\ref{lst:hoistclash} shows how the hoisting of a locally declared variable may clash with globally declared variables. While the hoisting issue is not unsolvable, it is clearer to disallow variable declarations within a task declaration. Most importantly, writing an Arc task is entirely declarative - tasks are never called, unlike functions.
+Another solution to this problem could be to hoist local variable declarations within a task declaration into the global scope. However, this hoisting could make static scope checking difficult. Listing~\ref{lst:hoistclash} shows how the hoisting of a locally declared variable may clash with globally declared variables. While the hoisting issue is not unsolvable, it is clearer to disallow variable declarations within a task declaration. Most importantly, writing an Arc task is entirely declarative - tasks are never called, unlike functions.
 
 
 \begin{listing}[htb!]
@@ -48,7 +48,7 @@ Another solution to this problem could be to hoist local variable declarations w
 \end{listing}
 
 
-To describe the static scope rules of Arc with operational semantics, we use the environment-store model from Figure~\ref{fig:envstomodel}. The environment-store model describes variables as binding to locations, and locations binding to values, while the locations and values are then read with partial functions called \textit{environment} and \textit{store}.
+To describe the static scope rules of Arc with operational semantics, we use the environment-store model from Figure~\ref{fig:envstomodel}. The environment-store model describes variables as binding to locations and locations binding to values, while the locations and values are then read with partial functions called \textit{environment} and \textit{store}.
 
 
 \begin{figure}[htb!]
@@ -59,7 +59,7 @@ To describe the static scope rules of Arc with operational semantics, we use the
 \end{figure}
 
 
-Arc has three environments: the variable environment, the function environment, and the task environment. To describe the semantics of these environments, some function, set and value names must be defined first. These definitions are presented in Table~\ref{tab:setsandfunctions}, and correspond to rules of Arc's \gls{cfg} described mathematically.
+Arc has three environments: the variable environment, the function environment, and the task environment. To describe the semantics of these environments, some function, set, and value names must be defined first. These definitions are presented in Table~\ref{tab:setsandfunctions}, and correspond to rules of Arc's \gls{cfg} described mathematically.
 
 Following the standard of~\cite{Huttel2010}, sets are bolded and begins with a capital letter, while elements are not bolded.
 
@@ -131,7 +131,7 @@ Additionally, we define the notation for updating a given environment $env_V \in
 \end{equation}
 
 
-With the above definitions of the environment store model and the scope rules, Arc's declarations are described using operational semantics in Table~\ref{tab:arcscoperules}. Because of the static scope rules, the environments are contained within the results of the partial functions for variables and functions. Unlike the variable and function environments, the task environment is not a set of partial functions. This is because unlike function declarations, tasks are not used within other tasks, and as such does not need to map them.
+With the above definitions of the environment store model and the scope rules, Arc's declarations are described using operational semantics in Table~\ref{tab:arcscoperules}. Because of the static scope rules, the environments are contained within the results of the partial functions for variables and functions. Unlike the variable and function environments, the task environment is not a set of partial functions. This task representation is because, unlike function declarations, tasks are not used within other tasks and, as such, do not need to map them.
 
 
 \begin{table}[htb!]
@@ -170,7 +170,7 @@ With the above definitions of the environment store model and the scope rules, A
 \end{table}
 
 
-To use the declared bindings we further define their calling and usage. Variables are immutable, and it therefore makes sense to have functions use call-by-value for the parameters. Function calls also should not allow recursion, as this makes the runtime memory usage of the Arduino more stable. The semantics for function calls can be seen in Table~\ref{tab:functioncalls}.
+To use the declared bindings, we further define their calling and usage. Variables are immutable, and it, therefore, makes sense to have functions use call-by-value for the parameters. Function calls also should not allow recursion, as this makes the runtime memory usage of the Arduino more stable. The semantics for function calls can be seen in Table~\ref{tab:functioncalls}.
 
 
 \begin{table}[htb!]
@@ -193,9 +193,9 @@ To use the declared bindings we further define their calling and usage. Variable
 \end{table}
 
 
-Tasks are once again special. Tasks are never called explicitly in Arc code, but the set of all declared tasks serve as the entrypoint of the program. This is done through parallel composition and invocation of all declared tasks, of which there must be at least one.
+Tasks are once again unique. Tasks are never called explicitly in Arc code, but the set of all declared tasks serves as the program's entry point. This entry is done through parallel composition and invocation of all declared tasks, of which there must be at least one.
 
-Also of importance is that the parameters of a task describe a mutable reference to a declared variable in $env_V$, that critically cannot be used in another task. This means that task declarations have no formal parameters, only references to actual parameters.
+Also of importance is that the parameters of a task describe a mutable reference to a declared variable in $env_V$ that critically cannot be used in another task. This means that task declarations have no formal parameters, only references to actual parameters.
 
 The semantics of the concurrently running tasks are described in Table~\ref{tab:taskinvocation}. The composition of all tasks are created from $env_T$, which is the set of declared tasks, such that $env_T \rightarrow \{T_1 \dots T_n \}$ where $n = |env_T|$.
 
@@ -224,17 +224,23 @@ The semantics of the concurrently running tasks are described in Table~\ref{tab:
 
 
 \subsection{Type rules}\label{subsec:typerules}
-Type rules are another set of contextual constraints. These rules make sure that code fragments do not mistreat types, for example in static typing, which Arc uses, it should not be possible to assign a number to a variable declared as a boolean~\cite{Sebesta2016}. The types that are valid in Arc are num, char, bool, and array, as descriped in~\ref{sec:inspiration}.
+Type rules are another set of contextual constraints. These rules ensure that code fragments do not mistreat types; for example, in static typing, which Arc uses, it should not be possible to assign a number to a variable declared as a boolean~\cite{Sebesta2016}. The valid types in Arc are num, char, bool, and array, as described in section~\ref{sec:inspiration}.
 
 In the type checking semantics the types in the Arc language can be written as:
 $T \in \{num, char, bool, N\} N \in \{ 0,\mathbb{N}\}$.
-From now on semantics written mathmatticly will use T instead of type, if not given a specific type, in semantic type checking. If a specific type is needed, it is written instead of T.
-N is not descriped ealier on what the types are in Arc, as it is not a type that can be declared. N is used for accessing an array, In C++ array access has to have a natural number, this is also implemented in Arc aswell. In C++ it is also 0-indexed~\cite{cppreferenceDataTypes}, which is withhold in Arc aswell.
-In declarations and statements type checking, there will be an evaluation to $ok$ which means:
+
+
+From now on, semantics written mathematically will use T instead of type, if not given a specific type, in semantic type checking. If a specific type is needed, it is written instead of T.
+
+N is not described earlier on what the types are in Arc, as it is not a type that can be declared. N is used for accessing an array; in C++, array access has to have a natural number; this is also implemented in Arc~\cite{cppreferenceDataTypes}.
+
+
+
+In declarations and statements type checking, there will be an evaluation to $ok$, which means:
 
 \blockcquote{Huttel2010}{The type of a declaration or a statement will simply be ok; we say that the declaration or statement is well-typed}
 
-In Table~\ref*{tab:DeclTypeCheck}, the type checking for variables and functions are written. A specific type function declaration, has to type check if the return type is the same type as the declared function type. As task and a void function do not return, these declarations are always well-typed.
+In Table~\ref{tab:DeclTypeCheck}, the type checking for variables and functions are written. A specific type function declaration must check if the return type is the same as the declared function type. These declarations are always well-typed as tasks, and void functions do not return values.
 
 
 \begin{table}[htb!]
@@ -251,9 +257,9 @@ In Table~\ref*{tab:DeclTypeCheck}, the type checking for variables and functions
 \end{table}
 
 
-Now that the types has been clarified, it is important to look at operations a specific type can do.
-The first type that will be clarified is num.
-In Table~\ref{tab:num-rules} the expressions which the data type num only can do, is showed here.
+Now that the types have been clarified, it is essential to look at the operations a specific type can do. The first type that will be clarified is num.
+
+In Table~\ref{tab:num-rules}, the operations which the data type num only can do is shown here.
 
 
 \begin{table}[htb!]
@@ -290,9 +296,9 @@ In Table~\ref{tab:num-rules} the expressions which the data type num only can do
 \end{table}
 
 
-The type num is the only type in Arc that can do arithmetic expressions, as it can only do arithmetic expressions on another num type, this can be seen in Table~\ref{tab:num-rules}. The end type of a arithmetic expression is still a num, as it makes changes to the value, not the type.
+The type num is the only type in Arc that can do arithmetic expressions, as it can only do arithmetic expressions on another num type; this can be seen in Table~\ref{tab:num-rules}. The end type of an arithmetic expression is still a num, as it changes the value, not the type.
 
-It is also the only type to check if a value is greater or smaller than an other num type when comparing. When doing a comparing of nums, the end type of the expression is a bool, as it true or false if the num is greater or less than the num it is compared to.
+When comparing, it is also the only type to check if a value is greater or smaller than another num type. When comparing nums, the end type of the expression is a bool, as it is true or false if the num is greater or less than the comparator.
 
 
 \begin{table}[htb!]
@@ -318,7 +324,7 @@ It is also the only type to check if a value is greater or smaller than an other
 \end{table}
 
 
-The type bool has three expressions, that can be seen in Table~\ref{tab:bool-rules}. This means in the And, Or or Not expressions the expression getting type checked has to evaluate to a bool, the expressions will then evaluate to another type bool.
+The type bool has three operations that can be seen in Table~\ref{tab:bool-rules}. This means in the And, Or or Not expressions, the expression getting type-checked has to evaluate to bool, and the expressions will then evaluate to another type bool.
 
 
 \begin{table}[htb!]
@@ -347,8 +353,7 @@ The type bool has three expressions, that can be seen in Table~\ref{tab:bool-rul
     \label{tab:expr-rules}
 \end{table}
 
-
-The type char does not have any expressions that only can be used on that type, therfore it only can use the expressions which bool and num can do as well. These type rules for expressions is written on Table~\ref{tab:expr-rules}. In the array expression the type N is used to describe the index for the array. The equal and not equal expression evaluate to a bool type, as it can only be true or false.
+The type char does not have any operations that can only be used on that type; therefore, it can only use the expressions that bool and num can do. These type-rules for expressions are written in Table~\ref{tab:expr-rules}. In the array expression, the type N is used to describe the index for the array. The equal and not equal expression evaluates to a bool type, as it can only be true or false.
 
 
 \begin{table}[htb!]
@@ -402,4 +407,4 @@ The type char does not have any expressions that only can be used on that type, 
 \end{table}
 
 
-The type checking for statements in Arc can be seen in Table~\ref{tab:StatementTypeCheck}. Type checking statements gives the same output as the declarations in "ok", as explained before means well-typed. A varable can be declared in a scope, therfore it has the same type check rules as in variable declaration, which can be seen in Table~\ref{tab:DeclTypeCheck}. Return uses an expression which evaluates to a type "T", this type is the same type as the type a function is declared with.
+The type checking for statements in Arc can be seen in Table~\ref{tab:StatementTypeCheck}. As explained before, type-checking statements give the same output as the declarations in OK, which means well-typed. A variable can be declared in scope; therefore, it has the same type-check rules as in variable declaration, as shown in Table~\ref{tab:DeclTypeCheck}. Return uses an expression that evaluates to a type T; this type is the same as the type of the function with which it is declared.
