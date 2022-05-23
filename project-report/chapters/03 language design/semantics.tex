@@ -1,11 +1,11 @@
 \section{Semantics}\label{sec:languagesemantics}
-The contextual constraints of Arc specify whether there is meaning in some structure, but the remaining semantics describe the \textit{actual} meaning. Even if a sentence is syntactically and contextually correct, it might be nonsensical according to the semantics. For example, the english sentence "What is the difference between a duck?" is syntactically correct, but not meaningful.
+The contextual constraints of Arc specify whether there is meaning in some structure, but the remaining semantics describe the actual meaning. Even if a sentence is syntactically and contextually correct, it might be semantically nonsensical. For example, the English sentence "What is the difference between a duck?" is syntactically correct but not meaningful.
 
-For a complete definition of a programming language, syntax, contextual constraint, and semantics definitions are required. This section describes Arc's important semantics using operational semantics.
+For a complete definition of a programming language, syntax, contextual constraint, and semantics are required. This section describes Arc's important semantics using operational semantics.
 
 
 \subsection{Number as float}\label{subsec:numberAsFloats}
-In Arc every number is a float. At first glance it looked like a good solution for simplicity. However, as we progressed on the project we discovered that the semantics of floats works differently between mathematics with real numbers and floating-point arithmetic. As illustrated in Listing~\ref{lst:semanticDifference}, the difference is clearly visible between floats and real numbers.\question{Move section to discussion?}
+In Arc, every number is a floating-point number. At first glance, it looked like a good solution for simplicity. However, as we progressed on the project, we discovered that the semantics of floats works differently between mathematics with real numbers and floating-point arithmetic. As illustrated in Listing~\ref{lst:semanticDifference}, the difference between floats and real numbers is visible.\question{Move section to discussion?}
 
 
 \begin{listing}[htb!]
@@ -18,13 +18,13 @@ In Arc every number is a float. At first glance it looked like a good solution f
 \end{listing}
 
 
-This is problematic at best. To the amateur programmers which Arc is supposed to cater to, this can be both counter intuitve and bothersome, if they are not familiar with floating point arithmetic. This can lead to the programmer expecting a different result from their code and lead to unneccesary frustration. If they expect the code in the example to result to the real numbers result of the calculation, they might not even understand how to fix the issue at hand.
+To the amateur programmers whom Arc is supposed to cater to, this can be counterintuitive and bothersome if they are unfamiliar with floating-point arithmetic. If they expect the code in the example to result in the real numbers result of the calculation, they might not even understand how to fix the issue at hand. This inconsistency can lead to the programmer expecting a different result from their code and lead to unnecessary frustration.
 
 \subsection{Semantic rules}\label{subsec:semanticrules}
-For the most part, Arc's semantics follow the semantics described in~\cite{Huttel2010}. This section explains the choice of semantics, and references \cite{Huttel2010} for details. Because Arduino programns are supposed to always loop forever, small-step semantics are used to describe Arc's semantics. This is contrary to the semantics of declarations from section~\ref{subsec:scoperules} which uses bigstep semantics, because declarations are atomic operations.
+This section explains the choice of semantics. For the most part, Arc's semantics follow the semantics described in~\cite{Huttel2010}. Because Arduino programs are supposed to always loop forever, small-step semantics are used to describe Arc's semantics, unlike the semantics of declarations from section~\ref{subsec:scoperules}, which uses big-step semantics because declarations are atomic operations.
 
 \subsubsection{Expressions}
-Expressions in Arc can be explained similarly to the small-step semantics presented on~\cite[p.~37]{Huttel2010} extended with the environment-store model from section~\ref{subsec:scoperules}. Table~\ref{tab:divisionsemantics} contains the semantics for division with the environment-store model.
+Expressions in Arc can be explained similarly to the small-step semantics presented on~\cite[p.~37]{Huttel2010}, extended with the environment-store model from section~\ref{subsec:scoperules}. Table~\ref{tab:divisionsemantics} contains the semantics for division with the environment-store model.
 
 
 \begin{table}[htb!]
@@ -41,7 +41,7 @@ Expressions in Arc can be explained similarly to the small-step semantics presen
 \end{table}
 
 
-The type rules also define rules for boolean expressions, but these are not included as small step semantics in~\cite{Huttel2010}. Instead they are described in Table~\ref{tab:booleansemantics}. It is largely formulaic and repetitive, and for brevity $OR_{EPXR}$ are not included in the table because they are similar to $AND_{EXPR}$ but substituting logical or $\lor$ for logical and $\land$.
+The type rules also define rules for boolean expressions, but these are not included as small-step semantics in~\cite{Huttel2010}. Instead they are described in Table~\ref{tab:booleansemantics}. It is largely formulaic and repetitive, and for brevity $OR_{EPXR}$ are not included in the table because they are similar to $AND_{EXPR}$ but substituting logical or $\lor$ for logical and $\land$.
 
 
 \begin{table}[htb!]
