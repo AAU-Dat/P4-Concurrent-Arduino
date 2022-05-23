@@ -8,7 +8,9 @@ As with scoping, there are two ways of doing type checking: statically and dynam
 
 The language Arc transpiles to is C++, which is a staticallly typed language. For this reason Arc will use a static type checker, to make the transpilation more one-to-one. Although, an argument could be made for Arc to use dynamic type checking, since dynamically typed languages often tend to be faster to write code in. Since time is a limiting factor for our target group, it would make sense to make a language that encourages less time spent on writing code. However, while Arc is only made to work with simple concurrency, time is better spend elsewhere.
 
-% SHOULD WE FIND ANOTHER EXAMPLE?
+An example of type checking in Arc, can be found in Listing \ref{lst:typecheckerexample}. The example shows the part of the typechecker that handles assignments. First in \textbf{lines 1-2}, a SymbolHashTableEntry 'entry' is created for scope checking and an AST\_node 'expression' is created for the type checking. The expression node is created from visiting the expression of the context received as a formal parameter.
+
+The first check in \textbf{lines 4-5} is part of the scope handling, and as that has already been covered, we move on to \textbf{lines 6-7} in which the visitor checks whether or not the entry is actually mutable (meaning that it is allowed to be modified). If this is not the case, an error will be thrown. Else in \textbf{lines 8-9}, we check if the entry has the expected type from the 'expression' AST\_node created earlier. If there has been a type mismatch, we throw an error. Else, we insert the entry in the symbol table in \textbf{line 11}, and the entry has been successfully assigned.
 
 
 
@@ -30,13 +32,3 @@ The language Arc transpiles to is C++, which is a staticallly typed language. Fo
     \caption{Code snippet of type checking in Arc.}
     \label{lst:typecheckerexample}
 \end{listing}
-
-%\todo{this is actually a bad example as it shows too much you talk about alot of checks that arent type check like scope cheks}
-
-%\ref{lst:typecheckerexample} shows am example of Arcs typechecker. This example shows the part of the typechecker, handles assignments. It does this by creating 'entry' of the class SymbolHashTableEntry and assigns it to the contents of a ctx file\todo{yeah, naw. thats not whats happening were creating an entry and assigning to it the result of a lookup in the symbolTable based on the IDENTIFIER that were assigning to.}. Then it creates 'expression' of the AST\_node class, and uses a visitor method to assign it to the first expression of the \gls{cst}\todo{this is closer. here were creating a ast nodes and assingning it the result of a visit to a expression. and in our visitor a visit always returns a ast node}. It is then evaluated in a sequence of if statements, to ensure that the assignment is a legal action in Arc. First checking if the entry even exists, then if the entry is mutable and finally checking if the types of the entry and expression are equvilant. If the entry passes all the checks, it is then inserted into the sybol table. If it does not pass one of the checks, an exeption is thrown and a relevant error message is given.
-
-Listing~\ref{lst:typecheckerexample} shows an example of Arcs typechecker. This example shows the part of the typechecker, handles assignments. First an 'entry' of the class SymbolHashTableEntry is made, this 'entry' is assigned to the result of a lookup in the symbolTable based on the IDENTIFIER. Then the expression of that node is made, we call this variable 'expression' and is the class \gls{ast}\_node. 'Expression' is made by visiting the expression of the ctx node, and with Arcs visitor, it always returns an \gls{ast} node.
-
-After creating these variables, some typechecking can be done, this is specifically type checking for assignemnts of variables. The first check, that ensure that the entry actually exists, is not actually type checking, but rather a part of scope handling. The next check, ensure that the entry that is being assigned to, is actually mutable, meaning that it can be modified, if not an error is thrown, that informs the user that they are trying to assing to an immutable variable. After this a check is made to ensure that the entry that is being assigned to, and the expressions typing actually match and are compatible for assignment. If this check fails, an error message informing users that the assignment has bad typing is made.
-
-After these checks have all passed, typechecking for the assignment is complete, and the 'entry' is added to the symbol table.
