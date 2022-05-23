@@ -175,8 +175,8 @@ Listing~\ref{list:jflex} is an example of how \gls{jflex} looks, in conjunction 
 
 
 \subsection{Result}
-\gls{cup} will not be used in the project, as it proved difficult, combined with a lack of documentation, to connect the parser generator with the lexical analyzer generator. In contrast, other tools, such as JavaCC and \gls{antlr}, automatically create the lexical analyzer.
+\gls{cup} will not be used in the project, as it proved difficult, combined with a lack of documentation, to connect the parser generator with the lexical analyzer generator. In contrast, other tools, such as \gls{javacc} and \gls{antlr}, automatically create the lexical analyzer.
 
-Based on our experiences with the different compiler compilers, we have chosen to work with \gls{antlr}. We chose \gls{antlr} primarily because of how powerful it is and the great extensions it provides and because direct left recursion is not a problem for it, as it is for JavaCC. In particular, these factors could help us develop our language and compiler efficiently. It does commit us to a LL parser which is not as expressive as an LR parser, but we do not believe this will be a problem for our language since it will be relatively compact.
+Based on our experiences with the different compiler compilers, we have chosen to work with \gls{antlr}. We chose \gls{antlr} primarily because of how powerful it is and the great extensions it provides and because direct left recursion is not a problem for it, as it is for \gls{javacc}. In particular, these factors could help us develop our language and compiler efficiently. It does commit us to a LL parser which is not as expressive as an LR parser, but we do not believe this will be a problem for our language since it will be relatively compact.
 
-\gls{antlr} allows us to iterate and test grammars and grammar structures quickly, so we use the tool rather than write the lexer and parser by hand. This iteration process is practical as implementing the lexer and parser is only a part of the implementation.
+\gls{antlr} allows us to iterate and test grammars and grammar structures quickly, so we use the tool rather than write the lexer and parser by hand. This iteration process is practical, as implementing the lexer and parser is only a part of the implementation.
