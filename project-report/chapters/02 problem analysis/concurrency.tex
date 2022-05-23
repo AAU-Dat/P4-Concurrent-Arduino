@@ -28,6 +28,8 @@ Even unicore processors can support several models for concurrency at the applic
 This interleaving is commonly handled by an \gls{os}, which manages the hardware resources~\cite{Bryant2016}. However, by default, the Arduino does not have an \gls{os}. It is still possible to achieve concurrency on an Arduino, but not without a scheduler or scheduling.
 
 \subsection{Concurrency on an Arduino}\label{subsec:concurrencyinarduino}
+\todo{Titlen passer ikke til sektionen: Otherways to achieve concurrency on arduino?}
+\todo{Måske gøre det mere tydeligt at hvad pointen er med de to funktioner. Vi læste det og fangede ikke pointen før vi læste andengang}
 The scheduler is the part of the \gls{os} that handles the planning and switching of different tasks on the CPU within the system. However, an \gls{os} is not the only way to obtain scheduling behavior. Several online tutorials~\cite{BadExample1, BadExample2} demonstrate different techniques to achieve concurrency on an Arduino, such as using the Arduino functions millis() and interrupt().
 
 The millis() technique executes different pieces of code depending on some programmer-defined timeslices and comparisons between the current time and an earlier time. The interrupt() method uses the \gls{cpu} interrupt command to interrupt the \gls{cpu} and restart it from another place in the code.
