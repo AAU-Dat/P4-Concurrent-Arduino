@@ -193,11 +193,11 @@ To use the declared bindings we further define their calling and usage. Variable
 \end{table}
 
 
-Tasks are once again special. Taks are never called explicitly in Arc code, but the set of all declared tasks serve as the entrypoint of the program. This is done through parallel composition and invocation of all declared tasks, of which there must be at least one.
+Tasks are once again special. Tasks are never called explicitly in Arc code, but the set of all declared tasks serve as the entrypoint of the program. This is done through parallel composition and invocation of all declared tasks, of which there must be at least one.
 
 Also of importance is that the parameters of a task describe a mutable reference to a declared variable in $env_V$, that critically cannot be used in another task. This means that task declarations have no formal parameters, only references to actual parameters.
 
-The semantics of the concurrently running tasks are described in Table~\ref{tab:taskinvocation}. The composition of all tasks are created from $env_T$, which is a set build of declared tasks, such that $env_T \rightarrow \{T_1 \dots T_n \}$ where $n = |env_T|$.
+The semantics of the concurrently running tasks are described in Table~\ref{tab:taskinvocation}. The composition of all tasks are created from $env_T$, which is the set of declared tasks, such that $env_T \rightarrow \{T_1 \dots T_n \}$ where $n = |env_T|$.
 
 
 \begin{table}[htb!]
