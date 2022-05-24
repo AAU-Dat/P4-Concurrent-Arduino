@@ -1,19 +1,21 @@
 \chapter{Conclusion}\label{cha:conclusion}
 
-This chapter will conclude the project and evaluate Arc. This includes how well the learning objectives of the semester have been met during the project and whether or not Arc is a successful solution to the problem statement.
+During this project, we have designed a programming language, Arc, with a language specification containing a description of the syntax, contextual analysis, and semantics. Furthermore, the compiler has been implemented in Java with \gls{antlr} generating the lexer and parser. We have also prepared unit and integration test strategies.
+
+The problem statement Arc set out to solve, is as follows: 
+\textbf{The project aims to create a programming language for hobbyists that satisfies our language criterion and makes it possible to easily express concurrency on the Arduino.}
+
+We can conclude that Arc partly solves the problem statement, as we have a funcitoning compiler and language, that is able to express concurrency. The reason we can only partly conclude that the problem statement is solved, is that without a usability test, we cannot guarantee that hobbyists can express concurrency more easily than in the stadard Arduino language. We can also not make any conclusions about the language criterion without having conducted, the described usability test~\ref{subsec:usabilityTestOfArc}.
+
+As a whole, we believe that the project is a success, eventhough we did not completely solve the problem statement. That is because, we belive that we have achived the learning objectives of the project. We will show this through going a curated list of the learning goals, accompanied by a description of how we have achived them.
 
 \input{chapters/07 conclusion/learning_goals.tex}
 
+%As a product of solving the problem statement, we created our language, Arc. The syntax of Arc mostly resembles C, but with minor changes, such as the for-loop, which is influenced by the way Python handles it, and the task construct created to handle concurrency. The task construct and any other decision in the project have been driven by the wish to make Arc as easy and intuitive as possible for our target group to write concurrent code for the Arduino. Arc gets translated into C++ and implements Protothreads to work concurrently on the Arduino.
 
-The problem statement Arc set out to solve, is as follows: 
-\textbf{The project seeks to create a programming language for hobbyists that satisfies the language criterion created, Which is able to utilize concurency to easily express a concurrent flow of control concisely.}
+A concurrent program was written in the Arduino language with the Protothreads library to ensure that Arc worked as intended. The program was relatively simple and included two \gls{led}s; the first one was tasked to turn on and off every second, while the other diode was tasked to toggle the light state by a button press. We then created a simillar program using Arc, which worked as expected and did not run into any problems.
 
-As a product of solving the problem statement, we created our language, Arc. The syntax of Arc mostly resembles C, but with minor changes, such as the for-loop, which is influenced by the way Python handles it, and the task construct created to handle concurrency. The task construct and any other decision in the project have been driven by the wish to make Arc as easy and intuitive as possible for our target group to write concurrent code for the Arduino. Arc gets translated into C++ and implements Protothreads to work concurrently on the Arduino.
 
-A concurrent program was written in C++ with the Protothreads library to ensure that Arc worked as intended. The program was relatively simple and included two \gls{led}s; the first one was tasked to turn on and off every second, while the other diode was tasked to toggle the light state by a button press. We then recreated the same program using Arc and did not run into any problems.
+%The concurrency structures of Arc are colloquial and should therefore be somewhat intuitive to set up and understand for any hobbyist using our language. In order to conclude that the syntax of Arc concisely expresses a concurrent flow of control, we would have needed to test the usability of the language. From our perspective and limited internal testing, we can surmise a conclusion.
 
-\question{did we re-create it, or did we simply translate it to the same program?}
-
-The concurrency structures of Arc are colloquial and should therefore be somewhat intuitive to set up and understand for any hobbyist using our language. In order to conclude that the syntax of Arc concisely expresses a concurrent flow of control, we would have needed to test the usability of the language. From our perspective and limited internal testing, we can surmise a conclusion.
-
-We can conclude that Arc is an acceptable solution to the initial problem statement. There is always room for improvement, and we have learned some lessons throughout the project that would make for a better language next time. Testing is essential in the future.
+We can conclude that Arc is a succes in regards to the whole semester as it archieves the learning goals and is able to compile, eventhough it does not fullfill the problem statement completely. There is always room for improvement, and we have learned lessons throughout the project that would make for a better language in the future. 
