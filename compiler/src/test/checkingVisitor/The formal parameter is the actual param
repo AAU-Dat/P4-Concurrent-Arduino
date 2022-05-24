@@ -1,0 +1,2 @@
+The formal parameter is the actual parameteryoure delimiting the scope of the function. its not really a call by reference. its a list of mutable varibles. its just a list 
+of mutable variables that exist

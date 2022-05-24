@@ -56,11 +56,9 @@ For the statements, Arc uses similar rules to those found in~\cite[Ch.~10]{Hutte
     \centering
     \begin{tabular}{ll}
         \toprule
-        $FOR_{STMT-1}$ & $\langle \text{for } t \ x_1 \text{ in } x_2 \ \{ S \}, sto, env \rangle \Rightarrow$                                      \\
-                       & $\qquad \langle x_1 = v; \text{ for } t \ x_1 \text{ in } x^\prime_2 \ \{ S \}, sto, env \rangle$                          \\
-                       & where $x_2 = v : x^\prime_2$                                                                                               \\[12pt]
-        $FOR_{STMT-2}$ & $\langle \text{for } t \ x_1 \text{ in } x_2 \ \{ S \}, sto, env \rangle \Rightarrow \langle x_1 = v; S, sto, env \rangle$ \\
-                       & where $x_2 = v : \epsilon$                                                                                                 \\
+        $FOR_{STMT-1}$ & $\langle \text{for } t \ x \text{ in } v : vs \ \{ S \}, sto, env \rangle \Rightarrow$               \\
+                       & $\qquad \langle x = v; \text{ for } t \ x \text{ in } vs \ \{ S \}, sto, env \rangle$                \\[12pt]
+        $FOR_{STMT-2}$ & $\langle \text{for } t \ x \text{ in } \epsilon \ \{ S \}, sto, env \rangle \Rightarrow (sto, env) $ \\
         \bottomrule
     \end{tabular}
     \caption{Semantics for statements in Arc}
