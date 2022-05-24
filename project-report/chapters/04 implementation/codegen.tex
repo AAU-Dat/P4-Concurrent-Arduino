@@ -1,11 +1,11 @@
 \section{Code Generation}\label{sec:codegeneration}
-This section explains the part of the compiler that generates the target code. The target code is the Arduino Language, which is a mixture of C and C++ with some Arduino constructs. The visitor generates code similar to the one for semantic analysis. It follows the divide-and-conquer principle by walking the \gls{ast} and passing in the generated code between the nodes using our CodeGenStringObject.
+This section explains the part of the compiler that generates the target code. The target code is the Arduino Language, which is a mixture of C and C++ with some Arduino constructs. Code generation also implements a visitor that inherits from the acrv2basevisitor same as the semantic visitor. It follows the divide-and-conquer principle by walking the \gls{ast} and passing the generated code between the nodes using the CodeGenStringObject.
 
 The CodeGenStringObject can be seen in Listing~\ref{lst:code gen object}. We created a CodeGenStringObject because some nodes impact the target code in three different places.
 
 We have segmented the final code into three parts: GlobalScope (line 2), Setup (line 3), and Loop (line 4). GlobalScope is all of the user code and can create nested scopes when necessary, while both Setup and Loop are necessary functions for Protothreads handled by Arc.
 
-To handle the mutable types of Arc, we have added a Type\_Converter in lines 5-15 to convert the types to the appropriate type in C++. Our type 'num' is not handled by C++; therefore, we need to change the mutable and non-mutable numbers to a floating point. Chars and booleans are handled by C++ natively, so we only have to catch our mutable variant (in lines 9 and 12).
+To handle the mutable types of Arc, we have added a Type\_Converter method in lines 5-15 to convert the types to the appropriate type in C++. Our type 'num' is not handled by C++; therefore, we need to change the mutable and non-mutable numbers to a floating-point. Chars and booleans are handled by C++ natively, so we only have to catch our mutable variant (in lines 9 and 12).
 
 
 \begin{listing}[htb!]
@@ -33,11 +33,11 @@ To handle the mutable types of Arc, we have added a Type\_Converter in lines 5-1
 \end{listing}
 
 
-This strategy makes it possible to do all of the code-generation in a single tree visit, rather than keeping track of when and where to generate the code. It operates recursively from the first visit and nests the new scopes when appropriate. Therefore, the code generation starts and ends in the first node visited. The visitor pattern is similar to the one used for type-checking and scope-checking. This is because they all are extending the ArcBaseVisitor and use the same \gls{ast} as input.
+This strategy makes it possible to do all of the code-generation in a single tree visit, rather than keeping track of when and where to generate the code. It operates recursively from the first visit and nests the new scopes when appropriate. Therefore, the code generation starts and ends in the first node visited. 
 
-An example of how the code generation visitor is included in Figure~\ref{lst:codegenexpression}. First in lines 2-3, the visitor instantiates two CodeGenStringObjects 'cpp' (for C++) and 'temp' (for temporary). The temporary string object does not get returned at the end. We then assign 'temp' to the visitation of the left expression of the context in line 4 before adding the resulting GlobalScope to the GlobalScope of the main string object in line 5.
+An example of the code generation visitor is included in Figure~\ref{lst:codegenexpression}. First in lines 2-3, the visitor instantiates two CodeGenStringObjects 'cpp' (for C++) and 'temp' (for temporary). The temporary string object does not get returned at the end. We then assign 'temp' to the visitation of the left expression of the context in line 4 before adding the resulting GlobalScope to the GlobalScope of the main string object in line 5.
 
-In lines 7-10, the visitor checks the operator of the context and adds a '+' or '-' to the main GlobalScope based on the check on line 7. The temporary string object then gets overridden with the value of the visitation of the expression in line 12 before adding the GlobalScope to the GlobalScope of the main string object in line 13. Finally, it returns the CodeGenStringObject to the calling function.
+In lines 7-10, the visitor checks the operator of the context and adds a '+' or '-' to the main GlobalScope based on the check on line 7. The temporary string object then gets overridden with the value of the visitation of the expression in line 12, before adding the GlobalScope to the GlobalScope of the main string object in line 13. Finally, it returns the CodeGenStringObject to the calling function.
 
 
 \begin{listing}[htb!]
@@ -119,10 +119,12 @@ While it is not necessary to name a task in Arc, a name is necessary for Prototh
 
 Then in lines 11-34, we have an if-else statement with three blocks depending on whether the task is timed (in lines 11-17), conditional (in lines 18-25), or unconditional (in lines 26-32).
 
-The first block creates a list of StatementContexts from the context parameter (in line 12). It iterates through the list in lines 13-14, visiting each statement and adding the resulting GlobalScope to the main GlobalScope. We also need to put the thread to sleep before closing the endless thread loop in lines 16-17.
+The first block creates a list of StatementContexts from the context parameter (in line 12). It iterates through the list in lines 13-14, visiting each statement and adding the resulting GlobalScope to the main GlobalScope. A string which is used to sleep protothread is added at the end of the block in lines 17-18.
 
 The second block needs to create the condition before iterating through the statements. This is done in line 19 by visiting the expression from the context.
 
 The third block is similar to the conditional task but does not need a condition to run. The conditional thread does not need a sleep call either. Finally, we end the thread by the Protothread function 'PT\_END' in line 34.
 
 The final part of the function adds the necessary Protothread initialization in line 35 to the Setup function. It sets up the scheduler in the Loop function in line 36 before returning the 'cpp' as in the CodeGenStringObjects.
+
+Thus the code gen visitor visits the \gls{ast} and generates the target code for each node in the tree recursively.

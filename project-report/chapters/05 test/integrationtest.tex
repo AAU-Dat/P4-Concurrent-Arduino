@@ -2,19 +2,11 @@
 
 % https://dzone.com/articles/integration-testing-what-it-is-and-how-to-do-it-ri#:~:text=What%20Is%20System%20Integration%20Testing,together%20into%20a%20complete%20system
 
-An integration test is a test method that tests how well components and units interact with each other; To make sure that each of the components or units can interact without any errors or bugs. When creating an integration test, you can follow some famous formats to ensure that the integration test follows the same format and ensure the test's qualitative is high enough. Some of the forms are:
+An integration test is a test method that tests how well components and units interact with each other, to make sure that each of the components or units can interact without any errors or bugs. 
 
-\begin{enumerate}
-    \item Big Bang Approached
-    \item Incremental Approached
-    \item Bottom-up Integration
-    \item Top-down Integration
-    \item Hybrid/Sandwhich Integration
-\end{enumerate}
+%The form that would fit best in our implementation compared to how we have created our implementation part in the report would be the Big Bang Approach. The Big Bang Approach is one of the most used structures in an integration test, where the purpose of this test structure is to group all of the components and unit tests and test them all at once. In our case, this fits perfectly, as we would like to try if some specific source code can be transpile to a particular target code as C++. Moreover, check if the transpile code is semantic equivalent to the source code. A disadvantage of using the Big Bang Approach is that if an error occurs or a bug makes the program fail, it is hard to determine which components or units are to blame for the mistakes [ref: to link].
 
-The form that would fit best in our implementation compared to how we have created our implementation part in the report would be the Big Bang Approach. The Big Bang Approach is one of the most used structures in an integration test, where the purpose of this test structure is to group all of the components and unit tests and test them all at once. In our case, this fits perfectly, as we would like to try if some specific source code can be transpile to a particular target code as C++. Moreover, check if the transpile code is semantic equivalent to the source code. A disadvantage of using the Big Bang Approach is that if an error occurs or a bug makes the program fail, it is hard to determine which components or units are to blame for the mistakes [ref: to link].
-
-So for this project, we could choose to test the lexer and parser to check if we get the correct syntax and token generated from a specific source code. However, as this part is already thoroughly tested by ANTLR, we can certainly assume that this park works as intended. It would make more sense for us to try the compiler as a whole unit to check whether or not we get the correct output code we expect to get. The code we want to test can be seen at [ref: arc code].
+For this project, we could choose to test the lexer and parser to check if we get the correct syntax and token generated from a specific source code. However, as this part is already thoroughly tested by ANTLR, we can certainly assume that this park works as intended. It would make more sense for us to try the compiler as a whole unit to check whether or not we get the correct output code we expect to get. The code we want to test can be seen at Listing~\ref{lst:arc code example}.
 
 % Test the compiler as whole, and if the target code is the same as the inputted code? Check if its equivalent in the semantic meaning.
     % Give some input code
@@ -24,7 +16,7 @@ So for this project, we could choose to test the lexer and parser to check if we
 
 % Arc code example
 \begin{listing}[htb!]
-    \begin{minted}[label=Arc code example]{java}
+    \begin{minted}[label=Arc code example]{text}
         mut num buttonState = 0;
         mut num switch = 0;
         #pin BUTTON_PIN(12, INPUT);
@@ -58,11 +50,11 @@ So for this project, we could choose to test the lexer and parser to check if we
     \label{lst:arc code example}
 \end{listing}
 
-When compiling the code from the Arc example, we want to check after the output code in our target language has the exact semantic equivalent. We do this by manually looking through the new transpile code and going through each line of code to see if it does the same as the source code. As you can see in the transpile code at [ref: transpile code], both of the codes have the exact equivalent semantics, and therefore we can say that the test of the compiler as a whole work as intended.
+When compiling the code from the Arc example, we want to check after the output code in our target language has the exact semantic equivalent. We do this by manually looking through the new transpile code and going through each line of code to see if it does the same as the source code. As you can see in the transpile code at Listing~\ref{lst:generated C++ code from Arc code example}, both of the codes have the exact equivalent semantics, and therefore we can say that the test of the compiler as a whole work as intended.
 
 % C++ Generated code from Arc code example
 \begin{listing}[htb!]
-    \begin{minted}[label=Generated C++ code from Arc code example]{java}
+    \begin{minted}[label=Generated C++ code from Arc code example]{arduino}
         #include "protothreads.h"
         float _buttonState = 0;
         float _switch = 0;
@@ -72,15 +64,12 @@ When compiling the code from the Arc example, we want to check after the output 
         pt pt0;
         int pt0thread(struct pt *pt){
             PT_BEGIN(pt);
-            for (;;)
-            {
-                if (_switch == 0)
-                {
+            for (;;) {
+                if (_switch == 0) {
                     digitalWrite(_LED1_PIN, HIGH);
                     _switch = 1;
                 }
-                else
-                {
+                else {
                     digitalWrite(_LED1_PIN, LOW);
                     _switch = 0;
                 }
@@ -88,28 +77,17 @@ When compiling the code from the Arc example, we want to check after the output 
             }
             PT_END(pt);
         }
-        float _blinkLED(float _buttonState){
-            if (_buttonState == 1)
-            {
-                digitalWrite(_LED2_PIN, HIGH);
-            }
-            else
-            {
-                digitalWrite(_LED2_PIN, LOW);
-            }
-        }
+        ...//blink function definition omitted
         pt pt1;
         int pt1thread(struct pt *pt){
             PT_BEGIN(pt);
-            for (;;)
-            {
+            for (;;){
                 _buttonState = digitalRead(_BUTTON_PIN);
                 _blinkLED(_buttonState);
                 PT_YIELD(pt);
             }
             PT_END(pt);
         }
-
         void setup(){
             Serial.begin(9600);
             pinMode(_BUTTON_PIN, INPUT);
@@ -118,7 +96,6 @@ When compiling the code from the Arc example, we want to check after the output 
             PT_INIT(&pt0);
             PT_INIT(&pt1);
         }
-
         void loop(){
             PT_SCHEDULE(pt0thread(&pt0));
             PT_SCHEDULE(pt1thread(&pt1));
