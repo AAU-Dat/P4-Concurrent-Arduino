@@ -1,7 +1,7 @@
 \section{Lexer and parser generation}\label{sec:lexerandparsergen}
 This section briefly covers how the lexer and parser for Arc has been implemented, and what alternatives could have been used.
 
-The lexer, also called a lexical analyzer or scanner, takes a character stream and turns it into a list of tokens. Tokens are a representation of something in a language. A num in Arc would, for example, be a token that represents numbers. The lexer recognizes and can discard characters of the character stream, so that the parser can ignore them. For example is the parser not concerned with whitespaces, and nor does it need to, so it can simply discard them. If the lexer did not discard these, the parser would constantly have to check for them. These tokens are then passed on to the parser, which is tasked to make syntatic sense of them. It compares the tokens and their structure to the grammar of the specific language .
+The lexer, also called a lexical analyzer or scanner, takes a character stream and turns it into a list of tokens. A num in Arc would, for example, be a token that represents numbers. The lexer recognizes and can discard characters of the character stream, so that the parser can ignore them. For example is the parser not concerned with whitespaces, and nor does it need to, so it can simply discard them. If the lexer did not discard these, the parser would constantly have to check for them. These tokens are then passed on to the parser, which is tasked to make syntatic sense of them. It compares the tokens and their structure to the grammar of the specific language .
 
 This section briefly covers the implementation of Arc's lexer and parser and available alternatives.
 
