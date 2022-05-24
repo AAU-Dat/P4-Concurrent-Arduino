@@ -1,7 +1,9 @@
 \section{Unit test}\label{subsec:unittest}
-Unit testing is a test method that checks whether specific code does what is expected of it. A unit test is a breakdown of functionality of code into descrite testable units~\cite{UnitTestBasic}.
+Unit testing is a test method that checks whether specific code does what is expected of it. A unit test is a breakdown of functionality of code into descrete testable units~\cite{UnitTestBasic}.
 
-Unit tests in this project will follow the AAA structure, which deivdes tests into three parts. This specific structure can be seen in the Listing~\ref{lst:unit test with aaa structure}.
+The purpose of unit tests in this project is to test whether the implementation reflects the Arc semantics. The semantics is in this project implemented through the visitors and the symbolTable. We would also unittest all helper methods used in the vistors since these are essential in telling if the visitors work as exprected.
+
+To unit test the visitors we will test the individual units of the visitor which corresponds to individual visitor methods which handle the different ctx's it gets as input. A test of such a method would  would follow the AAA structure, which devides tests into three parts. This specific structure can be seen in the Listing~\ref{lst:unit test with aaa structure}. Here we would assert the correctness of the method based on the semantics. It could be if the semantic visitor judges type correctness The same as our type check operational semantics. Unit testing of any helper functions would be made similarly. These functions could be our typecheck function and convert_to_types function. The symboltable would also be tested both internal, like the activeScope method, and externally used methods, like the get method. 
 
 \begin{listing}[htb!]
     \begin{minted}[label=Unit test with AAA structure]{java}
@@ -18,34 +20,26 @@ Unit tests in this project will follow the AAA structure, which deivdes tests in
     \label{lst:unit test with aaa structure}
 \end{listing}
 
-Constructing unit tests with this structure, ensures unit tests follow the same format and course of action. An example has been created to show what we mean is a great and usable unit test, and this can be seen in the Listing~\ref{lst:unit test of make sibling}.
 
+A test folowing this strategi has been created, which can be seen in listing~\ref{lst:Unit test of visitTerminal_expression}. The purpose of this test is to check if The visitTerminal_expression method in SemanticVisitor reflects the operational semantics for typechecking. The operational semantics it corresponds to can be found ????huttelbook page. In the test what happens is we create a ParseTree which is the result of treeConstructor constructor. This constructor is run with the input we want to create antlr ast from. The constructor is esstially a testing helping function that creates a antlr ast from a given input string. An instance of our semantic visitor is also instantiated. This is the end of the arrange part of the test, Then in the act part of the test the ast tree is visited using the visitor. The result of this is then asserted to be equal to the type we expect per our semantics.
+\todo{maybe move tree = treeConstructor into the arrange part of the test}
 \begin{listing}[htb!]
-    \begin{minted}[label=Unit test of make sibling]{java}
-        @Test
-        public void MakeSiblings_TestFunction_ReturnTrue(){
-            // Arrange
-            AST_node a = new AST_node();
-            AST_node b = new AST_node();
-            AST_node c = new AST_node();
-            a.adoptChildren(b);
-            b.adoptChildren(c);
-            // Act
-            b.MakeSiblings(c);
-            // Assert
-            assertEquals(a, b.parent);
-            assertEquals(a, c.parent);
-            assertEquals(b, a.child.leftMostSibling);
-            assertEquals(c, a.child.rightSibling);
-            assertEquals(c, b.rightSibling);
-            assertTrue(c.rightSibling == null);
-            assertEquals(a.child.leftMostSibling, c.leftMostSibling);
-        }
+    \begin{minted}[label=Unit test of visitTerminal_expression]{java}
+    @Test
+    public void visitTerminal_expression_number_Test(){
+        ParseTree tree;
+        SemanticVisitor eval = new SemanticVisitor();
+        tree = treeConstructor("num b = 4;");
+
+        test_Node AST = eval.visit(tree);
+
+        assertEquals(Types.NUM, AST.child.child.type);
+        
+    }
     \end{minted}
     \caption{Unit test of make sibling}
     \label{lst:unit test of make sibling}
 \end{listing}
 
-This specific unit test tests the MakeSibling() function, where we test the individual scenario to make sure that when a node gets a new sibling all of the data is updated correctly. We run the MakeSibling() on node B and then check whether all of the data of node C gets updated to the expected values. If the test is passed, we know that the MakeSibling() does what is expected. 
-
-Unit tests ensure that the code works the same after refactoring. All unit tests can be rerun if anything is broken. If something is broken, the test fails and can be corrected.
+Unittests structured after this strategi should guarentee reliability and that the implementation reflects the semantics.
+It would also ensure  that the code works the same after refactoring.

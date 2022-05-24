@@ -19,7 +19,7 @@ import Exemptions.Expression_type_exception;
 import Exemptions.Not_whole_number_exception;
 
 
-public class SemanticVisitor extends arcv2BaseVisitor<AST_node> {
+public class SemanticVisitor extends arcv2BaseVisitor<test_Node> {
     SymbolTable symbolTable = new SymbolTable(); 
     
     
@@ -47,8 +47,8 @@ public class SemanticVisitor extends arcv2BaseVisitor<AST_node> {
 
 
     @Override
-    public AST_node visitStart(arcv2Parser.StartContext ctx) {
-        AST_node start = new AST_node("start");
+    public test_Node visitStart(arcv2Parser.StartContext ctx) {
+        test_Node start = new test_Node("start");
         // this only works with a single declaration will have to find out how to go
         // through them one by one
         start.child = visitChildren(ctx);
@@ -56,11 +56,11 @@ public class SemanticVisitor extends arcv2BaseVisitor<AST_node> {
     }
 
     @Override
-    public AST_node visitTerminal_expression(arcv2Parser.Terminal_expressionContext ctx) {
+    public test_Node visitTerminal_expression(arcv2Parser.Terminal_expressionContext ctx) {
 
         String name;
         name = ctx.getText();
-        AST_node terminal = new Terminal_expression_node(name);
+        test_Node terminal = new Terminal_expression_node(name);
         if (ctx.NUMBER() != null)
             terminal.type = Types.NUM;
         else if (ctx.BOOL() != null)
@@ -83,17 +83,17 @@ public class SemanticVisitor extends arcv2BaseVisitor<AST_node> {
     
 
     @Override
-    public AST_node visitPlus_minus_expression(arcv2Parser.Plus_minus_expressionContext ctx) {
-        AST_node plus_minus_node;
+    public test_Node visitPlus_minus_expression(arcv2Parser.Plus_minus_expressionContext ctx) {
+        test_Node plus_minus_node;
 
         if (ctx.children.get(1).getText().toCharArray()[0] == '+')
-            plus_minus_node = new AST_node("plus");
+            plus_minus_node = new test_Node("plus");
         else
-            plus_minus_node = new AST_node("minus");
+            plus_minus_node = new test_Node("minus");
         plus_minus_node.child = visit(ctx.expression(0));
         plus_minus_node.child.MakeSiblings(visit(ctx.expression(1)));
 
-        AST_node[] astnodearray = { plus_minus_node.child, plus_minus_node.child.rightSibling };
+        test_Node[] astnodearray = { plus_minus_node.child, plus_minus_node.child.rightSibling };
         if (Typecheck.Check(astnodearray, Types.NUM))
             plus_minus_node.type = Types.NUM;
         else {
@@ -103,17 +103,17 @@ public class SemanticVisitor extends arcv2BaseVisitor<AST_node> {
     }
 
     @Override
-    public AST_node visitMultiplication_divide_expression(arcv2Parser.Multiplication_divide_expressionContext ctx) {
-        AST_node mult_divide_node;
+    public test_Node visitMultiplication_divide_expression(arcv2Parser.Multiplication_divide_expressionContext ctx) {
+        test_Node mult_divide_node;
 
         if (ctx.children.get(1).getText().toCharArray()[0] == '*')
-            mult_divide_node = new AST_node("mult");
+            mult_divide_node = new test_Node("mult");
         else
-            mult_divide_node = new AST_node("devide");
+            mult_divide_node = new test_Node("devide");
 
         mult_divide_node.child = visit(ctx.expression(0));
         mult_divide_node.child.MakeSiblings(visit(ctx.expression(1)));
-        AST_node[] astnodearray = { mult_divide_node.child, mult_divide_node.child.rightSibling };
+        test_Node[] astnodearray = { mult_divide_node.child, mult_divide_node.child.rightSibling };
         if (Typecheck.Check(astnodearray, Types.NUM))
             mult_divide_node.type = Types.NUM;
         else {
@@ -124,16 +124,16 @@ public class SemanticVisitor extends arcv2BaseVisitor<AST_node> {
     }
 
     @Override
-    public AST_node visitRelational_equality_expression(arcv2Parser.Relational_equality_expressionContext ctx) {
-        AST_node equality_node;
+    public test_Node visitRelational_equality_expression(arcv2Parser.Relational_equality_expressionContext ctx) {
+        test_Node equality_node;
         if (ctx.children.get(1).getText().toCharArray()[0] == '=')
-            equality_node = new AST_node("equality");
+            equality_node = new test_Node("equality");
         else
-            equality_node = new AST_node("inequality");
+            equality_node = new test_Node("inequality");
 
         equality_node.child = visit(ctx.expression(0));
         equality_node.child.MakeSiblings(visit(ctx.expression(1)));
-        AST_node[] astnode_array = { equality_node.child, equality_node.child.rightSibling };
+        test_Node[] astnode_array = { equality_node.child, equality_node.child.rightSibling };
         if (Typecheck.Check(astnode_array, equality_node.child.type)) {
             equality_node.type = Types.BOOL;
         } else {
@@ -143,23 +143,23 @@ public class SemanticVisitor extends arcv2BaseVisitor<AST_node> {
     }
 
     @Override
-    public AST_node visitRelational_operator_expression(arcv2Parser.Relational_operator_expressionContext ctx) {
-        AST_node relational_node;
+    public test_Node visitRelational_operator_expression(arcv2Parser.Relational_operator_expressionContext ctx) {
+        test_Node relational_node;
         char[] operator_array = ctx.children.get(1).getText().toCharArray();
         if (operator_array.length == 1) {
             if (operator_array[0] == '<')
-                relational_node = new AST_node("less");
+                relational_node = new test_Node("less");
             else
-                relational_node = new AST_node("greater");
+                relational_node = new test_Node("greater");
         } else {
             if (operator_array[0] == '<')
-                relational_node = new AST_node("less than or equal");
+                relational_node = new test_Node("less than or equal");
             else
-                relational_node = new AST_node("greater than or equal");
+                relational_node = new test_Node("greater than or equal");
         }
         relational_node.child = visit(ctx.expression(0));
         relational_node.child.MakeSiblings(visit(ctx.expression(1)));
-        AST_node[] astnode_array = { relational_node.child, relational_node.child.rightSibling };
+        test_Node[] astnode_array = { relational_node.child, relational_node.child.rightSibling };
         if (Typecheck.Check(astnode_array, relational_node.child.type)) {
             relational_node.type = Types.BOOL;
         } else {
@@ -169,11 +169,11 @@ public class SemanticVisitor extends arcv2BaseVisitor<AST_node> {
     }
 
     @Override
-    public AST_node visitOr_expression(arcv2Parser.Or_expressionContext ctx) {
-        AST_node Or_node = new AST_node("or");
+    public test_Node visitOr_expression(arcv2Parser.Or_expressionContext ctx) {
+        test_Node Or_node = new test_Node("or");
         Or_node.child = visit(ctx.expression(0));
         Or_node.child.MakeSiblings(visit(ctx.expression(1)));
-        AST_node[] astnode_array = { Or_node.child, Or_node.child.rightSibling };
+        test_Node[] astnode_array = { Or_node.child, Or_node.child.rightSibling };
         if (Typecheck.Check(astnode_array, Types.BOOL)) {
             Or_node.type = Types.BOOL;
         } else {
@@ -183,11 +183,11 @@ public class SemanticVisitor extends arcv2BaseVisitor<AST_node> {
     }
 
     @Override
-    public AST_node visitAnd_expression(arcv2Parser.And_expressionContext ctx) {
-        AST_node And_node = new AST_node("And");
+    public test_Node visitAnd_expression(arcv2Parser.And_expressionContext ctx) {
+        test_Node And_node = new test_Node("And");
         And_node.child = visit(ctx.expression(0));
         And_node.child.MakeSiblings(visit(ctx.expression(1)));
-        AST_node[] astnode_array = { And_node.child, And_node.child.rightSibling };
+        test_Node[] astnode_array = { And_node.child, And_node.child.rightSibling };
         if (Typecheck.Check(astnode_array, Types.BOOL)) {
             And_node.type = Types.BOOL;
         } else {
@@ -197,8 +197,8 @@ public class SemanticVisitor extends arcv2BaseVisitor<AST_node> {
     }
 
     @Override
-    public AST_node visitParentheses_expression(arcv2Parser.Parentheses_expressionContext ctx) {
-        AST_node parantheses_node = new AST_node("parantheses");
+    public test_Node visitParentheses_expression(arcv2Parser.Parentheses_expressionContext ctx) {
+        test_Node parantheses_node = new test_Node("parantheses");
         parantheses_node.child = visit(ctx.expression());
         if (parantheses_node.child.type != Types.CHAR) {
             parantheses_node.type = parantheses_node.child.type;
@@ -209,8 +209,8 @@ public class SemanticVisitor extends arcv2BaseVisitor<AST_node> {
     }
 
     @Override
-    public AST_node visitUnary_negation_expression(arcv2Parser.Unary_negation_expressionContext ctx) {
-        AST_node unary_node = new AST_node("unary");
+    public test_Node visitUnary_negation_expression(arcv2Parser.Unary_negation_expressionContext ctx) {
+        test_Node unary_node = new test_Node("unary");
         unary_node.child = visitChildren(ctx);
         if (unary_node.child.type == Types.BOOL) {
             unary_node.type = Types.BOOL;
@@ -221,7 +221,7 @@ public class SemanticVisitor extends arcv2BaseVisitor<AST_node> {
     }
 
     @Override
-    public AST_node visitArray_access_expression(arcv2Parser.Array_access_expressionContext ctx) {
+    public test_Node visitArray_access_expression(arcv2Parser.Array_access_expressionContext ctx) {
         //Integer index = Integer.parseInt(ctx.children.get(2).toString());
         Array_access_node array_node = new Array_access_node("array_access",
                 Integer.parseInt(ctx.children.get(2).toString()));
@@ -246,8 +246,8 @@ public class SemanticVisitor extends arcv2BaseVisitor<AST_node> {
     }
 
     @Override
-    public AST_node visitFunction_access_expression(arcv2Parser.Function_access_expressionContext ctx) {
-        AST_node function_call = new AST_node("functionCall");
+    public test_Node visitFunction_access_expression(arcv2Parser.Function_access_expressionContext ctx) {
+        test_Node function_call = new test_Node("functionCall");
         String name;
         //TODO HANDLE ARDUINO FUNCTIONS!!
         if (ctx.ARDUINOFUNCTIONS() != null)
@@ -286,9 +286,9 @@ public class SemanticVisitor extends arcv2BaseVisitor<AST_node> {
 
 
     @Override
-    public AST_node visitVariable_declaration(arcv2Parser.Variable_declarationContext ctx) {
+    public test_Node visitVariable_declaration(arcv2Parser.Variable_declarationContext ctx) {
 
-        AST_node variable_declaration = new Variable_declaration_node("varDec");
+        test_Node variable_declaration = new Variable_declaration_node("varDec");
 
         Types var_dec_type = convert_string_to_Types(ctx.typing().TYPE().getText());
         String var_dec_identifier = ctx.IDENTIFIER().getText();
@@ -319,11 +319,11 @@ public class SemanticVisitor extends arcv2BaseVisitor<AST_node> {
         return variable_declaration;
     }
     @Override
-    public AST_node visitBlock(arcv2Parser.BlockContext ctx) {
+    public test_Node visitBlock(arcv2Parser.BlockContext ctx) {
 
         symbolTable.push();
 
-        AST_node block = new Variable_declaration_node("block");
+        test_Node block = new Variable_declaration_node("block");
 
         List<arcv2Parser.StatementContext> list = ctx.statement();
         for (arcv2Parser.StatementContext statementContext : list) {
@@ -336,8 +336,8 @@ public class SemanticVisitor extends arcv2BaseVisitor<AST_node> {
     }
 
     @Override
-    public AST_node visitFunction_declaration(arcv2Parser.Function_declarationContext ctx){
-        AST_node func = new Variable_declaration_node("function");
+    public test_Node visitFunction_declaration(arcv2Parser.Function_declarationContext ctx){
+        test_Node func = new Variable_declaration_node("function");
         //here we need to do a block without a block, to simulate intering into a scope but we also need to remember the parameters so a regular block is not a good fit
         // because there isnt a good way to pass the parameters which should exist in the scope to it.
         List<TypingContext> typing = ctx.typing();
@@ -377,8 +377,8 @@ public class SemanticVisitor extends arcv2BaseVisitor<AST_node> {
     }
 
     @Override
-    public AST_node visitVariable_declaration_statement(arcv2Parser.Variable_declaration_statementContext ctx){
-        AST_node variable_declaration = new Variable_declaration_node("varDec");
+    public test_Node visitVariable_declaration_statement(arcv2Parser.Variable_declaration_statementContext ctx){
+        test_Node variable_declaration = new Variable_declaration_node("varDec");
         Types var_dec_type = convert_string_to_Types(ctx.typing().TYPE().getText());
         String var_dec_identifier = ctx.IDENTIFIER().getText();
         boolean var_dec_mutability = ctx.typing().PREFIXOPERATOR() == null ? true : false;
@@ -407,16 +407,16 @@ public class SemanticVisitor extends arcv2BaseVisitor<AST_node> {
         return variable_declaration;
     }
 
-    @Override public AST_node visitBlock_statement(arcv2Parser.Block_statementContext ctx) { return visitChildren(ctx); }
+    @Override public test_Node visitBlock_statement(arcv2Parser.Block_statementContext ctx) { return visitChildren(ctx); }
     
 
     //TODO insure these only happen inside of function declarations
-    @Override public AST_node visitReturn_statement(arcv2Parser.Return_statementContext ctx) { return visitChildren(ctx); }
+    @Override public test_Node visitReturn_statement(arcv2Parser.Return_statementContext ctx) { return visitChildren(ctx); }
 
 
-    @Override public AST_node visitIf_else_statement(arcv2Parser.If_else_statementContext ctx) { 
+    @Override public test_Node visitIf_else_statement(arcv2Parser.If_else_statementContext ctx) { 
         
-        AST_node if_else_node = new AST_node("if_else");
+        test_Node if_else_node = new test_Node("if_else");
         if_else_node.child = visit(ctx.expression());
         if (if_else_node.child.type != Types.BOOL) {
             throw new Expression_type_exception("the if_else expression has bad typing");
@@ -426,9 +426,9 @@ public class SemanticVisitor extends arcv2BaseVisitor<AST_node> {
     }
 
 
-    @Override public AST_node visitForloop_statement(arcv2Parser.Forloop_statementContext ctx) { 
+    @Override public test_Node visitForloop_statement(arcv2Parser.Forloop_statementContext ctx) { 
         
-        AST_node for_loop_node = new AST_node("for_loop");
+        test_Node for_loop_node = new test_Node("for_loop");
         
         
         
@@ -450,9 +450,9 @@ public class SemanticVisitor extends arcv2BaseVisitor<AST_node> {
 
 
 
-    @Override public AST_node visitWhileloop_statement(arcv2Parser.Whileloop_statementContext ctx) { 
+    @Override public test_Node visitWhileloop_statement(arcv2Parser.Whileloop_statementContext ctx) { 
         
-        AST_node while_loop_node = new AST_node("while_loop");
+        test_Node while_loop_node = new test_Node("while_loop");
         while_loop_node.child = visit(ctx.expression());
         if (while_loop_node.child.type != Types.BOOL) {
             throw new Expression_type_exception("the while_loop expression has bad typing");
@@ -463,14 +463,14 @@ public class SemanticVisitor extends arcv2BaseVisitor<AST_node> {
 
 
 
-    @Override public AST_node visitAssignment_statement(arcv2Parser.Assignment_statementContext ctx) { 
-        AST_node assingment_node = new AST_node("assingnment");
+    @Override public test_Node visitAssignment_statement(arcv2Parser.Assignment_statementContext ctx) { 
+        test_Node assingment_node = new test_Node("assingnment");
 
         SymbolHashTableEntry entry = symbolTable.get(ctx.IDENTIFIER().getText());
         
         //TODO we should think about assignmet to pin array even should be possible, and if so how? are they even mutable by default?
         //TODO  this needs to handle arrays (should we even allow array assignment) we will
-        AST_node expression = visit(ctx.expression(0));
+        test_Node expression = visit(ctx.expression(0));
 
         if (entry == null) {
             throw new RuntimeException(" this varible '" + ctx.IDENTIFIER().getText() + "' does not exist");
@@ -489,8 +489,8 @@ public class SemanticVisitor extends arcv2BaseVisitor<AST_node> {
         return assingment_node;
      }
 
-    @Override public AST_node visitFunction_call_statement(arcv2Parser.Function_call_statementContext ctx) { 
-        AST_node function_call = new AST_node("function");
+    @Override public test_Node visitFunction_call_statement(arcv2Parser.Function_call_statementContext ctx) { 
+        test_Node function_call = new test_Node("function");
         if (ctx.ARDUINOFUNCTIONS() != null)
             System.out.println("arduinofunction");
 
@@ -525,10 +525,10 @@ public class SemanticVisitor extends arcv2BaseVisitor<AST_node> {
 
         //TODO make it ilegal to decalre varibles inside of tasks!!!!!!!!!!!!!!!!!!!!
 
-     @Override public AST_node visitTask_declaration(arcv2Parser.Task_declarationContext ctx) { 
+     @Override public test_Node visitTask_declaration(arcv2Parser.Task_declarationContext ctx) { 
          //TODO we need to remove typing from task declaration since it its not declarations of parameters but actual parameters
 
-         AST_node task = new Variable_declaration_node("task");
+         test_Node task = new Variable_declaration_node("task");
 
          //here we start the task declarations scope 
          symbolTable.push();
@@ -572,10 +572,10 @@ public class SemanticVisitor extends arcv2BaseVisitor<AST_node> {
     
     }
 
-     @Override public AST_node visitPin_declaration(arcv2Parser.Pin_declarationContext ctx) { 
+     @Override public test_Node visitPin_declaration(arcv2Parser.Pin_declarationContext ctx) { 
          //TODO need to make alot of pin specific code in assignment 
         
-        AST_node pin_declaration = new AST_node("pinDec");
+        test_Node pin_declaration = new test_Node("pinDec");
         Types var_dec_type = Types.PIN;
         String var_dec_identifier = ctx.IDENTIFIER().getText();
         boolean var_dec_mutability = ctx.INPUT() == null ? true : false;

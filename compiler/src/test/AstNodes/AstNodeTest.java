@@ -12,9 +12,9 @@ public class AstNodeTest {
     @Test
     public void MakeSiblings_TestFunction_ReturnTrue(){
         // Arrange
-        AST_node a = new AST_node();
-        AST_node b = new AST_node();
-        AST_node c = new AST_node();
+        test_Node a = new test_Node();
+        test_Node b = new test_Node();
+        test_Node c = new test_Node();
 
         a.adoptChildren(b);
         b.adoptChildren(c);
@@ -36,9 +36,9 @@ public class AstNodeTest {
     @Test
     public void MakeSiblings_HasRightSibling_ReturnTrue(){
         // Arrange
-        AST_node origin = new AST_node();
-        AST_node originRight = new AST_node();
-        AST_node right = new AST_node();
+        test_Node origin = new test_Node();
+        test_Node originRight = new test_Node();
+        test_Node right = new test_Node();
 
         // Act
         origin.rightSibling = originRight;
@@ -52,8 +52,8 @@ public class AstNodeTest {
     @Test
     public void MakeSiblings_NoRightSibling_ReturnTrue(){
         // Arrange
-        AST_node origin = new AST_node();
-        AST_node right = new AST_node();
+        test_Node origin = new test_Node();
+        test_Node right = new test_Node();
 
         // Act
         origin.MakeSiblings(right);
@@ -66,9 +66,9 @@ public class AstNodeTest {
     @Test
     public void MakeSiblings_HasParent_ReturnTrue(){
         // Arrange
-        AST_node origin = new AST_node();
-        AST_node parent = new AST_node();
-        AST_node right = new AST_node();
+        test_Node origin = new test_Node();
+        test_Node parent = new test_Node();
+        test_Node right = new test_Node();
 
         // Act
         origin.parent = parent;
@@ -83,9 +83,9 @@ public class AstNodeTest {
     @Test
     public void MakeSiblings_UpdateLeftmostSibling_ReturnTrue(){
         // Arrange
-        AST_node origin = new AST_node();
-        AST_node leftmostSibling = new AST_node();
-        AST_node right = new AST_node();
+        test_Node origin = new test_Node();
+        test_Node leftmostSibling = new test_Node();
+        test_Node right = new test_Node();
 
         // Act
         origin.leftMostSibling = leftmostSibling;
