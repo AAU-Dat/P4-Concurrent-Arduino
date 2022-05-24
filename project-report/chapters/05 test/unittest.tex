@@ -1,20 +1,18 @@
 \section{Unit test}\label{subsec:unittest}
-Unit testing is a test method that checks whether specific code does what is expected of it. A unit test is a breakdown of functionality of code into descrete testable units~\cite{UnitTestBasic}.
+Unit testing is a test method that checks whether the code does what is expected of it. A unit test is a breakdown of code functionality into discrete testable units~\cite{UnitTestBasic}.
 
-The purpose of unit tests in this project is to test whether the implementation reflects the Arc semantics. The semantics is in this project implemented through the visitors and the symbolTable. We would also unittest all helper methods used in the vistors since these are essential in telling if the visitors work as exprected.
+The purpose of unit tests in this project is to test whether the implementation reflects the Arc semantics. The semantics is in this project implemented through the visitors and the symbolTable. We would also test all helper methods used in the visitors since these are essential in telling if the visitors work as expected.
 
-To unit test the visitors we will test the individual units of the visitor which corresponds to individual visitor methods which handle the different ctx's it gets as input. A test of such a method would follow the AAA structure, which devides tests into three parts. This specific structure can be seen in the Listing~\ref{lst:unit test with aaa structure}. Here we would assert the correctness of the method based on the semantics.
+To unit test the visitors, we test the individual methods of the visitor, which handle the different contexts it gets as input. A test of such a method would follow the AAA structure, which divides tests into three parts. This specific structure can be seen in Listing ~\ref{lst:unit test with aaa structure}. Here we would assert the correctness of the method based on the semantics.
 
-It could be if the semantic visitor judges type correctness The same as our type check operational semantics. Unit testing of any helper functions would be made similarly. These functions could be our typecheck function and convert\_to\_types function. The symboltable would also be tested both internal, like the activeScope method, and externally used methods, like the get method.
+The semantic visitor judges type correctness the same as our type check semantics. Testing any helper functions would be done similarly. These helper functions could, for example, be our type check function, convert\_to\_types function, and our symbol table methods. 
 
 \begin{listing}[htb!]
     \begin{minted}[label=Unit test with AAA structure]{java}
         @Test
         public void nameOfTest(){
             // Arrange is the part where we initialize objects and sets the value of the data that is passed to the method under test.
-
             // Act is the part where it invokes the method under test with the arranged parameters.
-
             // Assert is the part that verifies the action of the method under test behaves as expected. 
         }
     \end{minted}
@@ -22,12 +20,11 @@ It could be if the semantic visitor judges type correctness The same as our type
     \label{lst:unit test with aaa structure}
 \end{listing}
 
+A test following this strategy has been created, seen in listing~\ref{lst:Unit test of visitTerminalexpression}. The purpose of this test is to check if The visitTerminal\_expression method in SemanticVisitor reflects the operational semantics for type checking.
 
-A test folowing this strategi has been created, which can be seen in listing~\ref{lst:Unit test of visitTerminalexpression}. The purpose of this test is to check if The visitTerminal\_expression method in SemanticVisitor reflects the operational semantics for typechecking.
+The operational semantics it corresponds to can be found in subsection~\ref{subsec:typerules}. In the test, we create a ParseTree, which results from the treeConstructor constructor. This constructor is run with the input from which we want to create an \gls{antlr} \gls{ast}.
 
-The operational semantics it corresponds to can be found in~\ref{subsec:typerules}. In the test what happens is we create a ParseTree which is the result of treeConstructor constructor. This constructor is run with the input we want to create antlr ast from.
-
-The constructor is esstially a testing helping function that creates a antlr ast from a given input string. An instance of our semantic visitor is also instantiated. This is the end of the arrange part of the test, Then in the act part of the test the ast tree is visited using the visitor. The result of this is then asserted to be equal to the type we expect per our semantics.\todo{maybe move tree = treeConstructor into the arrange part of the test}
+The constructor is a testing helper function that creates an \gls{antlr} \gls{ast} from a given input string. An instance of our semantic visitor is also instantiated. This is the end of the arrange part of the test. Then in the act part of the test, the \gls{ast} is visited using the visitor. This result is then asserted to be equal to the type we expect per our semantics.
 
 \begin{listing}[htb!]
     \begin{minted}[label=Unit test of visitTerminalExpression]{java}
@@ -35,16 +32,15 @@ The constructor is esstially a testing helping function that creates a antlr ast
     public void visitTerminal_expression_number_Test(){
         ParseTree tree;
         SemanticVisitor eval = new SemanticVisitor();
+        
         tree = treeConstructor("num b = 4;");
-
         test_Node AST = eval.visit(tree);
 
         assertEquals(Types.NUM, AST.child.child.type);
-        
     }
     \end{minted}
     \caption{Unit test of make sibling}
     \label{lst:Unit test of visitTerminalexpression}
 \end{listing}
 
-Unittests structured after this strategi should guarentee reliability and that the implementation reflects the semantics. It would also ensure  that the code works the same after refactoring.
+Unit tests structured after this strategy should guarantee reliability and that the implementation reflects the semantics. It would also ensure that the code works the same after refactoring.
