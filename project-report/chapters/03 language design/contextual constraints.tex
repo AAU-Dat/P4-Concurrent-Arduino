@@ -326,7 +326,7 @@ The type bool has three operations that can be seen in Table~\ref{tab:bool-rules
     \centering
     \begin{tabular}{ll}
         \toprule
-        $[ARRAY_{EXPR}]$      & $ \frac
+        $[ARRAY_{EXPR}]$       & $ \frac
             {env\vdash expr_1: T \quad env \vdash expr_2 : N}
             {env\vdash expr_1[expr_2] : T}$
         \\ [12pt]
@@ -334,11 +334,11 @@ The type bool has three operations that can be seen in Table~\ref{tab:bool-rules
             {env\vdash expr_1: T}
             {env\vdash (expr_1) : T}$
         \\ [12pt]
-        $[EQUAL_{EXPR}] $     & $\frac
+        $[EQUAL_{EXPR}] $      & $\frac
             {env\vdash expr_1: T \quad env\vdash expr_2: T}
             {env\vdash expr_1 \;== \;expr_2: Bool}$
         \\ [12pt]
-        $[NOTEQUAL_{EXPR}] $  & $\frac
+        $[NOTEQUAL_{EXPR}] $   & $\frac
             {env\vdash expr_1: T \quad env\vdash expr_2: T}
             {env\vdash expr_1 \;!= \;expr_2: Bool}$
         \\
