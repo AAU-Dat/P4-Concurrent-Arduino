@@ -36,7 +36,7 @@ public class CheckingVisitorTest {
         SemanticVisitor eval = new SemanticVisitor();
 
         tree = treeConstructor("num b = 58374589379583984;");
-        AST_node AST = eval.visit(tree);
+        test_Node AST = eval.visit(tree);
 
         assertEquals(Types.NUM, AST.child.child.type);
         
@@ -47,7 +47,7 @@ public class CheckingVisitorTest {
         SemanticVisitor eval = new SemanticVisitor();
 
         tree = treeConstructor("char b = \"b\";");
-        AST_node AST = eval.visit(tree);
+        test_Node AST = eval.visit(tree);
 
         assertEquals(Types.CHAR, AST.child.child.type);
         
@@ -60,7 +60,7 @@ public class CheckingVisitorTest {
         SemanticVisitor eval = new SemanticVisitor();
 
         tree = treeConstructor("bool b = true;");
-        AST_node AST = eval.visit(tree);
+        test_Node AST = eval.visit(tree);
 
         assertEquals(Types.BOOL, AST.child.child.type);
         
@@ -72,7 +72,7 @@ public class CheckingVisitorTest {
         SemanticVisitor eval = new SemanticVisitor();
 
         tree = treeConstructor("bool a = false; bool b = a;");
-        AST_node AST = eval.visit(tree);
+        test_Node AST = eval.visit(tree);
         System.out.println(AST.child.child.name);
         assertEquals(Types.BOOL, AST.child.child.type);   
     }
@@ -83,7 +83,7 @@ public class CheckingVisitorTest {
         SemanticVisitor eval = new SemanticVisitor();
 
         tree = treeConstructor("num a = 7; bool b = a;");
-        AST_node AST = eval.visit(tree);
+        test_Node AST = eval.visit(tree);
         System.out.println(AST.child.child.name);
         assertEquals(Types.NUM, AST.child.child.type);   
     }

@@ -2,24 +2,24 @@ package AstNodes;
 
 import Types.Types;
 
-public class AST_node {
+public class test_Node {
 
 
 
-    public AST_node parent;
-    public AST_node leftMostSibling = this;
-    public AST_node rightSibling;
-    public AST_node child;
+    public test_Node parent;
+    public test_Node leftMostSibling = this;
+    public test_Node rightSibling;
+    public test_Node child;
     public String name;
     public Types type;
 
-    public AST_node(String name) {
+    public test_Node(String name) {
         this.name = name;
         //System.out.println(name);
 
     }
 
-    public AST_node() {
+    public test_Node() {
     }
 
     public void print() {
@@ -37,8 +37,8 @@ public class AST_node {
      * @param newSibling new sibling of caller
      */
 
-    public void MakeSiblings(AST_node newSibling) {
-        AST_node rightMostSibling = new AST_node();
+    public void MakeSiblings(test_Node newSibling) {
+        test_Node rightMostSibling = new test_Node();
 
         if (this.rightSibling != null) {
             rightMostSibling = FindRightmostSibling(this.rightSibling);
@@ -57,8 +57,8 @@ public class AST_node {
      * @param right The node to the right from the leftmost node 
      * @return      The rightmost sibling
      */
-    public AST_node FindRightmostSibling(AST_node right) {
-        AST_node res = right;
+    public test_Node FindRightmostSibling(test_Node right) {
+        test_Node res = right;
         while (res.rightSibling != null) {
             res = res.rightSibling;
         }
@@ -69,7 +69,7 @@ public class AST_node {
      * adoptChildren ensures that the caller gets a new child which param newChild.
      * @param newChild becomes child of caller
      */
-    public void adoptChildren(AST_node newChild) {
+    public void adoptChildren(test_Node newChild) {
         if (this.child == null) {
             this.child = newChild.leftMostSibling;
             while (newChild.rightSibling != null) {
@@ -95,7 +95,7 @@ public class AST_node {
     // how do i do this if i need them to be differint types of ast nodes fx 1 while
     // node and one expression node
     public void makeFamily(int i) {
-        child = new AST_node() {
+        child = new test_Node() {
 
         };
         for (int j = 0; j < i; j++) {

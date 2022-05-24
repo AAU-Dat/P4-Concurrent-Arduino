@@ -4,7 +4,7 @@ mut num switch = 0;
 #pin LED1_PIN(10, OUTPUT);
 #pin LED2_PIN(11, OUTPUT);
 
-task(num switch) every 1000 {
+task(switch) every 1000 {
     if(switch == 0){
         digitalWrite(LED1_PIN, HIGH);
         switch = 1;
@@ -22,7 +22,7 @@ num blinkLED(num buttonState){
     }
 }
 
-task(num buttonState) {
+task(buttonState) {
     buttonState = digitalRead(BUTTON_PIN);
     blinkLED(buttonState);
 }

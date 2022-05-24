@@ -19,7 +19,7 @@ public class App {
         ParseTree tree = parser.start();
         SemanticVisitor eval = new SemanticVisitor();
         try {
-            AST_node AST = eval.visit(tree);
+            test_Node AST = eval.visit(tree);
             
         } catch (RuntimeException e) {
             System.out.println(e.getMessage());
