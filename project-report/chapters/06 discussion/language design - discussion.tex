@@ -2,15 +2,13 @@
 
 This section aims to discuss some of the language design observations we have made about what could have been done differently.
 
-\subsection{Design descision}
-
 Many decisions have to be made during language design; this section will discuss a few of those decisions made and alternative options.
 
 During a programming language design, decisions and delimitations are significant milestones. A chosen path can open new doors and inadvertently close others. Often, it is difficult to know the full effect of a single design choice until further down in the pipeline. This is a discussion about some of these choices and how other choices could have influenced the project.
 
-\subsubsection{All Numbers are Floating Points}
+\subsection{All Numbers are Floating Points}
 
-Arc uses a single collective data type for all numbers called 'num' and is treated as a floating-point. Many other languages choose to represent numbers with multiple data types (depending on the qualities of the number). However, we decided that it might be easier (for hobbyists) if they did not have to distinguish between floats, doubles, integers, et cetera. and use a number variable. However, as we progressed on the project, we discovered that the semantics of floating-point arithmetics work differently than they do from a logical or mathematical position. Listing~\ref{lst:semanticDifference} shows how a seemingly legal expression in mathematics can be misinterpreted by the compiler when working with a floating-point number rather than a real number.
+Arc uses a single collective data type for all numbers called 'num' and is treated as a floating-point. However, as we progressed on the project, we discovered that the semantics of floating-point arithmetics work differently than they do from a logical or mathematical position. Listing~\ref{lst:semanticDifference} shows how a seemingly legal expression in mathematics can be misinterpreted by the compiler when working with a floating-point number rather than a real number.
 
 \begin{listing}[htb!]
     \begin{minted}[label=Semantic meaning of floats]{c}
@@ -28,28 +26,20 @@ This makes it a problem for the hobbyist programmers having issues with their co
 
 \subsubsection{Concurrency Improvements}
 
-Since Arc is a programming language designed to make concurrency more simple and accessible on the Arduino, with hobbyists as target users - we needed to make the constructs easy to understand and use. We implemented a task construct with three different concurrency structures: timed, conditional, and unconditional. We have made much effort to make it read as prosaically as possible. For example, the unconditional tasks execute as often as possible and read intuitively as "Task (executes as often as possible)". Now suppose the user wants a task that executes every other second. In that case, they write "Task (is executed) every 2000 (milliseconds)", or if they want a task to do something whenever a button is pressed, they write "Task (executes) when [trigger] (condition has been met)". All three tasks can be seen written in code in Listing~\ref{lst:threeTaskExamples}.
+Since Arc is a programming language designed to make concurrency more simple and accessible on the Arduino, with hobbyists as target users - we needed to make the constructs easy to understand and use. 
 
-\begin{listing}[htb!]
-    \begin{minted}[label=Task Declarations]{c}
-        Task () {...}                       // Unconditional
-        Task () every 2000 {...}            // Timed
-        Task () when (expression) {...}     // Conditional
-    \end{minted}
-    \caption{Example of the three task declarations.}
-    \label{lst:threeTaskExamples}
-\end{listing}
+We implemented a task construct with three different concurrency structures: timed, conditional, and unconditional. We have made much effort to make it read as prosaically as possible, as mentioned in section~\ref{sec:concurrency structures}. 
 
 Task Parameters are mutable. This was done to prevent issues related to race conditions. Although, it might have been a better option to leave this up to the individual developer and give them more control over their program. Then they would also have had an incentive to learn about common concepts and issues related to working with concurrency and how to handle them when they inevitably come up now and then.
 
-The reasoning behind our selected task structure was primarily due to the resemblance to colloquial language, which should make it easier to understand what is going on for hobbyists. Since we did not have the time to conduct a proper usability test, we can only surmise that the keywords and syntax of our tasks are easy to understand for any potential users, not just for us. Alternatively, we could have made the tasks timed or event-based instead and used listeners to trigger the tasks like it was done in Eventually (see Figure~\ref{lst:eventuallyexample}). Eventually creates two different event listeners called EvtPinListener and EvtTimeListener, which take different parameters and behave differently from each other. However, without any substantial tests, conjectures about the results are many and varied.
+The reasoning behind our selected task structure was primarily due to the resemblance to colloquial language, which should make it easier to understand what is going on for hobbyists. Since we did not have the time to conduct a proper usability test, we can only surmise that the keywords and syntax of our tasks are easy to understand for any potential users, not just for us. Alternatively, we could have made the tasks timed or event-based instead and used listeners to trigger the tasks similarly to how it was done in Eventually (see Figure~\ref{lst:eventuallyexample}).
 
-The body of the task works about the same as any regular function. We assume that the hobbyists interested in concurrency mainly need simple functions that can run concurrently. Therefore, it made sense to structure the tasks similarly to normal functions.
+We assume that the hobbyists interested in concurrency mainly need simple functions. Therefore, it made sense to structure the tasks similarly to normal functions.
 
-In general, limited control over the concurrency structures in Arc is given to the language user. Other researched libraries included options such as prioritizing specific tasks over others. We decided to reduce the complexity and make it beginner-friendly, contingent on users needing more control and more complex functionality finding and using other already existing libraries or methods of achieving the desired behavior. However, an argument could be made that the structures have been oversimplified and abstracted away valuable options. Without increasing the complexity too much, more control of the control structures could have been relinquished. For this project, the simplicity of Arc was a high priority. Therefore, we went with the more simplified concurrent tasks.
+In general, limited control over the concurrency structures in Arc is given to the developer. Other researched libraries included options such as prioritizing specific tasks over others. We decided to reduce the complexity and make it beginner-friendly, contingent on users needing more control and more complex functionality finding and using other libraries or methods of achieving the desired behavior. However, an argument could be made that the structures have been oversimplified and abstracted away valuable options. Without increasing the complexity too much, more control of the control structures could have been relinquished. For this project, the simplicity of Arc was a high priority. Therefore, we went with the more simplified concurrent tasks.
 
 \subsection{Resemblance to the C Programming Language}
 
-The syntax of Arc shares an uncanny resemblance to that of C. This was very intentional, but an argument can be made whether or not that was a good decision. C is a prevalent language and has a similar syntax to many other languages. It was hoped to make it easier for the hobbyists to pick up a potential second language or bring in prior knowledge and experience with another language. This would potentially make it both easier and faster for them to learn. Arduino uses a subset of C++. Since C++ and C use a very similar syntax, it was relatively easy for us to translate much of the relevant code to something compilable on the Arduino and simply handle the boilerplate code behind the scenes.
+The syntax of Arc resembles that of C. This was very intentional, but an argument can be made whether or not that was a good decision. C is a prevalent language and has a similar syntax to many other languages. It was hoped to make it easier for the hobbyists to pick up a potential second language or bring in prior knowledge and experience with another language. This would potentially make it both easier and faster for them to learn. 
 
-Creating a syntax resembling C has arguably also impacted our creativity in a limiting way when it comes to creating a unique programming language. We have not changed many constructs compared to C. Apart from the for loop, which mostly resembles how it is done in Python. New languages are typically made out of frustration by a missing feature in another language or by believing that there is a better way to do something. More often than not, they are highly influenced by already existing languages.
+We have not changed many constructs compared to C. Apart from the for loop, which mostly resembles how it is done in Python. Creating a syntax resembling C has arguably also impacted our creativity in a limiting way when creating a unique programming language. 
