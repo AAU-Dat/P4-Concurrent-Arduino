@@ -1,10 +1,24 @@
 \section{Visitor pattern}\label{sec:visitorpattern}
+This section details working with the integrated visitor pattern that \gls{antlr} provides to its users. There are multiple ways of traversing the \gls{cst}, with the two popular ways being the listener and the visitor patterns. Running the ANTLR tools without any extra flags results in the listener class being chosen by default. The difference between the two is that the listener is called by the walker-object provided by \gls{antlr}, whereas the visitor must be called explicitly to walk its children~\cite{Parr2014}. The listener is great for creating a \gls{cst} in which all of the nodes gets visited and none are ignored. It is thus an automatic process. Therefore, we can do the tree walking ourselves by choosing the visitor class, rather than simply reacting to the tree walker by choosing the listener class.
 
-This section goes into detail about working with the integrated visitor pattern that \gls{antlr} provides its users with. There are multiple ways of traversing the \gls{cst}, with the two most popular being the listener and the visitor classes. Running the \gls{antlr} tools without any extra flags, results in the listener class being chosen by default. The difference between the two is that the listener is called by the walker-object provided by ANTLR, whereas the visitor must be called explicitly in order to walk its children \cite{Parr2014}. The listener is great for creating a \gls{cst} in which all of the nodes gets visited and none are ignored. It is thus an automatic process. Therefore, we can do the tree walking ourselves by choosing the visitor class, rather than simply reacting to the tree walker by choosing the listener class.
+The visitor design pattern is a way to traverse the \gls{cst} to allow us to add new operations to an existing structure without having to modify it. It makes it both fast and easy to scale classes and fulfills the open/closed principle by allowing extension and no modification. The 'Visitor' interface and the abstract 'BaseVisitor' class created by \gls{antlr} are necessary for the visitor implementation.
 
-The visitor design pattern is a way to traverse the \gls{cst} in such a way that allows us to add new operations to an existing structure without having to modify it. It makes it both fast and easy to scale classes and fulfills the open/closed principle, by allowing extension and no modification. The 'Visitor' interface and the abstract 'BaseVisitor' class created by \gls{antlr} is necessary for the visitor implementation.
+An example of how Arc implements a visitor method is seen in Figure~\ref{lst:visitorterminalexpression}. When a terminal expression node is visited in the \gls{cst} traversal, the visitTerminal\_expression method is called by \gls{antlr}. The method declares a string variable 'name' and assigns the context of the terminal expression (given as a formal parameter) as its value, in lines 2-3. It then instantiates a new AST\_node 'terminal,' which is given name as a parameter in line 4. Then it runs through a series of checks in an if-else statement to find out which type the terminal expression should have.
 
-An example of how Arc implements a visitor method, is seen in Figure \ref{lst:visitorterminalexpression}. When a terminal expression node is visited in the \gls{cst} traversal, the visitTerminal\_expression method is called by \gls{antlr}. The method declares a string variable 'name' and assigns the context of the terminal expression (given as a formal parameter) as its value, in \textbf{lines 2-3}. It then instantiates a new AST\_node 'terminal' which is given \textit{name} as a parameter in \textbf{line 4}. Then it runs through a series of checks in an if-else statement, to find out which type the terminal expression should have. First (in \textbf{lines 5-6}), it checks if the context contains a number - if so, it assigns the num type to the terminal. Else (in \textbf{lines 7-8}), it checks if the context contains a boolean - if so, it types the terminal to bool. Else (in \textbf{lines 9-10}), it checks if the context contains one or more characters - if so, the terminal type is assigned to char. Else (in \textbf{lines 11-18}), it checks whether or not the context contains an identifier, such as for a function or variable. This is more complex than simply assigning the terminal type immediately. First of all, it instantiates a SymbolHashTableEntry 'id' and gets the value from the \textbf{symbolTable} and whatever is stored in the context. We then check whether or not the assignment was successful, by checking if \textit{id} has a value - if not, we throw an exception, because that means that the variable has not been declared appropriately. Else, it simply assigns the id type to the terminal. Finally (in \textbf{lines 19-20}), if none of the checks thus far has been validated and thus entered, an unexpected error has occured, and we throw an exception - this check is purely for debugging purposes and serves no real purpose other than notifying that a problem has occured in the visitation of the node. The most important thing to notice, is that the \textit{terminal} AST\_node gets assigned a type depending on the if-else statements and then the method returns the \textit{terminal} if it does not end throwing an exception caused by an error.
+First (in lines 5-6), it checks if the context contains a number - if so, it assigns the num type to the terminal. Else (in lines 7-8), it checks if the context contains a boolean - if so, it types the terminal to bool. Else (in lines 9-10), it checks if the context contains one or more characters - if so, the terminal type is assigned to char. Else (in lines 11-18), it checks whether or not the context contains an identifier, such as for a function or variable, which is more complex than simply assigning the terminal type immediately.
+
+
+
+
+% HERE IS WHERE IM AT.
+First of all, it instantiates a SymbolHashTableEntry 'id' and gets the value from the \textbf{symbolTable} and whatever is stored in the context. We then check whether or not the assignment was successful, by checking if \textit{id} has a value - if not, we throw an exception, because that means that the variable has not been declared appropriately. Else, it simply assigns the id type to the terminal.
+
+
+
+
+
+
+Finally (in \textbf{lines 19-20}), if none of the checks thus far has been validated and thus entered, an unexpected error has occured, and we throw an exception - this check is purely for debugging purposes and serves no real purpose other than notifying that a problem has occured in the visitation of the node. The most important thing to notice, is that the \textit{terminal} AST\_node gets assigned a type depending on the if-else statements and then the method returns the \textit{terminal} if it does not end throwing an exception caused by an error.
 
 \begin{listing}[htb!]
     \begin{minted}{java}
@@ -65,7 +79,7 @@ Another example of an implemented visitor method, can be seen in Figure \ref{lst
 
 % \begin{listing}
 %     \begin{minted}{java}
-        
+
 %     \end{minted}
 % \end{listing}
 
