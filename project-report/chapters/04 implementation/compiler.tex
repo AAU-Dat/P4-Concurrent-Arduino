@@ -23,19 +23,22 @@ The Arc compiler follows many of the steps of the general model. Figure~\ref{fig
             \node (b) [state, right of=a] {Parser};
             \draw[arrow, ->] (a) -- node[above,scale=.70,align=center]{Tokens} (b);
         \end{scope}
-
+        \begin{scope}[node distance=3cm,local bounding box=clusterB]
+            \node (c) [state, shift={($(b.east)+(2.3cm,0)$)}] {Type checker} ;
+            \node (d) [state, shift={($(c.south)+(0,-1.5cm)$)}] {Scope checker};
+        \end{scope}
         \node(clusterA_g)[cluster,fit=(clusterA)]{};
-        \node (start) [shift={($(clusterA.west)+(-2cm,0)$)}] {Source code};
-        \node (c) [state, right of = b] {Type checker};
-        \node (d) [state, shift={($(c.south)+(0,-1.5cm)$)}] {Scope checker};
+        \node(clusterB_g)[cluster,fit=(clusterB)]{};
+        \node (q) [state, below of=clusterA_g] {Symbol table};
         \node (e) [state, shift={($(d.south)+(0,-1.5cm)$)}] {Code generator};
         \node (f) [shift={($(e.south)+(0,-1cm)$)}] {Target code};
-
+        \node (start) [shift={($(clusterA.west)+(-2cm,0)$)}] {Source code};
         \draw[arrow, ->] (start) -- (clusterA_g);
-        \draw[arrow, ->] (b) -- node[right,scale=.70,xshift=-10,yshift=7]{AST} (c);
+        \draw[arrow, ->] (b) -- node[right,scale=.70,xshift=-16,yshift=7]{AST} (c) node[below,scale=.7, xshift=-30,yshift=-25, align=left]{Contextual\\ analysis};
         \draw[arrow, ->] (c) -- node[right,scale=.70,align=center]{AST} (d);
         \draw[arrow, ->] (d) -- node[right,scale=.70,align=center]{AST} (e);
         \draw[arrow, ->] (e) --  (f);
+        \draw[arrow, dotted, <->] (q) --  (clusterB_g);
 
     \end{tikzpicture}
     \caption{The Arc compiler model.}
