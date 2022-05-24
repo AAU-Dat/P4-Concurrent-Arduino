@@ -5,20 +5,6 @@ The visitor design pattern is a way to traverse the \gls{cst} to allow us to add
 
 An example of how Arc implements a visitor method is seen in Figure~\ref{lst:visitorterminalexpression}. When a terminal expression node is visited in the \gls{cst} traversal, the visitTerminal\_expression method is called by \gls{antlr}. The method declares a string variable 'name' and assigns the context of the terminal expression (given as a formal parameter) as its value, in lines 2-3. It then instantiates a new AST\_node 'terminal,' which is given name as a parameter in line 4. Then it runs through a series of checks in an if-else statement to find out which type the terminal expression should have.
 
-First (in lines 5-6), it checks if the context contains a number - if so, it assigns the num type to the terminal. Else (in lines 7-8), it checks if the context contains a boolean - if so, it types the terminal to bool. Else (in lines 9-10), it checks if the context contains one or more characters - if so, the terminal type is assigned to char. Else (in lines 11-18), it checks whether or not the context contains an identifier, such as for a function or variable, which is more complex than simply assigning the terminal type immediately.
-
-
-
-
-% HERE IS WHERE IM AT.
-First of all, it instantiates a SymbolHashTableEntry 'id' and gets the value from the \textbf{symbolTable} and whatever is stored in the context. We then check whether or not the assignment was successful, by checking if \textit{id} has a value - if not, we throw an exception, because that means that the variable has not been declared appropriately. Else, it simply assigns the id type to the terminal.
-
-
-
-
-
-
-Finally (in \textbf{lines 19-20}), if none of the checks thus far has been validated and thus entered, an unexpected error has occured, and we throw an exception - this check is purely for debugging purposes and serves no real purpose other than notifying that a problem has occured in the visitation of the node. The most important thing to notice, is that the \textit{terminal} AST\_node gets assigned a type depending on the if-else statements and then the method returns the \textit{terminal} if it does not end throwing an exception caused by an error.
 
 \begin{listing}[htb!]
     \begin{minted}{java}
@@ -50,20 +36,26 @@ Finally (in \textbf{lines 19-20}), if none of the checks thus far has been valid
     \label{lst:visitorterminalexpression}
 \end{listing}
 
-Another example of an implemented visitor method, can be seen in Figure \ref{lst:visitorplusminusexpression}. In this example the visitor handles the 'plus' and 'minus' expressions. In \textbf{lines 2-3}, the method declares an AST\_node 'plus\_minus\_node', similar to what we did in the first example. Then in \textbf{lines 4-7}, it checks if the second child node is a plus operator - if that is the case, we instantiate a new AST\_node and give it the string "plus" as a parameter. Else, we pass in the string "minus" as a parameter. Before moving on, we make the left operand a child of the \textit{plus\_minus\_node}, and the right operand a sibling to the left operand. This happens in \textbf{lines 8-9}. We also make sure to visit both children nodes, to get to the designated number values. To ensure that the expression is valid and legal in Arc, we instantiate an AST\_node array in \textbf{line 11}, with the two operands as elements, and in \textbf{lines 12-15} check if they both contain the type number - if so, we assign the num type to the \textit{plus\_minus\_node}s type. Else, we throw an exception, because something has gone wrong. Finally, we return the \textit{plus\_minus\_node}.
+
+First (in lines 5-6), it checks if the context contains a number - if so, it assigns the num type to the terminal. Else (in lines 7-8), it checks if the context contains a boolean - if so, it types the terminal to bool. Else (in lines 9-10), it checks if the context contains one or more characters - if so, the terminal type is assigned to char. Else (in lines 11-18), it checks whether or not the context contains an identifier, such as for a function or variable, which is more complex than simply assigning the terminal type immediately.
+
+First, it instantiates a SymbolHashTableEntry 'id' and gets the value from the symbolTable and whatever is stored in the context. We then check whether or not the assignment was successful by checking if the \textit{id} has a value - if not, we throw an exception because that means that the variable has not been declared appropriately. Else, it simply assigns the id type to the terminal.
+
+Finally (in lines 19-20), if none of the checks thus far has been validated and thus entered, an unexpected error has occurred, and we throw an exception. This check is purely for debugging purposes and serves no real purpose other than notifying that a problem has occurred in the visitation of the node. The most important thing to notice is that the terminal AST\_node gets assigned a type depending on the if-else statements, and then the method returns the terminal if it does not end, throwing an exception caused by an error.
+
+Another example of an implemented visitor method can be seen in Figure~\ref{lst:visitorplusminusexpression}. In this example, the visitor handles the 'plus' and 'minus' expressions. In \textbf{lines 2-3}, the method declares an AST\_node 'plus\_minus\_node', similar to what we did in the first example. Then in \textbf{lines 4-7}, it checks if the second child node is a plus operator - if that is the case, we instantiate a new AST\_node and give it the string "plus" as a parameter. Else, we pass in the string "minus" as a parameter.
+
 
 \begin{listing}[htb!]
     \begin{minted}{java}
     public AST_node visitPlus_minus_expression(arcParser.Plus_minus_expressionContext ctx) {
         AST_node plus_minus_node;
-
         if (ctx.children.get(1).getText().toCharArray()[0] == '+')
             plus_minus_node = new AST_node("plus");
         else
             plus_minus_node = new AST_node("minus");
         plus_minus_node.child = visit(ctx.expression(0));
         plus_minus_node.child.MakeSiblings(visit(ctx.expression(1)));
-
         AST_node[] astnodearray = { plus_minus_node.child, plus_minus_node.child.rightSibling };
         if (Typecheck.Check(astnodearray, Types.NUM))
             plus_minus_node.type = Types.NUM;
@@ -77,22 +69,7 @@ Another example of an implemented visitor method, can be seen in Figure \ref{lst
     \label{lst:visitorplusminusexpression}
 \end{listing}
 
-% \begin{listing}
-%     \begin{minted}{java}
 
-%     \end{minted}
-% \end{listing}
+Before moving on, we make the left operand a child of the \textit{plus\_minus\_node}, and the right operand a sibling to the left operand. This happens in \textbf{lines 8-9}. We also make sure to visit both children nodes to get to the designated number values.
 
-%Describe to types of visitors we have used
-%Show ALOT of code examples
-
-
-%Options
-%pros and cons of both
-%How is it used
-%How do we use it
-
-
-%Vi vil ikke altid ind i alle noder, fordi det ikke er nødvændigt
-%Det er sikre valg, da vi kan være specifikke for hver node, hvis der er noget vi ikke har forudset
-%Future proof
+To ensure that the expression is valid and legal in Arc, we instantiate an AST\_node array in \textbf{line 11}, with the two operands as elements, and in \textbf{lines 12-15} check if they both contain the type number - if so, we assign the num type to the \textit{plus\_minus\_node}s type. Else, we throw an exception because something has gone wrong. Finally, we return the \textit{plus\_minus\_node}.
