@@ -1,6 +1,6 @@
 \chapter{Conclusion}\label{cha:conclusion}
 
-This chapter will conclude the project and evaluate on Arc. This includes how well the learning objectives of the semester has been met during the project and whether or not Arc is a successful solution to the problem statement.
+This chapter will conclude the project and evaluate Arc. This includes how well the learning objectives of the semester have been met during the project and whether or not Arc is a successful solution to the problem statement.
 
 \input{chapters/07 conclusion/learning_goals.tex}
 
@@ -9,12 +9,12 @@ This chapter will conclude the project and evaluate on Arc. This includes how we
 The problem statement Arc set out to solve, is as follows: 
 \textbf{The project seeks to create a programming language for hobbyists that satisfies the language criterion created, Which is able to utilize concurency to easily express a concurrent flow of control concisely.}
 
-As a product from solving the problem statement we created our language, Arc. The syntax of Arc mostly resembles C; but with minor changes, such as the for-loop which is influenced by the way Python handles it, and the task construct created to handle concurrency. The task construct and any other decision in the project has been driven by the wish to make Arc as easy and intuitive as possible for our target group to write concurrent code for the Arduino. Arc gets translated into C++ and implements Protothreads, to work concurrently on the Arduino.
+As a product of solving the problem statement, we created our language, Arc. The syntax of Arc mostly resembles C, but with minor changes, such as the for-loop, which is influenced by the way Python handles it, and the task construct created to handle concurrency. The task construct and any other decision in the project have been driven by the wish to make Arc as easy and intuitive as possible for our target group to write concurrent code for the Arduino. Arc gets translated into C++ and implements Protothreads to work concurrently on the Arduino.
 
-To ensure that Arc work as intended, a concurrent program was written in C++ with the Protothreads library. The program was rather simple and included two \gls{led}s, the first one was tasked to turn on an off every second, while the other diode was tasked to toggle the light state by a button press. We then recreated the same program using Arc and did not run into any problems.
+A concurrent program was written in C++ with the Protothreads library to ensure that Arc worked as intended. The program was relatively simple and included two \gls{led}s; the first one was tasked to turn on and off every second, while the other diode was tasked to toggle the light state by a button press. We then recreated the same program using Arc and did not run into any problems.
 
 \question{did we re-create it, or did we simply translate it to the same program?}
 
-In order to definetily conclude that the syntax of Arc concisely expresses a concurrent flow of control, we would have needed to test the usability of the language. From our perspective and limited internal testing, we can surmise a conclusion. The concurrency structures of Arc is colloquial in nature, and should therefore be somewhat intuitive to setup and understand for any hobbyist using our language.
+The concurrency structures of Arc are colloquial and should therefore be somewhat intuitive to set up and understand for any hobbyist using our language. In order to conclude that the syntax of Arc concisely expresses a concurrent flow of control, we would have needed to test the usability of the language. From our perspective and limited internal testing, we can surmise a conclusion.
 
-Thereby, we can conclude that Arc is an acceptable solution to the initial problem statement. There is obviously always room for improvement, and we have learned some lessons throughout the project that would make for a better language next time. Testing is very neccessary in the future.
+We can conclude that Arc is an acceptable solution to the initial problem statement. There is always room for improvement, and we have learned some lessons throughout the project that would make for a better language next time. Testing is essential in the future.
