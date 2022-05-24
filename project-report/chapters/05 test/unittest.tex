@@ -1,9 +1,7 @@
 \section{Unit test}\label{subsec:unittest}
-%https://docs.microsoft.com/en-us/visualstudio/test/unit-test-basics?view=vs-2022
+Unit testing is a test method that checks whether specific code does what is expected of it. A unit test is a breakdown of functionality of code into descrite testable units~\cite{UnitTestBasic}.
 
-Unit testing is a test method that can check whether or not a specific code is during what is expected of it. The way a unit test works is that a unit test is to break down the functionality of the code into discrete testable units, which then can be tested as individual units. Unit tests significantly affect the qualitative of the code when it is an integral part of the workflow [ref: to link].
-
-Unit tests in this project will follow the AAA structure, which can be divided up into three parts. This specific structure can be seen in the listing [ref: unit test structure]:
+Unit tests in this project will follow the AAA structure, which deivdes tests into three parts. This specific structure can be seen in the Listing~\ref{lst:unit test with aaa structure}.
 
 \begin{listing}[htb!]
     \begin{minted}[label=Unit test with AAA structure]{java}
@@ -16,11 +14,11 @@ Unit tests in this project will follow the AAA structure, which can be divided u
             // Assert is the part that verifies the action of the method under test behaves as expected. 
         }
     \end{minted}
-    \caption{Unit test with AAA structure}
+    \caption{The AAA structure}
     \label{lst:unit test with aaa structure}
 \end{listing}
 
-Constructing unit tests with this structure, make sure that unit tests follow the same format and course of action, ensuring great usable unit tests. An example has been created to show what we mean is a great and usable unit test, and this can be seen in the listing [ref: to unit test].
+Constructing unit tests with this structure, ensures unit tests follow the same format and course of action. An example has been created to show what we mean is a great and usable unit test, and this can be seen in the Listing~\ref{lst:unit test of make sibling}.
 
 \begin{listing}[htb!]
     \begin{minted}[label=Unit test of make sibling]{java}
@@ -32,10 +30,8 @@ Constructing unit tests with this structure, make sure that unit tests follow th
             AST_node c = new AST_node();
             a.adoptChildren(b);
             b.adoptChildren(c);
-
             // Act
             b.MakeSiblings(c);
-
             // Assert
             assertEquals(a, b.parent);
             assertEquals(a, c.parent);
@@ -50,6 +46,6 @@ Constructing unit tests with this structure, make sure that unit tests follow th
     \label{lst:unit test of make sibling}
 \end{listing}
 
-This specific unit test tests the MakeSibling() function, where we test the individual scenario to make sure that when a node gets a new sibling that all of the data get updated correctly. We run the MakeSibling() on node B and then check whether all of the data of node C gets updated to the expected values. If the test is passed, we know that the MakeSibling() does what is expected. In more detail, we create three nodes that we can test on and set up so that the A node has node B as a child, and node B has node C as a child.
+This specific unit test tests the MakeSibling() function, where we test the individual scenario to make sure that when a node gets a new sibling all of the data is updated correctly. We run the MakeSibling() on node B and then check whether all of the data of node C gets updated to the expected values. If the test is passed, we know that the MakeSibling() does what is expected. 
 
-The unit test makes sure that the qualitative of the code is excellent, but it also makes it easier to change some of the code without manually going through all of the code to check if everything works. All unit tests can be rerun to check if anything has broken. If anything has broken, it can see where it is broken and then quickly go to that specific part of the code to repair the broken code. This decreases the overall time if anything significant in the code has to be changed. The rest of the unit tests will follow the same structure to ensure a qualitative unit test.
+Unit tests ensure that the code works the same after refactoring. All unit tests can be rerun if anything is broken. If something is broken, the test fails and can be corrected.
