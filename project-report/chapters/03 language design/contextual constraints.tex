@@ -31,7 +31,6 @@ The Arduino language has static scope, with nested and flat block structures~\ci
 
 Arc statements and blocks have nested scoping, while function declarations have flat scope and are not declarable inside a scope. However, one key feature of Arc is its \textit{task} construct, which is not present in Arduino and requires particular focus.
 
-
 A task declaration is like a function declaration and can not be inside another scope. Additionally, declaring local variables inside the scope of a task declaration is not possible. The Protothreads implementation does not guarantee that the values of local variables are preserved when a thread becomes blocked, making it hard to know if using local variables in a thread will work as the programmer intended.
 
 Another solution to this problem could be to hoist local variable declarations within a task declaration into the global scope. However, this hoisting could make static scope checking difficult. Listing~\ref{lst:hoistclash} shows how the hoisting of a locally declared variable may clash with globally declared variables. While the hoisting issue is not unsolvable, it is clearer to disallow variable declarations within a task declaration. Most importantly, writing an Arc task is entirely declarative - tasks are never called, unlike functions.
@@ -163,7 +162,7 @@ With the above definitions of the environment store model and the scope rules, A
             {env_V \vdash \langle t \ f (y) \{S \}, env_F \rangle \rightarrow env^\prime_F}$                  \\ [12pt]
 
         $[TASK_{DECL}]$ & $\frac
-            {env_{VF}\vdash \langle env_T[S, r, trig, env_V, envF] \rangle \rightarrow env^\prime_T}
+            {env_{VF}\vdash \langle env_T[while(true)\{ S \}, r, trig, env_V, envF] \rangle \rightarrow env^\prime_T}
             {env_{VF}\vdash \langle \text{task} \ (r) trig \{S\} \rangle \rightarrow env^\prime_T}$           \\
         \bottomrule
     \end{tabular}
@@ -172,7 +171,7 @@ With the above definitions of the environment store model and the scope rules, A
 \end{table}
 
 
-To use the declared bindings, we further define their calling and usage. Variables are immutable, and it, therefore, makes sense to have functions use call-by-value for the parameters. Function calls also should not allow recursion, as this makes the runtime memory usage of the Arduino more stable. The semantics for function calls can be seen in Table~\ref{tab:functioncalls}.
+To use the declared bindings, we further define their calling and usage. Variables are immutable, and it, therefore, makes sense to have functions use call-by-value for the parameters. Function calls also should not allow recursion, as this makes the runtime memory usage of the Arduino more stable. The semantics for function calls can be seen in Table~\ref{tab:functioncalls}, where \textit{active} and \textit{end} work as detailed on~\cite[p.~159]{Huttel2010}.
 
 
 \begin{table}[htb!]
@@ -183,7 +182,7 @@ To use the declared bindings, we further define their calling and usage. Variabl
             {env, sto \vdash e_i \Rightarrow e^\prime_i}
             {env, sto \vdash \langle f(\dots, e_i, \dots), env,sto \rangle \rightarrow \langle f(\dots, e^\prime_i, \dots), env, sto \rangle}$ \\ [12pt]
         $FUN_{CALL-2}$ & $\langle f(v_1,\dots,v_i), env, sto \rangle \Rightarrow$                                                              \\
-                       & $\qquad \langle \{y_1 = v_1;\dots;y_i = v_i; S\}, (env^\prime_V, env^\prime_F):env, sto \rangle$                      \\ [12pt]
+                       & $\qquad \langle active \{y_1 = v_1;\dots;y_i = v_i; S\} end, (env^\prime_V, env^\prime_F):env, sto \rangle$           \\ [12pt]
 
                        & where $env_F(f) = (S, y, env^\prime_V, env^\prime_F)$                                                                 \\
                        & and $env = (env_V, env_F) : env^\prime $                                                                              \\
@@ -199,24 +198,18 @@ Tasks are once again unique. Tasks are never called explicitly in Arc code, but 
 
 Also of importance is that the parameters of a task describe a mutable reference to a declared variable in $env_V$ that critically cannot be used in another task. This means that task declarations have no formal parameters, only references to actual parameters.
 
-The semantics of the concurrently running tasks are described in Table~\ref{tab:taskinvocation}. The composition of all tasks are created from $env_T$, which is the set of declared tasks, such that $env_T \rightarrow \{T_1 \dots T_n \}$ where $n = |env_T|$.
+The semantics of the concurrently running tasks are described in Table~\ref{tab:taskinvocation}. The composition of all tasks are created from $env_T$, which is the set of declared tasks, such that $env_T \rightarrow \{T_1 \dots T_n \}$ where $0 > n = |env_T|$. To describe the
 
 
 \begin{table}[htb!]
     \centering
     \begin{tabular}{ll}
         \toprule
-        $TASK_{LOOP-1}$ & $\frac
+        $TASK_{LOOP}$ & $\frac
             {(S, env_V, env_F, sto) \Rightarrow (S^\prime, env_V, env_F, sto^\prime)}
-            {(\{|\dots T_i \dots|\}, env, sto) \Rightarrow (\{|\dots T_i \dots S^\prime|\}, env, sto^\prime)}$ \\ [12pt]
-                        & where $T_i = (S, r, trig, env_V, env_F)$                                             \\ [12pt]
-        $TASK_{LOOP-2}$ & $\frac
-            {(S, env_V, env_F, sto) \Rightarrow (env_V, env_F, sto^\prime)}
-            {(\{|\dots T_i \dots|\}, env, sto) \Rightarrow (\{|\dots T_i \dots|\}, env, sto^\prime)}$          \\ [12pt]
-                        & where $T_i = (S, r, trig, env_V, env_F)$                                             \\ [12pt]
-        $TASK_{LOOP-3}$ & $\frac
-            {(S, env_V, env_F, sto) \Rightarrow (env_V, env_F, sto^\prime)}
-            {(\{|\dots T_i \dots S|\}, env, sto) \Rightarrow (\{|\dots T_i \dots|\}, env, sto^\prime)}$        \\
+            {(\{|\dots T_i \dots|\}, sto) \Rightarrow (\{|\dots T^\prime_i \dots |\}, sto^\prime)}$ \\ [12pt]
+                      & where $T_i = (S, r, trig, env_V, env_F)$                                    \\
+                      & and $T^\prime_i = (S\prime, trig, env_V, env_F) $                           \\
         \bottomrule
     \end{tabular}
     \caption{Semantics for the parallel invocation of tasks as a programs entrypoint.}
