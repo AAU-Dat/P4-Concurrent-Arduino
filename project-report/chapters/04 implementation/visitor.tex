@@ -69,6 +69,6 @@ Another example of an implemented visitor method can be seen in Figure~\ref{lst:
 \end{listing}
 
 
-Before moving on, the left operand is made the child of the \textit{plus\_minus\_node}, and the right operand a sibling to the left operand child. This happens in lines 7-8. These child nodes are the result of a visit of the children of the ctx\todo{consider ctx in glossary}.
+Before moving on, the left operand is made the child of the \textit{plus\_minus\_node}, and the right operand a sibling to the left operand child. This happens in lines 7-8. These child nodes are the result of a visit of the children of the ctx.
 
 To ensure that the expression is valid and legal in Arc, we instantiate an AST\_node array in line 9, with the two operands as elements, and in lines 10-14 check if they both contain the type Types.NUM - if so, Types.NUM is assigned to the \textit{plus\_minus\_node}s type field. Else, en exception is thrown. Finally, we return the \textit{plus\_minus\_node}.
