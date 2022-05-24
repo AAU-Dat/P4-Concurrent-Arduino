@@ -1,17 +1,17 @@
 \section{Type checker}\label{sec:typechecker}
+This section will discuss the type checker for Arc, how it is structured, and present examples of its implementation.
 
-This section will discuss the type checker for Arc, how it is structured and present an example of how it is implemented.
+The type checker is responsible for verifying that operands evaluate correctly. It does this by walking through the \gls{cst} from the bottom-up with a visitor pattern~\cite{Parr2014}. If another type than an expected permitted type is found, it throws an error along with a message for the developer to fix the issue~\cite{Sebesta2016}.
 
-The type checker is responsible for verifying that operands on either side of an operator evaluates to a number value, and other compatibility checks on types. If another type than an expected legal type is found, then it throws an error along with a message for the developer to fix the issue \cite{Sebesta2016}. It does this by walking through the \gls{cst} from the bottom-up, with a visitor pattern \cite{Parr2014}. An example of a type checker throwing an error could be in case of a developer attempting to use the addition operator on a number and a character. This is going to throw an error in Arc, while it is unexpected behaviour we have not accounted for in the language.
+An example of a type checker throwing an error could be in the case of a developer attempting to use the addition operator on a number and a character. This mistake will throw an error because it is not legal behavior in Arc.
 
-As with scoping, there are two ways of doing type checking: statically and dynamically. Static type checking is done at compile time, while dynamic type checking is done at run time. Usually, it is considered a better practice to use static type checking, due to the fact that it catches any potential errors earlier compared to a dynamic type checker, and it cost less too \cite{Sebesta2016}. However, dynamic typing allows for more flexibility when writing code. An example of this can be seen in languages such as Python and JavaScript, in which variables does not need to have a type on declaration - all they need is a value. They can also change "type" if the developer chooses to assign a number to a variable containing a string.
+There are two ways of doing type-checking: statically and dynamically. Static type checking is done at compile-time, while dynamic type checking is done at run time. Usually, it is considered a better practice to use static type checking because it catches any potential errors earlier than a dynamic type checker, and it costs less too~\cite{Sebesta2016}. However, dynamic typing allows for more flexibility when writing code.
 
-The language Arc transpiles to is C++, which is a staticallly typed language. For this reason Arc will use a static type checker, to make the transpilation more one-to-one. Although, an argument could be made for Arc to use dynamic type checking, since dynamically typed languages often tend to be faster to write code in. Since time is a limiting factor for our target group, it would make sense to make a language that encourages less time spent on writing code. However, while Arc is only made to work with simple concurrency, time is better spend elsewhere.
+For example, in languages such as Python and JavaScript, variables do not need to have a type on a declaration - all they need is a value. They can also change "type" if the developer chooses to assign a number to a variable containing a string.
 
-An example of type checking in Arc, can be found in Listing \ref{lst:typecheckerexample}. The example shows the part of the typechecker that handles assignments. First in \textbf{lines 1-2}, a SymbolHashTableEntry 'entry' is created for scope checking and an AST\_node 'expression' is created for the type checking. The expression node is created from visiting the expression of the context received as a formal parameter.
+The language Arc transpiles to is C++, a statically typed language. For this reason, Arc will use a static type checker to make the transpilation more one-to-one. Although, an argument could be made for Arc to use dynamic type-checking since dynamically typed languages tend to be faster for writing code. Since time (cost) is a limiting factor for our target group, it would make sense to make a language that encourages less time spent writing code. However, Arc is only made to work with simple concurrency, and time is better spent elsewhere.
 
-The first check in \textbf{lines 4-5} is part of the scope handling, and as that has already been covered, we move on to \textbf{lines 6-7} in which the visitor checks whether or not the entry is actually mutable (meaning that it is allowed to be modified). If this is not the case, an error will be thrown. Else in \textbf{lines 8-9}, we check if the entry has the expected type from the 'expression' AST\_node created earlier. If there has been a type mismatch, we throw an error. Else, we insert the entry in the symbol table in \textbf{line 11}, and the entry has been successfully assigned.
-
+An example of type checking in Arc can be found in Listing~\ref{lst:typecheckerexample}. The example shows the part of the type-checker that handles assignments. First, in lines 1-2, a SymbolHashTableEntry 'entry' is created for scope checking, and an AST node 'expression' is created for the type checking. The expression node is created by visiting the expression of the context received as a formal parameter.
 
 
 \begin{listing}[htb!]
@@ -32,3 +32,6 @@ The first check in \textbf{lines 4-5} is part of the scope handling, and as that
     \caption{Code snippet of type checking in Arc.}
     \label{lst:typecheckerexample}
 \end{listing}
+
+
+The first check on lines 4-5 is part of the scope-checking and has already been covered. On lines 6-7, the visitor checks whether or not the entry is mutable (meaning that it is allowed to be modified). If this is not the case, an error will be thrown. Else in lines 8-9, we check if the entry has the expected type from the 'expression' AST node created earlier. If there has been a type mismatch, we throw an error. Else, we insert the entry in the symbol table in line 11, and the entry has been successfully assigned.
