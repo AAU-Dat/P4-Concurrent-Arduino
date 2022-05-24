@@ -1,6 +1,6 @@
 \section{Compiler}\label{sec:compiler}
+The purpose of a compiler is to convert source code into target code. A generalized model of the compilation process can be seen in Figure~\ref{fig:generalcompilermodel}. In the case of the Arc compiler, the source code is text written in the Arc language.
 
-The purpose of a compiler is to convert source code into target code. In the case of the Arc compiler, the source code is text written in the Arc language. A generalized model of the compilation process can be seen in Figure~\ref{fig:generalcompilermodel}.
 
 \begin{figure}[htb!]
     \centering
@@ -9,9 +9,11 @@ The purpose of a compiler is to convert source code into target code. In the cas
     \label{fig:generalcompilermodel}
 \end{figure}
 
-The target code is often low level code for a particular system or runtime, but not always. When the target code is another high level languange, the process is also called transpilation. The Arc languange is used for programming Arduinos, and so the compiler has to either generate Arduino specific machine code, or transpile to the high level Arduino language. Because the Arc language leverages the Protothreads library and its concurrency model for the Arduino, it makes sense for the Arc compiler to be a transpiler.
 
-The Arc compiler follows many of the steps of the general model. Figure~\ref{fig:arccompilermodel} models the Arc compiler, with some noteworthy details.
+The target code is often low-level code for a particular system or runtime, but not always. When the target code is another high-level language, the process is also called transpilation. The Arc language is used for programming Arduinos, and so the compiler has to either generate Arduino-specific machine code or transpile it to the high-level Arduino language. Because the Arc language leverages the Protothreads library and its concurrency model for the Arduino, it makes sense for the Arc compiler to be a transpiler.
+
+The Arc compiler follows many of the steps of the general model. Figure~\ref{fig:arccompilermodel} models the Arc compiler with some essential details.
+
 
 \begin{figure}[htb!]
     \centering
@@ -40,4 +42,5 @@ The Arc compiler follows many of the steps of the general model. Figure~\ref{fig
     \label{fig:arccompilermodel}
 \end{figure}
 
-In Figure~\ref{fig:arccompilermodel}, the source code is first scanned into tokens and then parsed into an \gls{ast}, Antlr handles all of this from our grammar, hence the box around the scanner and parser. The \gls{ast} is then type checked and scope checked. The type and scope check rules is explained in more detail in section 3.4. Once the transpiler has done all of the neccessary checks on the source code, it is ready to generate the Arduino code, which is also the final step of the compiler. We should now have a target code, ready for the Arduino, based from our source Arc code.
+
+Figure~\ref{fig:arccompilermodel} shows how the source code is first scanned into tokens and then parsed into an \gls{ast}. \gls{antlr} generates the lexer and parser for this from our grammar, hence the box around the scanner and parser. The \gls{ast} is then type-checked and scope-checked. The type and scope check rules are explained in more detail in section\ref{sec:contextualconstraints}. Once the transpiler has done all of the necessary checks on the source code, it is ready to generate the Arduino code, which is also the final step of the compiler. We now have target code ready for the Arduino based on our source Arc code.
