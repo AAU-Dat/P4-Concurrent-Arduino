@@ -3,8 +3,7 @@ This section details working with the integrated visitor pattern that \gls{antlr
 
 The visitor design pattern is a way to traverse the \gls{ast} to allow us to add new operations to an existing structure without having to modify it. It makes it both fast and easy to scale classes and fulfills the open/closed principle by allowing extension and no modification. The 'Visitor' interface and the abstract 'BaseVisitor' class created by \gls{antlr} are necessary for the visitor implementation.
 
-An example of how Arc implements a visitor method is seen in Figure~\ref{lst:visitorterminalexpression}. When a terminal expression node is visited in the \gls{ast} traversal, the visitTerminal\_expression method is called by \gls{antlr}. The method declares a string variable 'name' and assigns the context of the terminal expression (given as a formal parameter) as its value, in lines 2-3. It then instantiates a new AST\_node 'terminal,' which is given name as a parameter in line 4. Then it runs through a series of checks in an if-else statement to find out which type the terminal expression should have. \todo{Check that the code matches actual code}
-
+An example of how Arc implements a visitor method is seen in Figure~\ref{lst:visitorterminalexpression}. When a terminal expression node is visited in the \gls{ast} traversal, the visitTerminal\_expression method is called by \gls{antlr}. The method declares a string variable 'name' and assigns the context of the terminal expression (given as a formal parameter) as its value, in lines 2-3. It then instantiates a new AST\_node 'terminal,' which is given name as a parameter in line 4. Then it runs through a series of checks in an if-else statement to find out which type the terminal expression should have. 
 
 \begin{listing}[htb!]
     \begin{minted}{java}
