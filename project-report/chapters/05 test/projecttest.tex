@@ -1,71 +1,70 @@
 \section{Usability Test of Arc}\label{subsec:usabilityTestOfArc}
-
 A usability test is a valuable tool for projects to identify usability challenges and collect both quantitative- and qualitative data which can be used to conclusions aobut the Arc Language
 determine the overall user satisfaction with the project's product.
 
 A usability test on the Arc language would help determine how Arc compares to existing libraries and languages when handling concurrency on an Arduino. Therefore, Arc would be evaluated on its ability to handle concurrency and the writability of the language rather than how fast it executes, its memory usages, or other performance-related metrics.
 
-\subsection{Aim of the test}\label{subsubsec:aimOfTheTest}
+The usability test aims to determine how the Arc language measures up to our preformed expectations, as seen in table~\ref{tab:priorityofcharacteristics}. Arc would be evaluated by the Language Evaluation Criteria, as seen in table~\ref{tab:langevalcrit}. The focus of this project has been chiefly on simplicity and syntax design rather than support for abstraction. However, this test will still cover all of the characteristics to ensure that Arc lives up to the expectations and is easy to use for hobbyist developers. We have arranged the characteristics in table~\ref{tab:priorityofcharacteristics},in such a way that it should make it easier to use concurrency on an Arduino.
 
-The usability test aims to determine how the Arc language measures up to our preformed expectations, as seen in [ref: table 3.2]. Arc would be evaluated by the Language Evaluation Criteria, as seen in [ref: table 3.1]. The focus of this project has been chiefly on simplicity and syntax design rather than support for abstraction. However, this test will still cover all of the characteristics to ensure that Arc lives up to the expectations and is easy to use for hobbyist developers. We have arranged the characteristics in [ref: table 3.2] in such a way that it should make it easier to use concurrency on an Arduino.
+The hypothesis we will test with this usability test is 
 
-We have prepared a set of four questions that we would have wanted to get answered by the results of this test. These four questions are as follows:
+\blockquote{Arc is easy to learn and lives up to the criteria from Tables~\ref{tab:priorityofcharacteristics}\ref{tab:langevalcrit}}
 
-\begin{enumerate}
-    \item How easy is it to get familiar with and use Arc?
-    \item What does a beggining programmer think of Arc?
-    \item What does a more experienced programmer think of Arc and how does it compare to other programming languages?
-    \item How would an evaluation of Arc based on the Language Evaluation Criteria by the experienced developer look?
-\end{enumerate}
+We have four questions that we would want answered to test the hypothesis: How easy is it to get familiar with and use Arc? What does a beginning programmer think of Arc? What do programmars on all levels think of Arc, and how does it compare to other programming languages? 
 
 \subsection{The test participants}\label{subsubsec:theTestParticipants}
-
-For this usability test, we would need participants with varied programming experience. We would need to divide them into two main groups: novice- and experienced programmers. The novice programmer would be needed to indicate how easy beginning programmers might find the Arc language to understand and use. In contrast, the experienced programmer would be able to provide us with a new perspective on our language and evaluate it based on their personal experience, and give a more constructive opinion on the language. The data collected from both the novice- and experienced programmers would help indicate how easy the language is to understand and use. In the scenario we were to conduct the test, we would also have to account for the distinction between a novice- and an experienced programmer - in case we had an intermediate programmer who has too much experience to be a novice but too little experience to be considered an experienced programmer. However, as this is only hypothetical, we will make do with our two categories for now.
-
-By having the experienced programmers evaluate our language using the Language Evaluation Criteria, we could compare their results to our evaluation and check whether or not they agreed with our assessment.
+For this usability test, we would need two groups of participants; the control group would perform the test in the Arduino language, and a test group to perform the test in the Arc language.
 
 It is typically best to have as many participants as possible for a usability test to provide the best possible results. However, we would only need a handful of participants in each group to have satisfactory results for this test.
 
-\subsection{The test session}\label{subsubsec:theTestSession}
+\subsection{The test}\label{subsubsec:theTestSession}
+There would be three parts: the reading test, code test, and questionnaire. The reading test would work by showing test participants snippets of code, and the participant would describe what they expect the code does. The writing part would work on giving the participant an exercise to try and write in the Arc/Arduino code, depending on their group. The questionnaire would be questions about their experience with the test itself and the programming language. 
 
-Each test participant would have a similar-looking individual test session - perhaps with different questions prepared for each group to better reflect their programming experience. For example, while it makes little sense to ask the novice programmer to evaluate the language using the Language Evaluation Criteria, it would be a missed opportunity not to ask that of the experienced programmer.
+\subsubsection{The reading test}
+The reading test is designed to evaluate the readability of Arc compared to Arduino. Three small code examples are described in Arc and Arduino to achieve this. The examples are the same for both languages and should include at least a concurrency example. Additionally, the test can be timed to obtain quantitative data. 
 
-The test would be fully documented and recorded to capture the participant's reactions and actions during the test if the participant approves and allows us to record that is. A designated test moderator would then instruct the participant on how to complete the test while being impartial and trying not to influence the test results in any way and, in any case, as little as possible. The test moderator would also have to inform the participant to think aloud during the test to provide more data about their thought process while completing the tasks from the task list. This would help us evaluate the results and better distinguish the severity of any potential problems. The test would also be supervised by at least one other observer responsible for taking notes during the test.
+\subsubsection{The writing test}
+After the reading test, the participants have a writing test. This test is designed to evaluate the writability of Arc versus Arduino. 
 
-Once the test is completed, the moderator would have a set of prepared questions to help the participant evaluate the Arc language. A set of questions for the novice programmers could look like this:
+The writing test consists of three small implementation tasks, one of which must be concurrency-related. This test must include the project blueprints and a good explanation of the desired behavior. Additionally, good documentation for both languages must be presented for a fair comparison. 
+
+This test should primarily supply quantitative data: degree of correctness, measured by the number of mistakes, the time of completion, and a ratio between these, representing the cost criteria. The size of the source code file might also be relevant. 
+
+Examples for the code tasks in this test:
+\begin{enumerate}
+    \item Toggles an LED on and off every second.
+    \item Toggles an LED on and off when a condition has been met, such as a button press.
+    \item Reads the state of a button as often as it can, unconditionally and without considering time.
+\end{enumerate}
+
+\subsubsection{The questionare}
+Finally, after the reading and writing test, participants have to answer a short questionnaire, following the questionnaire chapter in~\cite[p.~146,~224-235]{benyon_2014}.
+
+Examples of qualitative questions we would like answered: 
 
 \begin{enumerate}
     \item How would you rate the Arc language as a beginner friendly programming language?
     \item How does it compare to any other programming language you might know of?
     \item How easy did you find the task function to work with when constructing new threads?
     \item Would you recommend other developers to use Arc, why or why not?
-\end{enumerate}
-
-While a set of questions prepared for the experienced programmers could look like this:
-
-\begin{enumerate}
     \item How did the Arc language compare to your first programming language, with focus on simplicity?
     \item How does it compare to any other programming languages you have used in the past?
     \item Do you have any prior experience with concurrency and/or the Arduino?
     \item How would you evaluate the Arc language based on these Language Evaluation Criteria?
 \end{enumerate}
 
-\subsection{Task list}\label{subsubsec:taskList}
-
-We have prepared a set of imaginary tasks to present our thought process as to how we would have approached designing the tasks for the participants. Each task would have to be solved by the participant with as little help from the moderator. First and foremost, we would have to test the readability and writability of the language. One way to do this would be to have them read some performed tasks such as tasks that:
-
+More quantatitive questions: 
 \begin{enumerate}
-    \item Toggles an LED on and off every second.
-    \item Toggles an LED on and off when a condition has been met, such as a button press.
-    \item Reads the state of a button as often as it can, unconditionally and without a sense of time.
+    \item On a scale from 1-10 how easy did you find the reading tasks?
+    \item On a scale from 1-10 how easy did you find the writing tasks?
+    \item On a scale from 1-10 how likely are to recommend the language to a friend?
 \end{enumerate}
 
-The idea is then for the participant to explain what is going on in each task using their own words and as little or as much terminology as they are comfortable with. The purpose is to test how easily they understand what happens in the code. After seeing some examples of the tasks, they would be tasked to create their tasks using Arc. They would have to create the same tasks they had already seen or at least similar tasks. The purpose is to test how intuitively and easy the code is to write.
+\subsection{Data analysis}\label{subsubsec:analysisOfTheData}
+After conducting all the tests, we would have to analyze all the gathered data and compare the results. For example, if one of the participants was stuck during a task - it could indicate that the participant had an issue with something; but if a multitude of the participants had a similar issue - it would indicate that something might be innately wrong with either the language or the task itself.
 
-\subsection{Analysis of the data}\label{subsubsec:analysisOfTheData}
+The reading test would be analyzed by comparing the ratio of correct to inaccurate descriptions and potentially the level of detail in the answers compared between languages. 
 
-After conducting all of the tests, we would have to analyze all the gathered data and compare the results. The first natural thing to do would be to go over the notes made by the test observer and the recorded material. For example, if one of the participants was stuck during a task - it could indicate that the participant had an issue with something; but if a multitude of the participants had a similar issue - it would indicate that something might be innately wrong with either the language or the task itself.
+The writing test data is primarily quantitative and can be plotted and compared directly. It also needs a reasonably large sample size to be statistically sound. If enough data points are obtained, this data will show us if there is a difference in writability between Arc and the Arduino language, and if any, maybe even how large.  
 
-The next step would be to go over the findings made from observing the participants familiarising themselves with and working with the language. It would be the first time both the novice- and experienced programmers see the language, and while a learning curve can be expected with all new things, a certain margin of error is to be expected with all of the results due to this. However, it would also be interesting to see how much of a difference between the two groups when it comes to the ease of learning the Arc language and how well and fast they would be to complete their designated tasks. If the time difference between the two groups is insignificant, that might imply the language is easy to understand. More interestingly, in our effort to simplify and make our language easy to use for beginners, we might learn that we have made it more difficult for users with more programming experience to intuitively write the code and understand why we have done as we have. This would be reflected by results that indicate that novice programmers are faster at completing the tasks than experienced programmers. Any time comparisons would also acknowledge that one programmer could have received much help to complete a task while another could have received no help, which does not reflect the complete result.
-
-The final thing to analyze would be the individual replies to the prepared questions after the test had concluded. It would be interesting to see how different the answers to the shared questions are and how the respondents answer the individual questions for their specific group. Perhaps, most interestingly would be to compare the experienced programmers' evaluations of the language to that of our own, using the Language Evaluation Criteria.
+The final thing to analyze would be the replies to the questionnaire. In particular, we are interested in the differences in answers between the control group and the test group: is there a difference in the perceived difficulty between the languages, especially considering the measured differences, if any.

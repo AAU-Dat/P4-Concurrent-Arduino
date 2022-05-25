@@ -9,13 +9,16 @@ We can conclude that Arc partly solves the problem statement, as we have a funci
 
 As a whole, we believe that the project is a success, eventhough we did not completely solve the problem statement. That is because, we belive that we have achived the learning objectives of the project. We will show this through going a curated list of the learning goals, accompanied by a description of how we have achived them.
 
-\input{chapters/07 conclusion/learning_goals.tex}
+\textbf{Explain the individual phases and the correlation between the phases in a translator/interpreter.} We have attempted to explain the phases as a whole, but we are unsure whether or not we have satisfactorily explained the more delicate details. This is primarily due to \gls{antlr} handling most of it for us. We have looked into what the tool does for us and compared it to the knowledge we have obtained through the semester work and found that we understand the individual processes, regardless of how much focus the report has on it.
 
-%As a product of solving the problem statement, we created our language, Arc. The syntax of Arc mostly resembles C, but with minor changes, such as the for-loop, which is influenced by the way Python handles it, and the task construct created to handle concurrency. The task construct and any other decision in the project have been driven by the wish to make Arc as easy and intuitive as possible for our target group to write concurrent code for the Arduino. Arc gets translated into C++ and implements Protothreads to work concurrently on the Arduino.
+\textbf{Describe the syntax and semantics of a programming language by using appropriate methods for formal definition.} We have described our syntax and semantics primarily by the terminology, techniques and methods learned in the Syntax and Semantics course. Some techniques have also been presented in the Languages and Compilers course, but this has been chiefly about language design.
+
+\textbf{Implement a translator or interpreter into a specific programming language or an extension to an existing programming language.} We have implemented a transpiler to translate Arc into Arduino. Our internal tests have worked as intended, so we are confident that we have accomplished this.
+
+\textbf{Test the implemented translator or interpreter at all levels: unit, integration and acceptance testing.} We have not implemented a full testing suite for the compiler. However, we have developed a testing strategy for unit, integration, and acceptance tests in the shape of our useability test. Therefore we feel we have partially succeeded in achieving this learning goal.
+
+\textbf{Assess the use and usability of known tools and techniques for the definition and implementation of programming languages.} We believe that we have accomplished this in section~\ref{cha:problemanalysis}.
 
 A concurrent program was written in the Arduino language with the Protothreads library to ensure that Arc worked as intended. The program was relatively simple and included two \gls{led}s; the first one was tasked to turn on and off every second, while the other diode was tasked to toggle the light state by a button press. We then created a simillar program using Arc, which worked as expected and did not run into any problems.
-
-
-%The concurrency structures of Arc are colloquial and should therefore be somewhat intuitive to set up and understand for any hobbyist using our language. In order to conclude that the syntax of Arc concisely expresses a concurrent flow of control, we would have needed to test the usability of the language. From our perspective and limited internal testing, we can surmise a conclusion.
 
 We can conclude that Arc is a succes in regards to the whole semester as it archieves the learning goals and is able to compile, eventhough it does not fullfill the problem statement completely. There is always room for improvement, and we have learned lessons throughout the project that would make for a better language in the future. 
