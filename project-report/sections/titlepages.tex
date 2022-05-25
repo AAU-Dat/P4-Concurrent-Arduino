@@ -29,8 +29,13 @@
   Aalborg University\\
   \href{http://www.aau.dk}{http://www.aau.dk}
 }{% the abstract
-This report will document the design and implementation of Arc.
-The project's goal was to create a simple language for hobbyists to work with concurrency on an Arduino. It will look into some of the problems concerning concurrency and Arduino. This leads to the problem statement, "The project aims to create a programming language for hobbyists that satisfies our language criterion and makes it possible to express concurrency on the Arduino easily". Our solution to this is the Arc language, which transpiles into the Arduino language and implements Protothreads to handle concurrency. The compiler has been implemented in Java using \acrshort{antlr}4 for the lexer and parser generation. The scope and type checking is handled by extending \acrshort{antlr}'s BaseVisitor class following the visitor pattern. In conclusion, Arc has implemented concurrency and is a reasonable solution to the problem statement. However, we cannot validate that Arc is easy to learn and a simple language because we did not have time to finish our usability test.
+  This report documents the design and implementation of Arc. The project's goal was to create a programming language for hobbyists to work with concurrency on an Arduino.
+
+  Our solution to the problem statement is the Arc language, which transpiles into the Arduino language and implements Protothreads to handle concurrency.
+
+  Arc has been succesfully implemented in Java using \acrshort{antlr}4 for the lexer and parser generation, with the scope and type-checking handled by extending \acrshort{antlr}'s BaseVisitor class using the visitor pattern.
+
+  Pending the completion of the described usability test, a final evaluation of Arc as a solution to the problem statement can be made.
 }
 
 
